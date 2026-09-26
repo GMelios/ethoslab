@@ -1,0 +1,50 @@
+{
+  "$comment": "Single source of truth for sector tags. Read by src/content.config.ts (schema enum), the Work filter UI, and scripts/import-wp.mjs (keyword-based first-pass tagging of imported projects). Keywords are lower-case substrings matched against title + body.",
+  "sectors": [
+    {
+      "id": "education",
+      "label": { "en": "Education & skills", "el": "Εκπαίδευση & δεξιότητες" },
+      "keywords": ["education", "school", "student", "teacher", "learning", "vocational", "erasmus", "skills", "university", "εκπαίδευ", "σχολ"]
+    },
+    {
+      "id": "labour",
+      "label": { "en": "Labour & welfare", "el": "Εργασία & κοινωνική πολιτική" },
+      "keywords": ["labour", "labor", "employment", "unemploy", "job", "welfare", "social service", "social protection", "poverty", "pension", "workers", "εργασ", "απασχόλησ"]
+    },
+    {
+      "id": "democracy",
+      "label": { "en": "Democracy & governance", "el": "Δημοκρατία & διακυβέρνηση" },
+      "keywords": ["democra", "citizen", "civic", "participation", "public governance", "good governance", "public administration", "trust in", "election", "voting", "disinformation", "polaris", "polariz", "δημοκρατ", "πολίτ"]
+    },
+    {
+      "id": "equality",
+      "label": { "en": "Equality & inclusion", "el": "Ισότητα & ένταξη" },
+      "keywords": ["equality", "gender", "discriminat", "inclusion", "migrant", "refugee", "roma", "violence", "hate speech", "rights", "ισότητ", "φύλ"]
+    },
+    {
+      "id": "economy",
+      "label": { "en": "Economy & business", "el": "Οικονομία & επιχειρήσεις" },
+      "keywords": ["business", "sme", "enterprise", "esg", "finance", "commerce", "entrepreneur", "company", "companies", "firms", "investment", "επιχειρ", "οικονομ"]
+    },
+    {
+      "id": "environment",
+      "label": { "en": "Climate & environment", "el": "Κλίμα & περιβάλλον" },
+      "keywords": ["climate", "environment", "green", "energy", "sustainab", "emission", "circular", "περιβάλλ", "κλίμα"]
+    },
+    {
+      "id": "health",
+      "label": { "en": "Health & wellbeing", "el": "Υγεία & ευημερία" },
+      "keywords": ["health", "mental", "well-being", "wellbeing", "hospital", "patient", "υγεί"]
+    },
+    {
+      "id": "digital",
+      "label": { "en": "Data, AI & digital", "el": "Δεδομένα, ΤΝ & ψηφιακά" },
+      "keywords": ["data", "artificial intelligence", " ai ", "digital", "platform", "algorithm", "interoperab", "software", "ψηφιακ", "δεδομέν"]
+    },
+    {
+      "id": "regions",
+      "label": { "en": "Cities, regions & transport", "el": "Πόλεις, περιφέρειες & μεταφορές" },
+      "keywords": ["region", "cities", "urban", "municipal", "local government", "transport", "mobility", "rural", "περιφέρει", "δήμ"]
+    }
+  ]
+}

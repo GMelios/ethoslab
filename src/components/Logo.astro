@@ -1,0 +1,24 @@
+---
+/**
+ * Site logo: the Ethos Lab horizontal lockup, coloured by the active theme's
+ * --t-logo-* tokens. `inverse` switches to the colours for dark backgrounds.
+ */
+import BrandLogo from './BrandLogo.astro';
+
+interface Props {
+  class?: string;
+  inverse?: boolean;
+}
+const { class: className = 'h-9', inverse = false } = Astro.props;
+---
+
+<span class:list={['inline-flex items-center', inverse && 'logo-inverse', className]}>
+  <BrandLogo variant="horizontal" />
+</span>
+
+<style>
+  .logo-inverse {
+    --t-logo-a: var(--t-logo-a-inverse);
+    --t-logo-b: var(--t-logo-b-inverse);
+  }
+</style>

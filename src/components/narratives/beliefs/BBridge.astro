@@ -1,0 +1,17 @@
+---
+/** Direction B: the sentence that hands one belief to the next, on a dashed thread. */
+interface Props {
+  text: string;
+}
+const { text } = Astro.props;
+---
+
+<div class="wrap flex flex-col items-center py-6 text-center md:py-8">
+  <svg viewBox="0 0 24 64" class="h-14 w-6 text-ink" fill="none" aria-hidden="true">
+    <path d="M12 2c-9 12 9 20 0 32s0 18 0 28" stroke="currentColor" stroke-width="2" stroke-dasharray="2 8" stroke-linecap="round" />
+  </svg>
+  <p class="mt-3 max-w-2xl text-xl leading-snug font-bold text-accent md:text-[1.7rem]">{text}</p>
+  <svg viewBox="0 0 24 40" class="mt-4 h-10 w-6 text-accent" fill="none" aria-hidden="true">
+    <path d="M12 2v32M4 26l8 9 8-9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+</div>

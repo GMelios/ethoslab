@@ -1,0 +1,127 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PageHero from '../../../components/PageHero.astro';
+import WorkCard from '../../../components/WorkCard.astro';
+import CtaBand from '../../../components/CtaBand.astro';
+import { localeParams, localePath } from '../../../i18n/utils';
+import { useTranslations } from '../../../i18n/ui';
+import type { Locale } from '../../../i18n/config';
+import { getWork, SECTORS, sectorLabel } from '../../../lib/content';
+
+export const getStaticPaths = localeParams;
+const { lang } = Astro.props as { lang: Locale };
+const t = useTranslations(lang);
+const work = await getWork(lang);
+const sectors = SECTORS.map((s) => ({ id: s.id, label: sectorLabel(s.id, lang), count: work.filter((w) => w.data.sectors.includes(s.id)).length })).filter((s) => s.count > 0);
+---
+
+<Base title={t('nav.work')} description="Evaluations, experiments and EU research projects by Ethos Lab." lang={lang} path="/work/">
+  <PageHero
+    eyebrow={t('nav.work')}
+    title="Evaluations, experiments and research projects"
+    intro="Case studies of what we tested, how, and what we found, alongside the European research consortia we are part of."
+  />
+
+  <section class="wrap py-10 md:py-14" data-work-filter>
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div role="group" aria-labelledby="filter-label" class="-mx-1 flex flex-wrap gap-2">
+        <span id="filter-label" class="sr-only">{t('work.filterLabel')}</span>
+        <a href={localePath(lang, '/work/')} data-sector="" aria-pressed="true" role="button" class="chip">
+          {t('work.all')} <span class="chip-count">{work.length}</span>
+        </a>
+        {
+          sectors.map((s) => (
+            <a href={`?sector=${s.id}`} data-sector={s.id} aria-pressed="false" role="button" class="chip">
+              {s.label} <span class="chip-count">{s.count}</span>
+            </a>
+          ))
+        }
+      </div>
+      <p class="shrink-0 text-sm text-muted" aria-live="polite" data-work-count>
+        {t('work.showing')} {work.length} {t('work.of')} {work.length} {t('work.projects')}
+      </p>
+    </div>
+
+    <ul class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3" role="list">
+      {
+        work.map((entry) => (
+          <li data-sectors={entry.data.sectors.join(' ')}>
+            <WorkCard entry={entry} lang={lang} headingLevel="h2" />
+          </li>
+        ))
+      }
+    </ul>
+    <p class="mt-10 text-muted" hidden data-work-empty>{t('work.none')}</p>
+  </section>
+
+  <CtaBand lang={lang} />
+</Base>
+
+<style>
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    padding: 0.45rem 0.95rem;
+    border: 1px solid var(--t-line);
+    border-radius: var(--t-radius-control);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--t-ink);
+    background: var(--t-paper);
+    transition: border-color 0.15s, background-color 0.15s;
+  }
+  .chip:hover {
+    border-color: var(--t-ink);
+  }
+  .chip[aria-pressed='true'] {
+    background: var(--t-ink);
+    border-color: var(--t-ink);
+    color: var(--t-paper);
+  }
+  .chip-count {
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.65;
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-work-filter]');
+  if (root) {
+    const chips = [...root.querySelectorAll<HTMLAnchorElement>('[data-sector]')];
+    const items = [...root.querySelectorAll<HTMLElement>('li[data-sectors]')];
+    const count = root.querySelector<HTMLElement>('[data-work-count]')!;
+    const empty = root.querySelector<HTMLElement>('[data-work-empty]')!;
+    const template = count.textContent!.trim().split(/\s+/);
+
+    const apply = (sector: string, push: boolean) => {
+      let shown = 0;
+      for (const li of items) {
+        const match = !sector || li.dataset.sectors!.split(' ').includes(sector);
+        li.hidden = !match;
+        if (match) shown++;
+      }
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.sector === sector)));
+      // "Showing {n} of {total} projects" in whichever language rendered the page.
+      template[1] = String(shown);
+      count.textContent = template.join(' ');
+      empty.hidden = shown > 0;
+      if (push) {
+        const url = new URL(location.href);
+        sector ? url.searchParams.set('sector', sector) : url.searchParams.delete('sector');
+        history.replaceState(null, '', url);
+      }
+    };
+
+    chips.forEach((chip) =>
+      chip.addEventListener('click', (e) => {
+        e.preventDefault();
+        apply(chip.dataset.sector!, true);
+      }),
+    );
+    const initial = new URL(location.href).searchParams.get('sector') ?? '';
+    if (chips.some((c) => c.dataset.sector === initial)) apply(initial, false);
+  }
+</script>

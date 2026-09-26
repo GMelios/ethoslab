@@ -1,0 +1,218 @@
+---
+/**
+ * Line illustrations for the "Follow one question" story (direction B), about
+ * reading politics in more than one language. Same drawing rules as
+ * components/illustrations/Illustration.astro: monoline ink strokes (2.5, round
+ * caps and joins), fills from theme tokens so they recolour with the theme.
+ * The only lettering is decorative script samples (Latin and Greek), never copy.
+ * Decorative: aria-hidden.
+ */
+interface Props {
+  name: 'hook' | 'europe' | 'draw' | 'reading' | 'platform';
+  class?: string;
+}
+const { name, class: className = '' } = Astro.props;
+
+// Three identical small readers per group: the groups look alike, except for how they read.
+const groups = [72, 180, 288];
+const people = groups.flatMap((cx) => [-26, 0, 26].map((dx, i) => ({ x: cx + dx, fill: (['f-sun', 'f-soft', 'f-paper'] as const)[i] })));
+const stars = Array.from({ length: 12 }, (_, i) => (i / 12) * Math.PI * 2);
+---
+
+{
+  name === 'hook' && (
+    <svg viewBox="0 0 480 420" class:list={['ill', className]} aria-hidden="true">
+      <path class="f-soft no-stroke" d="M72 304c-36-56-22-150 42-194 60-41 152-52 222-20 70 31 106 102 88 172-17 72-90 112-172 116-78 4-144-18-180-74z" />
+      <path class="f-sun" d="M40 118l4 10 10 4-10 4-4 10-4-10-10-4 10-4z" />
+      <path class="f-sun" d="M452 330l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" />
+      <!-- one article, three languages -->
+      <g transform="rotate(-4 220 240)">
+        <path class="f-paper" d="M188 108V88a8 8 0 0 1 8-8h52a8 8 0 0 1 8 8v20" />
+        <text x="222" y="102" class="ill-glyph" font-size="18">Λλ</text>
+        <path class="f-paper" d="M260 108V88a8 8 0 0 1 8-8h52a8 8 0 0 1 8 8v20" />
+        <text x="294" y="102" class="ill-glyph" font-size="18">Ää</text>
+        <rect class="f-paper" x="104" y="106" width="232" height="262" rx="6" />
+        <path class="f-sun" d="M116 108V86a8 8 0 0 1 8-8h52a8 8 0 0 1 8 8v22" />
+        <text x="150" y="102" class="ill-glyph" font-size="18">Aa</text>
+        <rect class="f-accent" x="126" y="130" width="124" height="16" rx="3" />
+        <path d="M126 166h184M126 184h164M126 202h184M126 220h140M126 238h184M126 256h120" stroke-width="2" />
+        <path d="M126 294h104M126 312h92M126 330h104" stroke-width="2" />
+        <g class="f-sun no-stroke">
+          {stars.map((a) => <circle cx={282 + Math.cos(a) * 22} cy={312 + Math.sin(a) * 22} r="3" />)}
+        </g>
+      </g>
+      <!-- the reader's side of it -->
+      <path class="f-paper" d="M362 44h62a14 14 0 0 1 14 14v34a14 14 0 0 1-14 14h-18l-18 16v-16h-26a14 14 0 0 1-14-14V58a14 14 0 0 1 14-14z" />
+      <text x="393" y="94" class="ill-glyph ill-glyph--q" font-size="44">?</text>
+      <path class="f-paper" d="M360 164h76a14 14 0 0 1 14 14v34a14 14 0 0 1-14 14h-46l-18 16v-16h-12a14 14 0 0 1-14-14v-34a14 14 0 0 1 14-14z" />
+      <text x="398" y="206" class="ill-glyph" font-size="28">Λλ</text>
+      <path class="f-sun" d="M380 262h70a14 14 0 0 1 14 14v34a14 14 0 0 1-14 14h-10v16l-18-16h-42a14 14 0 0 1-14-14v-34a14 14 0 0 1 14-14z" />
+      <text x="415" y="304" class="ill-glyph" font-size="28">Aa</text>
+    </svg>
+  )
+}
+{
+  name === 'europe' && (
+    <svg viewBox="0 0 360 280" class:list={['ill', className]} aria-hidden="true">
+      <path class="f-soft no-stroke" d="M52 206c-22-48-6-120 50-150 56-30 140-34 190 4 46 34 52 100 22 146-30 44-94 60-160 56-52-4-86-18-102-56z" />
+      <g class="f-sun no-stroke">
+        {stars.map((a) => <circle cx={180 + Math.cos(a) * 118} cy={132 + Math.sin(a) * 104} r="4" />)}
+      </g>
+      <!-- a deliberation platform -->
+      <rect class="f-paper" x="96" y="60" width="168" height="114" rx="9" />
+      <path class="f-paper" d="M78 182h204l-12 16H90z" />
+      <path d="M96 174h168" />
+      <rect class="f-soft" x="110" y="74" width="80" height="26" rx="12" />
+      <text x="150" y="93" class="ill-glyph" font-size="15">Aa</text>
+      <rect class="f-sun" x="170" y="106" width="80" height="26" rx="12" />
+      <text x="210" y="125" class="ill-glyph" font-size="15">Λλ</text>
+      <rect class="f-soft" x="110" y="138" width="80" height="26" rx="12" />
+      <text x="150" y="157" class="ill-glyph" font-size="15">Ää</text>
+      <!-- the question -->
+      <path class="f-paper" d="M262 22h52a14 14 0 0 1 14 14v28a14 14 0 0 1-14 14h-14l-16 14v-14h-22a14 14 0 0 1-14-14V36a14 14 0 0 1 14-14z" />
+      <text x="288" y="68" class="ill-glyph ill-glyph--q" font-size="38">?</text>
+      <path class="f-sun" d="M46 96l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" />
+    </svg>
+  )
+}
+{
+  name === 'draw' && (
+    <svg viewBox="0 0 360 260" class:list={['ill', className]} aria-hidden="true">
+      <path class="f-soft no-stroke" d="M34 180c-14-54 16-122 78-146 60-24 142-22 186 16 42 36 44 104 12 150-30 42-96 52-164 46-58-6-100-18-112-66z" />
+      <!-- the coin, mid-toss -->
+      <path d="M140 46c6-22 30-34 56-28" stroke-dasharray="2 8" />
+      <path d="M190 10l8 8-10 4" />
+      <path class="f-sun" d="M154 54v7c0 6.6 11.6 12 26 12s26-5.4 26-12v-7" />
+      <ellipse class="f-sun" cx="180" cy="54" rx="26" ry="12" />
+      <ellipse cx="180" cy="54" rx="14" ry="5.5" />
+      <path d="M164 80C130 96 88 100 74 112M180 82v30M196 80c34 16 78 20 92 32" stroke-dasharray="2 9" />
+      <!-- group 1: survey language -->
+      <path class="f-sun" d="M52 122v-6a5 5 0 0 1 5-5h16a5 5 0 0 1 5 5v6" />
+      <rect class="f-paper" x="49" y="120" width="46" height="56" rx="4" />
+      <text x="72" y="154" class="ill-glyph" font-size="16">Aa</text>
+      <!-- group 2: second language, no choice -->
+      <path class="f-paper" d="M160 122v-6a5 5 0 0 1 5-5h16a5 5 0 0 1 5 5v6" />
+      <rect class="f-paper" x="157" y="120" width="46" height="56" rx="4" />
+      <text x="180" y="154" class="ill-glyph" font-size="16">Λλ</text>
+      <path d="M202 164v-5a5 5 0 0 1 10 0v5" />
+      <rect class="f-accent" x="198" y="164" width="18" height="14" rx="3" />
+      <!-- group 3: a language of their choice -->
+      <rect class="f-paper" x="265" y="120" width="46" height="56" rx="4" />
+      <rect class="f-sun" x="271" y="112" width="34" height="16" rx="8" />
+      <path d="M293 118l3 3 3-3" stroke-width="2" />
+      <text x="288" y="159" class="ill-glyph" font-size="16">Aa</text>
+      <!-- identical readers -->
+      {people.map((pp) => (
+        <g>
+          <path class:list={[pp.fill]} d={`M${pp.x - 11} 238v-5a11 11 0 0 1 22 0v5z`} />
+          <circle class="f-paper" cx={pp.x} cy="208" r="7" />
+        </g>
+      ))}
+      <path d="M22 238h316" />
+    </svg>
+  )
+}
+{
+  name === 'reading' && (
+    <svg viewBox="16 26 350 214" class:list={['ill', className]} aria-hidden="true">
+      <path class="f-soft no-stroke" d="M40 196c-22-52 2-122 62-150 58-28 150-30 204 6 50 34 58 104 24 150-32 42-102 54-172 50-60-4-100-14-118-56z" />
+      <!-- read -->
+      <g transform="rotate(-5 94 128)">
+        <path class="f-sun" d="M52 64v-8a6 6 0 0 1 6-6h28a6 6 0 0 1 6 6v8" />
+        <rect class="f-paper" x="46" y="62" width="96" height="130" rx="5" />
+        <rect class="f-accent" x="58" y="76" width="56" height="12" rx="3" />
+        <path d="M58 104h72M58 118h64M58 132h72M58 146h52M58 160h72M58 174h40" stroke-width="2" />
+      </g>
+      <path d="M150 100c12-14 26-16 38-10" stroke-dasharray="2 8" />
+      <path d="M182 82l9 9-12 4" />
+      <!-- answer -->
+      <rect class="f-paper" x="196" y="72" width="92" height="126" rx="5" />
+      <rect class="f-paper" x="208" y="88" width="14" height="14" rx="3" />
+      <path d="M211 95l3 3 6-7" stroke="var(--t-accent)" stroke-width="2.5" />
+      <path d="M230 95h46" stroke-width="2" />
+      <rect class="f-paper" x="208" y="114" width="14" height="14" rx="3" />
+      <path d="M211 121l3 3 6-7" stroke="var(--t-accent)" stroke-width="2.5" />
+      <path d="M230 121h38" stroke-width="2" />
+      <rect class="f-paper" x="208" y="140" width="14" height="14" rx="3" />
+      <path d="M211 144l8 7M219 144l-8 7" stroke-width="2" />
+      <path d="M230 147h46" stroke-width="2" />
+      <!-- rate, 1 to 5 -->
+      <g>
+        {[0, 1, 2, 3, 4].map((i) => <circle class:list={[i === 3 ? 'f-accent' : 'f-paper']} cx={216 + i * 15} cy="178" r="5" />)}
+      </g>
+      <!-- recorded: time on page -->
+      <rect class="f-paper" x="316" y="52" width="10" height="8" rx="2" />
+      <circle class="f-sun" cx="321" cy="92" r="30" />
+      <circle class="f-paper" cx="321" cy="92" r="22" />
+      <path d="M321 92V76M321 92l10 7" />
+      <path class="f-sun" d="M334 174l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" />
+    </svg>
+  )
+}
+{
+  name === 'platform' && (
+    <svg viewBox="0 0 360 260" class:list={['ill', className]} aria-hidden="true">
+      <path class="f-soft no-stroke" d="M36 188c-18-54 10-124 70-150 58-26 144-26 192 10 44 34 48 102 16 146-30 42-98 54-166 50-58-4-96-12-112-56z" />
+      <rect class="f-paper" x="56" y="34" width="248" height="164" rx="10" />
+      <path d="M56 60h248" />
+      <circle cx="74" cy="47" r="3" fill="var(--t-ink)" stroke="none" />
+      <circle cx="86" cy="47" r="3" fill="var(--t-ink)" stroke="none" />
+      <circle cx="98" cy="47" r="3" fill="var(--t-ink)" stroke="none" />
+      <!-- language choice: simple, visible, reversible -->
+      <rect class="f-sun" x="208" y="72" width="82" height="26" rx="13" />
+      <text x="236" y="91" class="ill-glyph" font-size="15">Aa</text>
+      <path d="M262 82l6 6 6-6" />
+      <!-- content, labelled when translated -->
+      <rect class="f-soft" x="72" y="72" width="120" height="84" rx="6" />
+      <path d="M84 90h84M84 104h96M84 118h70M84 132h90" stroke-width="2" />
+      <rect class="f-accent" x="72" y="164" width="62" height="18" rx="9" />
+      <path d="M84 173h38" stroke="var(--t-on-accent)" stroke-width="2" />
+      <!-- monitored by language -->
+      {[0, 1, 2].map((i) => (
+        <g>
+          <circle class="f-accent" cx="218" cy={122 + i * 24} r="8" />
+          <path d={`M214 ${122 + i * 24}l3 3 5-6`} stroke="var(--t-on-accent)" stroke-width="2" />
+          <path d={`M234 ${122 + i * 24}h${[52, 40, 48][i]}`} stroke-width="2" />
+        </g>
+      ))}
+      <path class="f-paper" d="M160 198l-8 26h56l-8-26" />
+      <path d="M128 226h104" />
+      <path class="f-sun" d="M318 26l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" />
+    </svg>
+  )
+}
+<style>
+  .ill {
+    fill: none;
+    stroke: var(--t-ink);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    overflow: visible;
+  }
+  .ill :global(.no-stroke) {
+    stroke: none;
+  }
+  .f-soft {
+    fill: var(--t-accent-soft);
+  }
+  .f-sun {
+    fill: var(--t-highlight);
+  }
+  .f-accent {
+    fill: var(--t-accent);
+  }
+  .f-paper {
+    fill: var(--t-paper);
+  }
+  .ill-glyph {
+    fill: var(--t-ink);
+    stroke: none;
+    font-family: var(--t-font-display);
+    font-weight: 800;
+    text-anchor: middle;
+  }
+  .ill-glyph--q {
+    fill: var(--t-accent);
+  }
+</style>

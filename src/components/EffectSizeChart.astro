@@ -1,0 +1,563 @@
+---
+/**
+ * Forest plot of treatment effects with confidence intervals.
+ *
+ * One series, so no legend box: the title names what is plotted. Marks use the
+ * validated --t-chart colour; all text uses text tokens. Filled points have an
+ * interval that excludes zero, hollow points one that includes it, so
+ * significance never relies on colour. Every number is also in the table view;
+ * the tooltip (hover and keyboard focus) only adds convenience.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { useTranslations } from '../i18n/ui';
+import type { Locale } from '../i18n/config';
+
+type Results = NonNullable<CollectionEntry<'projects'>['data']['results']>;
+
+interface Props {
+  results: Results;
+  lang?: Locale;
+  /** Only show these groups (e.g. a hero teaser). */
+  groups?: string[];
+  compact?: boolean;
+  class?: string;
+}
+
+const { results, lang = 'en', groups, compact = false, class: className = '' } = Astro.props;
+const t = useTranslations(lang);
+const effects = results.effects.filter((e) => !groups || groups.includes(e.group ?? ''));
+const { unit, decimals, level } = results;
+const uid = `ec-${Math.random().toString(36).slice(2, 8)}`;
+
+// ---- scale ------------------------------------------------------------------
+function niceStep(range: number, target = 5) {
+  const raw = range / target;
+  const mag = 10 ** Math.floor(Math.log10(raw));
+  const norm = raw / mag;
+  return (norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 2.5 ? 2.5 : norm <= 5 ? 5 : 10) * mag;
+}
+const rawLo = Math.min(0, ...effects.map((e) => e.ciLow));
+const rawHi = Math.max(0, ...effects.map((e) => e.ciHigh));
+const step = niceStep(rawHi - rawLo || 1, compact ? 4 : 5);
+const lo = Math.floor(rawLo / step - 1e-9) * step;
+const hi = Math.ceil(rawHi / step + 1e-9) * step;
+const ticks: number[] = [];
+for (let v = lo; v <= hi + step / 2; v += step) ticks.push(Math.round(v / step) * step);
+const pos = (v: number) => ((v - lo) / (hi - lo)) * 100;
+
+// ---- formatting ---------------------------------------------------------------
+const MINUS = '−';
+/** Fewest decimals that represent the tick step exactly (1 -> 0, 2.5 -> 1, 0.05 -> 2). */
+const tickDecimals = [0, 1, 2, 3].find((d) => Math.abs(Math.round(step * 10 ** d) - step * 10 ** d) < 1e-9) ?? 3;
+const fmt = (v: number, d = decimals) => {
+  const s = Math.abs(v).toFixed(d);
+  return (v < 0 && Number(s) !== 0 ? MINUS : '') + s;
+};
+const signed = (v: number) => (v > 0 ? '+' : '') + fmt(v);
+const pct = unit === 'pp';
+const unitWord = pct ? 'percentage points' : unit === 'SD' ? 'standard deviations' : unit;
+
+// ---- rows grouped in order of first appearance -------------------------------------
+const grouped: { group: string; rows: typeof effects }[] = [];
+for (const e of effects) {
+  const g = e.group ?? '';
+  let bucket = grouped.find((x) => x.group === g);
+  if (!bucket) grouped.push((bucket = { group: g, rows: [] }));
+  bucket.rows.push(e);
+}
+const excludesZero = (e: (typeof effects)[number]) => e.ciLow > 0 || e.ciHigh < 0;
+---
+
+<figure class:list={['ec', compact && 'ec--compact', className]} id={uid} data-effect-chart>
+  <figcaption class="ec-caption">
+    <span class="ec-title">{results.title}</span>
+    <span class="ec-sub">{results.unitLabel}. Points are estimates, bars are {level}% confidence intervals.</span>
+  </figcaption>
+
+  <div class="ec-plot">
+    <div class="ec-head" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span class="ec-colhead">{t('chart.estimate')} [{level}% CI]</span>
+    </div>
+
+    {
+      grouped.map(({ group, rows }) => (
+        <div class="ec-group">
+          {group && (
+            <div class="ec-grouprow" aria-hidden="true">
+              <span class="ec-groupname">{group}</span>
+            </div>
+          )}
+          <ul class="ec-rows" role="list" aria-label={group || results.title}>
+            {rows.map((e) => (
+              <li
+                class="ec-row"
+                tabindex="0"
+                data-label={e.label}
+                data-group={group}
+                data-est={`${signed(e.estimate)} ${unit}`}
+                data-ci={`${level}% CI ${fmt(e.ciLow)} to ${fmt(e.ciHigh)}`}
+                data-control={e.controlMean !== undefined ? `${t('chart.controlMean')} ${fmt(e.controlMean)}${pct ? '%' : ''}` : ''}
+                data-n={e.n ? `n = ${e.n.toLocaleString('en-GB')}` : ''}
+              >
+                <span class="sr-only">
+                  {e.label}: {fmt(e.estimate)} {unitWord}, {level}% confidence interval {fmt(e.ciLow)} to {fmt(e.ciHigh)}
+                  {excludesZero(e) ? '.' : ', which includes zero.'}
+                </span>
+                <span class="ec-label" aria-hidden="true">{e.label}</span>
+                <span class="ec-track" aria-hidden="true">
+                  {ticks.map((v) => <i class="ec-grid" style={`left:${pos(v)}%`} />)}
+                  <i class="ec-zero" style={`left:${pos(0)}%`} />
+                  <i class="ec-strip" style={`left:${pos(e.ciLow)}%;width:${pos(e.ciHigh) - pos(e.ciLow)}%`} />
+                  <i class="ec-line" style={`left:${pos(e.ciLow)}%;width:${pos(e.ciHigh) - pos(e.ciLow)}%`} />
+                  <i class:list={['ec-point', !excludesZero(e) && 'ec-point--open']} style={`left:${pos(e.estimate)}%`} />
+                </span>
+                <span class="ec-value" aria-hidden="true">
+                  <strong>{fmt(e.estimate)}</strong> <span class="ec-ci">[{fmt(e.ciLow)}, {fmt(e.ciHigh)}]</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+
+    <div class="ec-axis" aria-hidden="true">
+      <span></span>
+      <span class="ec-ticks">
+        {
+          ticks.map((v) => (
+            <span class:list={['ec-tick', Math.round(v / step) % 2 !== 0 && 'ec-tick--minor']} style={`left:${pos(v)}%`}>
+              {fmt(v, tickDecimals)}
+            </span>
+          ))
+        }
+      </span>
+      <span></span>
+    </div>
+    <div class="ec-axis-title" aria-hidden="true">
+      <span></span><span>{pct ? `${results.unitLabel.split(',')[0]} (${unit})` : results.unitLabel.split(',')[0]}</span><span></span>
+    </div>
+
+    <div class="ec-tooltip" role="tooltip" hidden>
+      <strong class="ec-tt-value"></strong>
+      <span class="ec-tt-ci"></span>
+      <span class="ec-tt-extra"></span>
+      <span class="ec-tt-label"></span>
+    </div>
+  </div>
+
+  {
+    !compact && (
+      <>
+        <p class="ec-key" aria-hidden="true">
+          <span><i class="ec-key-dot" /> Interval excludes zero</span>
+          <span><i class="ec-key-dot ec-key-dot--open" /> Interval includes zero</span>
+        </p>
+        <p class="ec-note">{results.note}</p>
+        <details class="ec-table">
+          <summary>{t('chart.tableToggle')}</summary>
+          <div class="ec-table-scroll">
+            <table>
+              <caption class="sr-only">{results.title}</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Outcome</th>
+                  <th scope="col" class="num">{t('chart.estimate')} ({unit})</th>
+                  <th scope="col" class="num">{level}% CI</th>
+                  <th scope="col" class="num">{t('chart.controlMean')}</th>
+                  <th scope="col" class="num">n</th>
+                </tr>
+              </thead>
+              <tbody>
+                {effects.map((e) => (
+                  <tr>
+                    <th scope="row">{e.group ? `${e.group}: ` : ''}{e.label}</th>
+                    <td class="num">{fmt(e.estimate)}</td>
+                    <td class="num">{fmt(e.ciLow)} to {fmt(e.ciHigh)}</td>
+                    <td class="num">{e.controlMean !== undefined ? `${fmt(e.controlMean)}${pct ? '%' : ''}` : '·'}</td>
+                    <td class="num">{e.n ? e.n.toLocaleString('en-GB') : '·'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
+      </>
+    )
+  }
+</figure>
+
+<style>
+  .ec {
+    container-type: inline-size;
+    --ec-strip: color-mix(in oklab, var(--t-chart) 16%, transparent);
+    --ec-grid: color-mix(in oklab, var(--t-line) 70%, transparent);
+    --ec-row-h: 2.6rem;
+    --ec-inset: 0.75rem;
+    position: relative;
+    margin: 0;
+    font-family: var(--t-font-body);
+    color: var(--t-ink);
+  }
+  .ec--compact {
+    --ec-row-h: 2.2rem;
+  }
+  .ec-caption {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .ec-title {
+    font-weight: 650;
+    font-size: 1.05rem;
+    line-height: 1.35;
+  }
+  .ec--compact .ec-title {
+    font-size: 0.95rem;
+  }
+  .ec-sub {
+    font-size: 0.85rem;
+    color: var(--t-muted);
+  }
+  /*
+   * Layout: .ec-plot is one grid; every row is a subgrid of it, so the value
+   * column is sized once (to the widest value) and all rows stay aligned.
+   * The chart responds to its container, not the viewport, so it works in a
+   * sidebar, a card or full width alike.
+   */
+  .ec-plot {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(7rem, 15rem) minmax(0, 1fr) max-content;
+    column-gap: 1rem;
+  }
+  .ec-head,
+  .ec-group,
+  .ec-rows,
+  .ec-grouprow,
+  .ec-row,
+  .ec-axis,
+  .ec-axis-title {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    align-items: center;
+  }
+  .ec-colhead {
+    grid-column: 3;
+    white-space: nowrap;
+    font-family: var(--t-font-label);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--t-muted);
+    text-align: right;
+    padding-bottom: 0.35rem;
+  }
+  .ec-groupname {
+    font-family: var(--t-font-label);
+    font-size: 0.7rem;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--t-muted);
+    padding: 0.9rem 0 0.2rem 0.35rem;
+    grid-column: 1 / -1;
+  }
+  .ec-rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .ec-row {
+    min-height: var(--ec-row-h);
+    border-radius: 4px;
+    outline-offset: 1px;
+    cursor: default;
+  }
+  .ec-row:hover,
+  .ec-row:focus-visible {
+    background: color-mix(in oklab, var(--t-surface) 80%, transparent);
+  }
+  .ec-label {
+    font-size: 0.9rem;
+    line-height: 1.3;
+    padding: 0.35rem 0 0.35rem 0.35rem;
+  }
+  .ec-track {
+    position: relative;
+    display: block;
+    height: var(--ec-row-h);
+    margin-inline: var(--ec-inset);
+  }
+  .ec-track i {
+    position: absolute;
+    display: block;
+  }
+  .ec-grid,
+  .ec-zero {
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    transform: translateX(-0.5px);
+    background: var(--ec-grid);
+  }
+  .ec-zero {
+    background: color-mix(in oklab, var(--t-ink) 55%, transparent);
+  }
+  .ec-strip {
+    top: 50%;
+    height: 12px;
+    transform: translateY(-50%);
+    border-radius: 6px;
+    background: var(--ec-strip);
+  }
+  .ec-line {
+    top: 50%;
+    height: 2px;
+    transform: translateY(-50%);
+    border-radius: 2px;
+    background: var(--t-chart);
+  }
+  .ec-point {
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: var(--t-chart);
+    box-shadow: 0 0 0 2px var(--t-paper);
+  }
+  .ec-point--open {
+    background: var(--t-paper);
+    border: 2px solid var(--t-chart);
+  }
+  .ec-value {
+    text-align: right;
+    font-size: 0.88rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    padding-right: 0.35rem;
+  }
+  .ec-value strong {
+    font-weight: 650;
+  }
+  .ec-ci {
+    color: var(--t-muted);
+  }
+  .ec-axis {
+    border-top: 1px solid var(--ec-grid);
+    margin-top: 0.25rem;
+  }
+  .ec-ticks {
+    position: relative;
+    display: block;
+    height: 1.6rem;
+    margin-inline: var(--ec-inset);
+  }
+  .ec-tick {
+    position: absolute;
+    top: 0.35rem;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--t-muted);
+    white-space: nowrap;
+  }
+  .ec-axis-title > span:nth-child(2) {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--t-muted);
+  }
+  .ec-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: var(--t-muted);
+  }
+  .ec-key span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .ec-key-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--t-chart);
+  }
+  .ec-key-dot--open {
+    background: transparent;
+    border: 2px solid var(--t-chart);
+  }
+  .ec-note {
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    line-height: 1.55;
+    color: var(--t-muted);
+    max-width: 62rem;
+  }
+  .ec-table {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+  }
+  .ec-table summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--t-accent);
+    width: fit-content;
+  }
+  .ec-table-scroll {
+    overflow-x: auto;
+    margin-top: 0.75rem;
+  }
+  .ec-table table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 32rem;
+  }
+  .ec-table :is(th, td) {
+    padding: 0.45rem 0.6rem;
+    border-bottom: 1px solid var(--t-line);
+    text-align: left;
+    font-weight: 400;
+  }
+  .ec-table thead th {
+    font-weight: 600;
+    color: var(--t-muted);
+  }
+  .ec-table .num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .ec-tooltip {
+    position: absolute;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 11rem;
+    max-width: 16rem;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--t-line);
+    border-radius: 8px;
+    background: var(--t-paper);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+    font-size: 0.8rem;
+    line-height: 1.4;
+    pointer-events: none;
+  }
+  .ec-tooltip[hidden] {
+    display: none;
+  }
+  .ec-tt-value {
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  .ec-tt-ci,
+  .ec-tt-extra {
+    color: var(--t-ink);
+  }
+  .ec-tt-label {
+    margin-top: 0.2rem;
+    color: var(--t-muted);
+  }
+
+  /* Medium containers (cards, sidebars): a narrower label column. */
+  @container (max-width: 46rem) {
+    .ec-plot {
+      grid-template-columns: minmax(6rem, 10.5rem) minmax(0, 1fr) max-content;
+      column-gap: 0.75rem;
+    }
+  }
+
+  /* In medium containers the plot column is squeezed between label and value:
+     label every other tick (zero is always labelled). */
+  @container (30rem < width <= 46rem) {
+    .ec-tick--minor {
+      visibility: hidden;
+    }
+  }
+
+  /* Narrow containers and phones: label and value share a line, the interval gets the full width. */
+  @container (max-width: 30rem) {
+    .ec-plot,
+    .ec-group,
+    .ec-rows,
+    .ec-grouprow,
+    .ec-axis,
+    .ec-axis-title {
+      display: block;
+    }
+    .ec-head {
+      display: none;
+    }
+    .ec-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas: 'label value' 'track track';
+      padding-top: 0.35rem;
+    }
+    .ec-label {
+      grid-area: label;
+      padding: 0 0 0 0.35rem;
+    }
+    .ec-value {
+      grid-area: value;
+      font-size: 0.82rem;
+    }
+    .ec-row .ec-track {
+      grid-area: track;
+      height: 1.9rem;
+    }
+    .ec-axis > span:first-child,
+    .ec-axis > span:last-child,
+    .ec-axis-title > span:first-child,
+    .ec-axis-title > span:last-child {
+      display: none;
+    }
+    .ec-axis-title > span:nth-child(2) {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  // One tooltip per chart; follows the hovered or focused row. Uses textContent only.
+  document.querySelectorAll<HTMLElement>('[data-effect-chart]').forEach((fig) => {
+    const plot = fig.querySelector<HTMLElement>('.ec-plot')!;
+    const tip = fig.querySelector<HTMLElement>('.ec-tooltip')!;
+    const set = (sel: string, text: string) => {
+      const el = tip.querySelector<HTMLElement>(sel)!;
+      el.textContent = text;
+      el.hidden = !text;
+    };
+    const show = (row: HTMLElement, x?: number) => {
+      const d = row.dataset;
+      set('.ec-tt-value', d.est ?? '');
+      set('.ec-tt-ci', d.ci ?? '');
+      set('.ec-tt-extra', [d.control, d.n].filter(Boolean).join(' · '));
+      set('.ec-tt-label', d.group ? `${d.group}: ${d.label}` : (d.label ?? ''));
+      tip.hidden = false;
+      const box = plot.getBoundingClientRect();
+      const r = row.getBoundingClientRect();
+      const track = row.querySelector<HTMLElement>('.ec-track')!.getBoundingClientRect();
+      const left = Math.min(Math.max((x ?? track.left + track.width / 2) - box.left + 12, 0), box.width - tip.offsetWidth);
+      tip.style.left = `${left}px`;
+      tip.style.top = `${r.bottom - box.top + 4}px`;
+    };
+    const hide = () => (tip.hidden = true);
+    fig.querySelectorAll<HTMLElement>('.ec-row').forEach((row) => {
+      row.addEventListener('pointermove', (e) => show(row, e.clientX));
+      row.addEventListener('pointerleave', hide);
+      row.addEventListener('focus', () => show(row));
+      row.addEventListener('blur', hide);
+    });
+  });
+</script>

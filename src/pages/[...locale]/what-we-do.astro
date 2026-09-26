@@ -1,0 +1,90 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { localeParams } from '../../i18n/utils';
+import { useTranslations } from '../../i18n/ui';
+import type { Locale } from '../../i18n/config';
+import { services, process, standards } from '../../data/services';
+import { methods } from '../../data/site';
+
+export const getStaticPaths = localeParams;
+const { lang } = Astro.props as { lang: Locale };
+const t = useTranslations(lang);
+---
+
+<Base title={t('nav.whatWeDo')} description="Randomised trials, quasi-experimental evaluation, survey experiments and behavioural design for European public policy." lang={lang} path="/what-we-do/">
+  <PageHero
+    eyebrow={t('nav.whatWeDo')}
+    title="We find out whether a policy worked, for whom, and by how much."
+    intro="Governments and funders come to us when they need an answer that will hold up in front of a minister, an auditor or a journal referee. We bring the methods of academic economics and political science, and deliver on a policy timetable."
+  />
+
+  <section class="wrap py-14 md:py-20" aria-labelledby="services-heading">
+    <h2 id="services-heading" class="sr-only">Services</h2>
+    <div class="grid gap-px overflow-hidden rounded-card border border-line bg-line md:grid-cols-2 lg:grid-cols-3 theme-b:gap-5 theme-b:border-0 theme-b:bg-transparent">
+      {
+        services.map((s, i) => (
+          <article id={s.id} class="flex flex-col bg-paper p-7 md:p-8 theme-b:rounded-card theme-b:bg-surface">
+            <p class="eyebrow text-muted">{String(i + 1).padStart(2, '0')}</p>
+            <h3 class="display mt-4 text-2xl text-ink">{s.title}</h3>
+            <p class="mt-4 leading-relaxed text-ink/85">{s.body}</p>
+            <ul class="mt-6 space-y-1.5 border-t border-line pt-5 text-sm text-muted">
+              {s.methods.map((m) => <li class="flex gap-2"><span aria-hidden="true" class="text-accent">·</span>{m}</li>)}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="border-y border-line bg-surface/70 theme-b:border-0 theme-b:bg-transparent" aria-labelledby="process-heading">
+    <div class="wrap py-14 md:py-20">
+      <div class="grid gap-10 lg:grid-cols-12">
+        <div class="lg:col-span-4">
+          <p class="eyebrow text-accent">How an engagement works</p>
+          <h2 id="process-heading" class="display mt-4 text-3xl text-ink md:text-4xl">From question to decision</h2>
+          <p class="mt-5 leading-relaxed text-muted">Timelines depend on the design. A letter trial can report in three months; an evaluation of a national rollout may run for two years with interim findings along the way.</p>
+        </div>
+        <ol class="grid gap-6 sm:grid-cols-2 lg:col-span-8">
+          {
+            process.map((p) => (
+              <li class="border-t-2 border-ink pt-4 theme-b:rounded-card theme-b:border-0 theme-b:bg-surface theme-b:p-6">
+                <p class="font-label text-sm font-semibold text-accent">{p.step}</p>
+                <h3 class="mt-2 text-lg font-semibold text-ink">{p.title}</h3>
+                <p class="mt-2 text-[0.95rem] leading-relaxed text-muted">{p.body}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap py-14 md:py-20" aria-labelledby="standards-heading">
+    <div class="grid gap-10 lg:grid-cols-12">
+      <div class="lg:col-span-4">
+        <p class="eyebrow text-accent">Our standards</p>
+        <h2 id="standards-heading" class="display mt-4 text-3xl text-ink md:text-4xl">Academic rules, applied to policy work</h2>
+      </div>
+      <dl class="grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:col-span-8">
+        {
+          standards.map((s) => (
+            <div>
+              <dt class="text-lg font-semibold text-ink">{s.title}</dt>
+              <dd class="mt-2 leading-relaxed text-muted">{s.body}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+    <div class="mt-14 border-t border-line pt-8">
+      <h3 class="eyebrow text-muted">Methods we use</h3>
+      <ul class="mt-5 flex flex-wrap gap-2">
+        {methods.map((m) => <li class="rounded-control border border-line px-3 py-1.5 text-sm text-ink">{m}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand lang={lang} />
+</Base>

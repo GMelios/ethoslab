@@ -1,0 +1,309 @@
+---
+/**
+ * Narrative "What we believe", direction B (warm and illustrated).
+ * A manifesto in four convictions; each is set against the comfortable view it
+ * rejects, drawn, and then backed by the work. Copy: src/data/narratives/beliefs.ts.
+ */
+import Base from '../../../layouts/Base.astro';
+import Illustration from '../../illustrations/Illustration.astro';
+import EffectSizeChart from '../../EffectSizeChart.astro';
+import PartnerGrid from '../../PartnerGrid.astro';
+import BeliefIllustration from './BeliefIllustration.astro';
+import IntervalGlyph from './IntervalGlyph.astro';
+import BHead from './BHead.astro';
+import BBridge from './BBridge.astro';
+import { getBeliefsStory } from '../../../data/narratives/beliefs';
+import type { Locale } from '../../../i18n/config';
+
+interface Props {
+  lang: Locale;
+  homeHref?: string;
+}
+const { lang, homeHref } = Astro.props;
+const s = await getBeliefsStory(lang);
+const { labels, hook, invite } = s;
+const [bI, bII, bIII, bIV] = s.beliefs;
+const pI = s.intentions;
+const pII = s.nulls;
+const pIII = s.uncertainty;
+const pIV = s.decisions;
+const badge = labels.illustrative;
+/** Keep hyphenated compounds ("evidence-based") on one line in the big headline. */
+const keepHyphenated = (text: string) => text.split(/(\S+-\S+)/).filter(Boolean);
+---
+
+<Base title="Ethos Lab" description={s.meta.description} lang={lang} theme="b" path="/" homeHref={homeHref}>
+  <!-- Hook -->
+  <section class="wrap grid items-center gap-10 pt-10 pb-14 md:pt-16 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-8 lg:pb-20">
+    <div>
+      <p class="eyebrow text-accent">{hook.eyebrow}</p>
+      <h1 class="display mt-4 text-[2.7rem] text-ink sm:text-6xl lg:text-[4.3rem]">
+        {keepHyphenated(hook.title).map((part) => (/\S-\S/.test(part) ? <span class="whitespace-nowrap">{part}</span> : part))}
+        {' '}<span class="block text-accent">{hook.titleAccent}</span>
+      </h1>
+      <p class="mt-7 max-w-xl text-lg leading-relaxed text-ink/80">{hook.lede}</p>
+      <p class="mt-5 max-w-xl text-lg leading-relaxed font-bold text-ink">{hook.stakes}</p>
+      <div class="mt-9 flex flex-wrap items-center gap-4">
+        <a href={hook.primary.href} class="btn btn-primary !px-6">{hook.primary.label}</a>
+        <a href={hook.secondary.href} class="inline-flex items-center gap-2 font-semibold text-ink underline decoration-highlight decoration-2 underline-offset-[6px] hover:decoration-accent">
+          {hook.secondary.label} <span aria-hidden="true">↓</span>
+        </a>
+      </div>
+      {
+        hook.announcement && (
+          <a href={hook.announcement.href} rel="noopener" class="group mt-10 flex max-w-xl items-start gap-3 rounded-[1.1rem] bg-surface px-4 py-3 text-sm leading-snug text-ink/80 hover:text-ink">
+            <span class="mt-px shrink-0 rounded-full bg-accent px-2.5 py-0.5 text-xs font-bold text-on-accent">{hook.announcement.tag}</span>
+            <span class="min-w-0 flex-1">{hook.announcement.text}</span>
+            <span aria-hidden="true" class="shrink-0 transition-transform group-hover:translate-x-0.5">↗</span>
+          </a>
+        )
+      }
+    </div>
+    <BeliefIllustration name="manifesto" class="mx-auto w-full max-w-[16rem] sm:max-w-[30rem]" />
+  </section>
+
+  <!-- The argument in brief -->
+  <nav class="wrap pb-16 md:pb-24" aria-labelledby="toc-title">
+    <div class="flex flex-wrap items-center gap-3">
+      <h2 id="toc-title" class="text-lg font-extrabold text-ink">{hook.tocTitle}</h2>
+      <span class="sample-badge">{badge}</span>
+    </div>
+    <ol class="mt-6 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+      {
+        hook.toc.map((t) => (
+          <li>
+            <a href={`#belief-${t.id}`} class="group grid h-full grid-cols-[3.25rem_minmax(0,1fr)] gap-x-3 rounded-card bg-surface p-5 transition-transform hover:-translate-y-1 sm:flex sm:flex-col sm:p-6">
+              <span class="flex items-start justify-between gap-4">
+                <span aria-hidden="true" class="numeral text-5xl leading-none font-extrabold text-accent">{t.numeral}</span>
+                <span aria-hidden="true" class="mt-2 hidden text-xl text-ink transition-transform group-hover:translate-y-0.5 sm:inline">↓</span>
+              </span>
+              <span class="flex flex-col sm:flex-1">
+                <span class="text-lg leading-snug font-bold text-ink sm:mt-5">{t.title}</span>
+                <span class="mt-2 block text-sm text-ink/70 sm:mt-auto sm:pt-5">
+                  {t.proof}
+                  {t.metric && <strong class="mt-0.5 block text-base font-extrabold text-ink tabular-nums">{t.metric}</strong>}
+                </span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </nav>
+
+  <!-- I. Good intentions are not evidence -->
+  <section id={`belief-${bI.id}`} class="wrap scroll-mt-6 pt-4 pb-8" aria-labelledby={`belief-${bI.id}-title`}>
+    <BHead belief={bI} labels={labels} />
+    <div class="mt-14 grid overflow-hidden rounded-card bg-accent text-on-accent lg:grid-cols-12">
+      <div class="flex flex-col p-8 md:p-12 lg:col-span-5">
+        <p class="eyebrow flex flex-wrap items-center gap-3 text-on-accent/70">
+          {labels.proof}: {pI.kicker}
+          <span class="sample-badge !border-on-accent/50 !text-on-accent/80">{badge}</span>
+        </p>
+        <h3 class="mt-6 text-2xl leading-snug font-extrabold">{keepHyphenated(pI.heading).map((part) => (/\S-\S/.test(part) ? <span class="whitespace-nowrap">{part}</span> : part))}</h3>
+        <p class="mt-3 text-sm text-on-accent/70">{pI.meta}</p>
+        <p class="mt-8 text-lg leading-relaxed text-on-accent/90">{pI.takeaway}</p>
+        <a href={pI.href} class="btn mt-8 self-start bg-on-accent !px-6 text-accent hover:bg-paper">{labels.readCase}</a>
+      </div>
+      <div class="m-3 rounded-[calc(var(--t-radius)-10px)] bg-paper p-5 text-ink md:p-10 lg:col-span-7 lg:m-4 lg:rounded-[calc(var(--t-radius)-8px)]">
+        <dl class="grid grid-cols-2 gap-3">
+          {
+            pI.stats.map((st) => (
+              <div class="flex flex-col rounded-[1.1rem] bg-surface p-4">
+                <dt class="order-2 mt-1 text-sm leading-snug font-semibold text-ink/80">{st.label}</dt>
+                <dd class="order-1 text-3xl font-extrabold tracking-tight text-ink tabular-nums">{st.value}</dd>
+                {st.note && <dd class="order-3 mt-1 text-xs text-muted">{st.note}</dd>}
+              </div>
+            ))
+          }
+        </dl>
+        <div class="mt-8">
+          <EffectSizeChart results={pI.entry.data.results} lang={lang} groups={pI.chartGroups} compact />
+        </div>
+      </div>
+    </div>
+  </section>
+  <BBridge text={bI.bridge} />
+
+  <!-- II. A null result is a result -->
+  <section id={`belief-${bII.id}`} class="scroll-mt-6 bg-surface theme-b:mx-3 theme-b:rounded-card" aria-labelledby={`belief-${bII.id}-title`}>
+    <div class="wrap py-16 md:py-24">
+      <BHead belief={bII} labels={labels} onSurface reverse />
+      <div class="mt-14 grid gap-5 lg:grid-cols-12">
+        <article class="flex flex-col rounded-card bg-paper p-6 md:p-9 lg:col-span-7">
+          <p class="eyebrow flex flex-wrap items-center gap-3 text-accent">
+            {labels.proof}: {pII.mayor.kicker}
+            <span class="sample-badge">{badge}</span>
+          </p>
+          <h3 class="mt-4 text-2xl leading-snug font-extrabold text-ink">{pII.mayor.heading}</h3>
+          <p class="mt-3 leading-relaxed text-ink/80">{pII.mayor.text}</p>
+          <div class="mt-7">
+            <EffectSizeChart results={pII.mayor.entry.data.results} lang={lang} groups={pII.mayor.chartGroups} compact />
+          </div>
+          <p class="mt-7 text-lg leading-snug font-extrabold text-accent">{pII.mayor.takeaway}</p>
+          <a href={pII.mayor.href} class="mt-5 inline-flex items-center gap-2 self-start font-semibold text-ink underline decoration-highlight decoration-2 underline-offset-[6px] hover:decoration-accent">
+            {labels.readCase} <span aria-hidden="true">→</span>
+          </a>
+        </article>
+        <article class="flex flex-col rounded-card bg-paper p-6 md:p-9 lg:col-span-5">
+          <p class="eyebrow flex flex-wrap items-center gap-3 text-accent">
+            {labels.proof}: {pII.helpline.kicker}
+            <span class="sample-badge">{badge}</span>
+          </p>
+          <h3 class="mt-4 text-2xl leading-snug font-extrabold text-ink">{pII.helpline.heading}</h3>
+          <div class="mt-6 rounded-[1.1rem] bg-surface p-5">
+            <p class="text-sm font-semibold text-ink/80">{pII.helpline.statLabel}</p>
+            <p class="mt-1 flex flex-wrap items-baseline gap-x-3">
+              <span class="text-4xl font-extrabold tracking-tight text-ink tabular-nums">{pII.helpline.stat}</span>
+              <span class="text-sm text-muted tabular-nums">{pII.helpline.statNote}</span>
+            </p>
+            <IntervalGlyph class="mt-4" estimate={pII.helpline.effect.estimate} ciLow={pII.helpline.effect.ciLow} ciHigh={pII.helpline.effect.ciHigh} domain={pII.helpline.axis.domain} ticks={pII.helpline.axis.ticks} />
+            <p class="mt-1 text-center text-xs text-muted">{pII.helpline.unitLabel}</p>
+          </div>
+          <p class="mt-6 leading-relaxed text-ink/80">{pII.helpline.text}</p>
+          <p class="mt-5 text-lg leading-snug font-extrabold text-accent">{pII.helpline.takeaway}</p>
+          <a href={pII.helpline.href} class="mt-auto inline-flex items-center gap-2 self-start pt-5 font-semibold text-ink underline decoration-highlight decoration-2 underline-offset-[6px] hover:decoration-accent">
+            {labels.readCase} <span aria-hidden="true">→</span>
+          </a>
+        </article>
+        {
+          pII.paper && (
+            <article class="grid items-center gap-6 rounded-card bg-accent-soft p-6 md:grid-cols-[auto_minmax(0,1fr)] md:gap-10 md:p-9 lg:col-span-12">
+              <Illustration name="explain" class="hidden h-28 w-auto md:block" />
+              <div>
+                <p class="eyebrow text-accent">{pII.paper.kicker}</p>
+                <h3 class="mt-3 text-xl leading-snug font-extrabold text-ink md:text-2xl">{pII.paper.heading}</h3>
+                <p class="mt-2 text-sm text-muted">{pII.paper.meta}</p>
+                <p class="mt-4 max-w-3xl leading-relaxed text-ink/80">{pII.paper.text}</p>
+                <a href={pII.paper.href} rel="noopener" class="mt-5 inline-flex items-center gap-2 font-semibold text-ink underline decoration-highlight decoration-2 underline-offset-[6px] hover:decoration-accent">
+                  {pII.paper.link} <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+            </article>
+          )
+        }
+      </div>
+    </div>
+  </section>
+  <BBridge text={bII.bridge} />
+
+  <!-- III. Show the uncertainty -->
+  <section id={`belief-${bIII.id}`} class="wrap scroll-mt-6 pt-4 pb-8" aria-labelledby={`belief-${bIII.id}-title`}>
+    <BHead belief={bIII} labels={labels} />
+    <article class="mt-14 rounded-card bg-surface p-6 md:p-10">
+      <div class="grid gap-6 lg:grid-cols-12 lg:items-end">
+        <div class="lg:col-span-7">
+          <p class="eyebrow flex flex-wrap items-center gap-3 text-accent">
+            {labels.proof}: {pIII.kicker}
+            <span class="sample-badge">{badge}</span>
+          </p>
+          <h3 class="mt-4 text-2xl leading-snug font-extrabold text-ink">{keepHyphenated(pIII.heading).map((part) => (/\S-\S/.test(part) ? <span class="whitespace-nowrap">{part}</span> : part))}</h3>
+          <p class="mt-3 text-sm text-muted">{pIII.meta}</p>
+        </div>
+        <div class="rounded-[1.1rem] bg-accent p-5 text-on-accent lg:col-span-5">
+          <p class="text-5xl font-extrabold tracking-tight tabular-nums">{pIII.big}</p>
+          <p class="mt-2 leading-snug text-on-accent/85">{pIII.bigLabel}</p>
+        </div>
+      </div>
+      <div class="mt-8 rounded-[calc(var(--t-radius)-8px)] bg-paper p-5 md:p-8">
+        <EffectSizeChart results={pIII.entry.data.results} lang={lang} />
+      </div>
+      <ol class="mt-8 grid gap-4 md:grid-cols-2">
+        {
+          pIII.notes.map((n, i) => (
+            <li class="flex gap-4 rounded-[1.1rem] bg-paper p-5">
+              <span aria-hidden="true" class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-highlight font-extrabold text-ink">{i + 1}</span>
+              <span>
+                <span class="block font-extrabold text-ink tabular-nums">{n.title}</span>
+                <span class="mt-1 block leading-relaxed text-ink/75">{n.text}</span>
+              </span>
+            </li>
+          ))
+        }
+      </ol>
+      <a href={pIII.href} class="mt-8 inline-flex items-center gap-2 font-semibold text-ink underline decoration-highlight decoration-2 underline-offset-[6px] hover:decoration-accent">
+        {labels.readCase} <span aria-hidden="true">→</span>
+      </a>
+    </article>
+  </section>
+  <BBridge text={bIII.bridge} />
+
+  <!-- IV. Evidence should change decisions -->
+  <section id={`belief-${bIV.id}`} class="scroll-mt-6 bg-surface theme-b:mx-3 theme-b:rounded-card" aria-labelledby={`belief-${bIV.id}-title`}>
+    <div class="wrap py-16 md:py-24">
+      <BHead belief={bIV} labels={labels} onSurface reverse />
+      <div class="mt-14 flex flex-wrap items-center gap-3">
+        <h3 class="text-2xl font-extrabold text-ink">{pIV.heading}</h3>
+        <span class="sample-badge">{badge}</span>
+      </div>
+      <ol class="mt-6 grid gap-5 md:grid-cols-3">
+        {
+          pIV.cases.map((c) => (
+            <li class="flex flex-col rounded-card bg-paper p-6 md:p-7">
+              <a href={`#belief-${c.from.id}`} class="inline-flex items-center gap-2 self-start rounded-full bg-accent-soft py-1 pr-3 pl-1 text-xs leading-tight font-bold text-accent hover:bg-accent hover:text-on-accent">
+                <span aria-hidden="true" class="numeral flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full bg-accent px-1.5 text-[0.85rem] font-extrabold text-on-accent">{c.from.numeral}</span>
+                <span><span class="sr-only">{labels.from} {c.from.index}: </span>{c.from.title}</span>
+              </a>
+              <h4 class="mt-5 text-xl leading-snug font-extrabold text-ink">{c.name}</h4>
+              <p class="mt-3 leading-relaxed text-ink/80">{c.text}</p>
+              <a href={c.href} class="mt-auto inline-flex items-center gap-2 self-start pt-6 font-semibold text-ink underline decoration-highlight decoration-2 underline-offset-[6px] hover:decoration-accent">
+                {labels.readCase} <span aria-hidden="true">→</span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+      {
+        pIV.tool && (
+          <div class="mt-5 grid items-center gap-6 rounded-card bg-paper p-6 md:grid-cols-[minmax(0,1fr)_auto] md:p-9">
+            <div>
+              <p class="eyebrow flex flex-wrap items-center gap-3 text-accent">
+                {pIV.tool.kicker}
+                {pIV.tool.placeholder && <span class="sample-badge">{labels.draft}</span>}
+              </p>
+              <h3 class="mt-3 text-2xl font-extrabold text-ink">{pIV.tool.heading}</h3>
+              <p class="mt-3 max-w-3xl leading-relaxed text-ink/80">{pIV.tool.text}</p>
+              <a href={pIV.tool.href} class="mt-5 inline-flex items-center gap-2 font-semibold text-ink underline decoration-highlight decoration-2 underline-offset-[6px] hover:decoration-accent">
+                {pIV.tool.link} <span aria-hidden="true">→</span>
+              </a>
+            </div>
+            <Illustration name="network" class="hidden h-32 w-auto md:block" />
+          </div>
+        )
+      }
+    </div>
+  </section>
+  <BBridge text={bIV.bridge} />
+
+  <!-- Invitation -->
+  <section class="wrap pb-16 md:pb-20" aria-labelledby="invite-title">
+    <div class="grid items-center gap-8 rounded-card bg-surface px-6 py-12 text-ink sm:px-8 md:grid-cols-[1fr_auto] md:px-14 md:py-16">
+      <div>
+        <p class="eyebrow text-accent">{invite.eyebrow}</p>
+        <h2 id="invite-title" class="display mt-4 text-4xl text-ink md:text-6xl">{invite.title}</h2>
+        <p class="mt-5 max-w-xl text-lg leading-relaxed text-ink/80">{invite.body}</p>
+        <div class="mt-8 flex flex-wrap items-center gap-4">
+          <a href={invite.primary.href} class="btn btn-primary !px-6">{invite.primary.label}</a>
+          <a href={invite.secondary.href} class="inline-flex items-center gap-2 font-semibold text-ink underline decoration-highlight decoration-2 underline-offset-[6px] hover:decoration-accent">
+            {invite.secondary.label} <span aria-hidden="true">→</span>
+          </a>
+        </div>
+        <p class="mt-8 font-semibold text-accent">{invite.aside}</p>
+      </div>
+      <div class="mx-auto hidden h-72 w-72 items-center justify-center rounded-full bg-paper md:flex">
+        <Illustration name="plane" class="w-[72%]" />
+      </div>
+    </div>
+    <div class="mt-12">
+      <h2 class="text-center text-sm font-bold text-muted">{invite.partners}</h2>
+      <PartnerGrid variant="strip" class="mt-6" />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .numeral {
+    font-family: 'Alegreya Variable', Georgia, serif;
+    letter-spacing: -0.02em;
+  }
+</style>

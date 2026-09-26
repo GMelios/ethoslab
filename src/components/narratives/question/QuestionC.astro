@@ -1,0 +1,428 @@
+---
+/**
+ * "Follow one question", direction C: a data story following the real MultiPoD
+ * language experiment. A case file travels beside the text and fills up chapter
+ * by chapter; the charts are held back until the findings. Every string comes
+ * from src/data/narratives/question.ts; this file only decides layout and visuals.
+ */
+import Base from '../../../layouts/Base.astro';
+import EffectSizeChart from '../../EffectSizeChart.astro';
+import PartnerGrid from '../../PartnerGrid.astro';
+import ChapterNav from './ChapterNav.astro';
+import StoryMotion from './StoryMotion.astro';
+import CaseFile from './CaseFile.astro';
+import StudyFlow from './StudyFlow.astro';
+import { getQuestionStory } from '../../../data/narratives/question';
+import type { Locale } from '../../../i18n/config';
+
+interface Props {
+  lang: Locale;
+  homeHref?: string;
+}
+const { lang, homeHref } = Astro.props;
+const s = await getQuestionStory(lang);
+const { hero, question: c1, design: c2, field: c3, findings: c4, decision: c5, turn, invite, ui } = s;
+const second = turn.second;
+
+const words = hero.title.split(' ');
+const titleHead = words.slice(0, -2).join(' ');
+const titleTail = words.slice(-2).join(' ');
+const pad = (n: number) => String(n).padStart(2, '0');
+const path = (n: number) => ui.caseFile(n, ui.fileSlugs[n - 1]);
+// What the case file already holds when each chapter opens.
+const before = (n: number) => s.chapters.slice(0, n - 1).flatMap((c) => c.facts);
+const file = { badge: ui.provisional, freshLabel: ui.newHere, carriedLabel: ui.soFar };
+---
+
+<Base title={s.meta.title} description={s.meta.description} lang={lang} theme="c" path="/" homeHref={homeHref}>
+  <a slot="before-header" href={s.announcement.href} rel="noopener" class="block bg-inverse text-on-inverse">
+    <span class="wrap flex items-center justify-center gap-3 py-2.5 text-center text-sm">
+      <span class="rounded bg-on-inverse px-1.5 py-0.5 font-label text-[0.65rem] font-bold tracking-wider text-inverse uppercase">{s.announcement.tag}</span>
+      <span class="line-clamp-2 sm:truncate">{s.announcement.text}</span>
+      <span aria-hidden="true">→</span>
+    </span>
+  </a>
+  <StoryMotion />
+
+  <!-- Hook -->
+  <section class="overflow-hidden">
+    <div class="wrap grid grid-cols-[minmax(0,1fr)] items-center gap-12 pt-12 pb-14 md:pt-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:pb-20">
+      <div>
+        <p class="eyebrow text-accent">{hero.eyebrow}</p>
+        <h1 class="display mt-5 text-[2.5rem] text-ink sm:text-[3.4rem] lg:text-[3.4rem]">
+          {titleHead} <span class="text-accent">{titleTail}</span>
+        </h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-muted">{hero.lede}</p>
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <a href={hero.primary.href} class="btn btn-primary">{hero.primary.label} <span aria-hidden="true">↓</span></a>
+          <a href={hero.secondary.href} class="btn text-ink hover:text-accent">{hero.secondary.label} <span aria-hidden="true">→</span></a>
+        </div>
+        <p class="mt-7 flex max-w-xl items-start gap-2 text-xs leading-relaxed text-muted">
+          <span class="sample-badge mt-0.5">{ui.provisional}</span>
+          <span>{hero.note}</span>
+        </p>
+      </div>
+
+      <div class="relative hidden lg:block">
+        <div class="absolute -inset-x-10 -inset-y-8 -z-10 rounded-[2rem] bg-[radial-gradient(60%_60%_at_60%_40%,var(--t-accent-soft),transparent)]" aria-hidden="true"></div>
+        <CaseFile path={path(1)} {...file} freshLabel="" fresh={hero.stats}>
+          <p class="mt-6 font-label text-[0.62rem] tracking-wide text-muted uppercase">{hero.contentsLabel}</p>
+          <ol class="mt-2 divide-y divide-line border-y border-line" role="list">
+            {
+              s.chapters.map((c) => (
+                <li>
+                  <a href={`#${c.id}`} class="group grid grid-cols-[2rem_minmax(0,1fr)_auto] items-baseline gap-3 py-2.5 text-sm">
+                    <span class="font-label text-xs text-accent">{pad(c.n)}</span>
+                    <span class="min-w-0">
+                      <span class="font-semibold text-ink group-hover:text-accent">{c.short}</span>
+                      <span class="hidden text-muted sm:inline"> · {c.title}</span>
+                    </span>
+                    <span aria-hidden="true" class="text-muted group-hover:text-accent">›</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ol>
+        </CaseFile>
+      </div>
+    </div>
+  </section>
+
+  <!-- The story -->
+  <div class="border-t border-line">
+    <div class="sticky top-0 z-20 border-b border-line bg-paper/90 backdrop-blur">
+      <div class="wrap">
+        <ChapterNav chapters={s.chapters} label={ui.chapterNav} variant="bar" />
+      </div>
+    </div>
+
+    <!-- Chapter 1 -->
+    <section id={c1.id} data-chapter aria-labelledby={`${c1.id}-title`} class="chapter border-b border-line">
+      <div class="wrap grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-16">
+        <div>
+          <p class="eyebrow text-muted"><span class="text-accent">{c1.kicker}</span> / {c1.short}</p>
+          <h2 id={`${c1.id}-title`} class="display mt-4 text-3xl text-ink md:text-[2.5rem]">{c1.title}</h2>
+          <div class="mt-6 space-y-5 text-lg leading-relaxed text-muted">{c1.body.map((p) => <p>{p}</p>)}</div>
+          <p class="display mt-8 border-l-4 border-accent pl-5 text-2xl !leading-snug text-ink md:text-[1.75rem]">{c1.pull}</p>
+          <p class="bridge">{c1.bridge}</p>
+        </div>
+        <div class="self-start lg:sticky lg:top-24">
+          <CaseFile path={path(1)} {...file} fresh={c1.facts}>
+            <h3 class="mt-6 font-label text-[0.62rem] font-normal tracking-wide text-muted uppercase">{c1.worriesTitle}</h3>
+            <ol class="mt-2 divide-y divide-line border-y border-line" role="list">
+              {
+                c1.worries.map((w, i) => (
+                  <li class="grid grid-cols-[2rem_minmax(0,1fr)] gap-2 py-3" data-reveal>
+                    <span class="font-label text-sm font-semibold text-accent">{pad(i + 1)}</span>
+                    <span class="font-medium text-ink">{w}</span>
+                  </li>
+                ))
+              }
+            </ol>
+          </CaseFile>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 2 -->
+    <section id={c2.id} data-chapter aria-labelledby={`${c2.id}-title`} class="chapter border-b border-line">
+      <div class="wrap grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-16">
+        <div>
+          <p class="eyebrow text-muted"><span class="text-accent">{c2.kicker}</span> / {c2.short}</p>
+          <h2 id={`${c2.id}-title`} class="display mt-4 text-3xl text-ink md:text-[2.5rem]">{c2.title}</h2>
+          <div class="mt-6 space-y-5 text-lg leading-relaxed text-muted">{c2.body.map((p) => <p>{p}</p>)}</div>
+          <div class="mt-8 rounded-card border border-line bg-surface/70 p-6 md:p-7" data-reveal>
+            <h3 class="text-xl font-semibold text-ink">{c2.openBook.title}</h3>
+            <p class="mt-2 leading-relaxed text-muted">{c2.openBook.body}</p>
+          </div>
+          <p class="bridge">{c2.bridge}</p>
+        </div>
+        <div class="self-start lg:sticky lg:top-24">
+          <CaseFile path={path(2)} {...file} carried={before(2)} fresh={c2.facts.slice(2)}>
+            <StudyFlow flow={c2.flow} arms={c2.arms} />
+            <h3 class="mt-6 font-label text-[0.62rem] font-normal tracking-wide text-muted uppercase">{c2.measuresTitle}</h3>
+            <ol class="mt-2 space-y-1.5" role="list">
+              {
+                c2.measures.map((m, i) => (
+                  <li class="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-control border border-line bg-paper px-3 py-2 text-sm">
+                    <span class="font-label text-xs font-semibold text-accent">{pad(i + 1)}</span>
+                    <span class="font-medium text-ink">{m.label}</span>
+                    {m.tag && <span class="ml-auto rounded bg-accent px-1.5 py-0.5 font-label text-[0.62rem] font-bold tracking-wider text-on-accent uppercase">{m.tag}</span>}
+                  </li>
+                ))
+              }
+            </ol>
+          </CaseFile>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 3 -->
+    <section id={c3.id} data-chapter aria-labelledby={`${c3.id}-title`} class="chapter border-b border-line">
+      <div class="wrap grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-16">
+        <div>
+          <p class="eyebrow text-muted"><span class="text-accent">{c3.kicker}</span> / {c3.short}</p>
+          <h2 id={`${c3.id}-title`} class="display mt-4 text-3xl text-ink md:text-[2.5rem]">{c3.title}</h2>
+          <div class="mt-6 space-y-5 text-lg leading-relaxed text-muted">{c3.body.map((p) => <p>{p}</p>)}</div>
+          <p class="bridge">{c3.bridge}</p>
+        </div>
+        <div class="self-start lg:sticky lg:top-24">
+          <CaseFile path={path(3)} {...file} carried={before(3)} fresh={c3.facts}>
+            <h3 class="mt-6 font-label text-[0.62rem] font-normal tracking-wide text-muted uppercase">{c3.steps.title}</h3>
+            <ol class="mt-2 divide-y divide-line border-y border-line" role="list" data-reveal>
+              {
+                c3.steps.rows.map((r, i) => (
+                  <li class="grid grid-cols-[2rem_6rem_minmax(0,1fr)] items-baseline gap-2 py-2.5 text-sm">
+                    <span class="font-label text-xs text-accent">{pad(i + 1)}</span>
+                    <span class="font-semibold text-ink">{r.label}</span>
+                    <span class="text-muted">{r.detail}</span>
+                  </li>
+                ))
+              }
+            </ol>
+          </CaseFile>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 4 -->
+    <section id={c4.id} data-chapter aria-labelledby={`${c4.id}-title`} class="chapter border-b border-line bg-surface/60">
+      <div class="wrap">
+        <p class="eyebrow text-muted"><span class="text-accent">{c4.kicker}</span> / {c4.short}</p>
+        <h2 id={`${c4.id}-title`} class="display mt-4 text-3xl text-ink md:text-[2.5rem]">{c4.title}</h2>
+        <p class="mt-4 text-lg text-muted">{c4.body[0]}</p>
+        <ol class="mt-8 grid grid-cols-[minmax(0,1fr)] gap-px overflow-hidden rounded-card border border-line bg-line lg:grid-cols-3" role="list">
+          {
+            c4.answers.map((a, i) => (
+              <li class="flex flex-col bg-paper p-5 md:p-7" data-reveal>
+                <p class="flex gap-3 text-sm text-muted">
+                  <span class="font-label font-semibold text-accent">{pad(i + 1)}</span>
+                  <span><span class="sr-only">{c4.answerLabels.worry}: </span>{a.worry}</span>
+                </p>
+                <h3 class="mt-4 text-xl font-semibold text-ink"><span class="sr-only">{c4.answerLabels.answer}: </span>{a.verdict}</h3>
+                <p class="mt-3 font-display text-4xl font-semibold tracking-tight text-accent md:text-5xl">{a.stat.value}</p>
+                <p class="mt-1 font-label text-[0.68rem] leading-snug text-muted uppercase">{a.stat.label}</p>
+                <p class="mt-4 text-[0.95rem] leading-relaxed text-muted">{a.body}</p>
+              </li>
+            ))
+          }
+        </ol>
+        <p class="mt-6 max-w-3xl leading-relaxed text-muted">{c4.countries}</p>
+
+        <div class="mt-8" data-reveal-chart>
+          <CaseFile path={path(4)} {...file} carried={before(4)}>
+            <div class="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,16rem)_minmax(0,1fr)] lg:gap-10">
+              <div>
+                <p class="font-label text-[0.62rem] tracking-wide text-accent uppercase">{ui.newHere}</p>
+                <h3 class="mt-2 text-lg font-semibold text-ink">{c4.chartTitle}</h3>
+                <dl class="mt-5 grid grid-cols-2 gap-2.5 lg:grid-cols-1">
+                  <div class="flex flex-col rounded-control bg-surface p-3.5">
+                    <dt class="order-2 mt-1 text-[0.8rem] leading-snug text-muted">{c4.headline.baseLabel}</dt>
+                    <dd class="order-1 text-2xl font-semibold text-ink">{c4.headline.base}</dd>
+                  </div>
+                  <div class="flex flex-col rounded-control bg-accent-soft p-3.5">
+                    <dt class="order-2 mt-1 text-[0.8rem] leading-snug text-muted">{c4.headline.effectLabel}</dt>
+                    <dd class="order-1 flex flex-wrap items-center gap-2 text-2xl font-semibold text-accent">
+                      {c4.headline.effect}
+                      <span class="rounded bg-accent px-1.5 py-0.5 font-label text-[0.68rem] font-bold text-on-accent">{c4.headline.change}</span>
+                    </dd>
+                  </div>
+                </dl>
+                <a href={s.case.href} class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-ink hover:text-accent">{s.case.linkLabel} <span aria-hidden="true">›</span></a>
+              </div>
+              <div class="min-w-0 border-line lg:border-l lg:pl-10">
+                <EffectSizeChart results={s.case.results} lang={lang} />
+              </div>
+            </div>
+            <div class="mt-8 hidden border-t border-line pt-6 md:block">
+              <h3 class="text-lg font-semibold text-ink">{c4.secondaryTitle}</h3>
+              <div class="mt-5 grid grid-cols-2 gap-8">
+                {s.case.secondary.map((r) => <EffectSizeChart results={r} lang={lang} compact />)}
+              </div>
+            </div>
+            <details class="group mt-6 border-t border-line pt-4 md:hidden">
+              <summary class="flex cursor-pointer items-center justify-between gap-3 text-base font-semibold text-ink">
+                {c4.secondaryTitle}
+                <span aria-hidden="true" class="text-accent transition-transform group-open:rotate-90">›</span>
+              </summary>
+              <div class="mt-5 grid gap-8">
+                {s.case.secondary.map((r) => <EffectSizeChart results={r} lang={lang} compact />)}
+              </div>
+            </details>
+          </CaseFile>
+        </div>
+        <p class="bridge mx-auto max-w-xl">{c4.bridge}</p>
+      </div>
+    </section>
+
+    <!-- Chapter 5 -->
+    <section id={c5.id} data-chapter aria-labelledby={`${c5.id}-title`} class="chapter">
+      <div class="wrap grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-16">
+        <div>
+          <p class="eyebrow text-muted"><span class="text-accent">{c5.kicker}</span> / {c5.short}</p>
+          <h2 id={`${c5.id}-title`} class="display mt-4 text-3xl text-ink md:text-[2.5rem]">{c5.title}</h2>
+          <div class="mt-6 space-y-5 text-lg leading-relaxed text-muted">{c5.body.map((p) => <p>{p}</p>)}</div>
+          <ol class="mt-5 divide-y divide-line border-y border-line" role="list">
+            {
+              c5.recommendations.map((r, i) => (
+                <li class="grid grid-cols-[2rem_minmax(0,1fr)] gap-2 py-3" data-reveal>
+                  <span class="font-label text-sm font-semibold text-accent">{pad(i + 1)}</span>
+                  <span class="font-medium text-ink">{r}</span>
+                </li>
+              ))
+            }
+          </ol>
+          <p class="mt-5 leading-relaxed text-muted">{c5.after}</p>
+        </div>
+        <div class="self-start lg:sticky lg:top-24">
+          <CaseFile path={path(5)} {...file} carried={before(5)} fresh={c5.facts}>
+            <aside class="mt-5 rounded-control border border-dashed border-muted/50 p-4" aria-labelledby={`${c5.id}-limits`}>
+              <h3 id={`${c5.id}-limits`} class="font-semibold text-ink">{c5.limits.title}</h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-muted">{c5.limits.body}</p>
+            </aside>
+            <p class="mt-4 text-xs leading-relaxed text-muted">{hero.note} {c5.funding}</p>
+          </CaseFile>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- The turn -->
+  <section class="border-y border-line bg-inverse text-on-inverse" aria-labelledby="turn-title">
+    <div class="wrap grid grid-cols-[minmax(0,1fr)] gap-6 pt-10 pb-8 md:pt-16 md:pb-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-end lg:gap-16">
+      <div>
+        <p class="eyebrow text-on-inverse/60">{turn.eyebrow}</p>
+        <h2 id="turn-title" class="display mt-4 text-[2.2rem] md:text-[3.2rem]">{turn.title}</h2>
+      </div>
+      <p class="text-lg leading-relaxed text-on-inverse/75">{turn.lede}</p>
+    </div>
+    <div class="wrap pb-12 md:pb-16">
+      <h3 class="text-xl font-semibold">{turn.servicesTitle}</h3>
+      <ul class="mt-5 grid grid-cols-[minmax(0,1fr)] gap-px overflow-hidden rounded-card border border-on-inverse/15 bg-on-inverse/15 sm:grid-cols-2 lg:grid-cols-3" role="list">
+        {
+          turn.services.map((sv) => (
+            <li class="bg-inverse">
+              <a href={sv.href} class="group flex h-full items-start justify-between gap-4 p-4 hover:bg-on-inverse/5 md:p-5">
+                <span>
+                  <span class="eyebrow block text-on-inverse/60">{sv.service}</span>
+                  <span class="mt-2 block leading-snug font-semibold text-on-inverse">{sv.question}</span>
+                </span>
+                <span class="mt-5 text-on-inverse/70 group-hover:text-on-inverse" aria-hidden="true">›</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="wrap py-10 md:py-16">
+    <article class="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-16" aria-labelledby="second-title">
+      <div>
+        <p class="eyebrow text-accent">{second.eyebrow}</p>
+        <h2 id="second-title" class="display mt-4 text-3xl text-ink md:text-[2.4rem]">{second.question}</h2>
+        <p class="mt-5 font-semibold text-ink">{second.title}</p>
+        <p class="mt-1 font-label text-xs text-muted">{second.meta}</p>
+        <a href={second.cta.href} rel="noopener" class="btn btn-primary mt-6">{second.cta.label} <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="overflow-hidden rounded-card border border-line bg-paper shadow-[0_24px_60px_-28px_rgb(11_18_32/0.28)]">
+        <div class="flex items-center gap-2 border-b border-line px-4 py-3">
+          <span class="h-2.5 w-2.5 flex-none rounded-full bg-line"></span><span class="h-2.5 w-2.5 flex-none rounded-full bg-line"></span><span class="h-2.5 w-2.5 flex-none rounded-full bg-line"></span>
+          <span class="ml-2 min-w-0 truncate font-label text-[0.7rem] text-muted">{ui.secondFile}</span>
+        </div>
+        <div class="p-5 md:p-6">
+          <h3 class="font-label text-[0.62rem] font-normal tracking-wide text-accent uppercase">{second.highlightsTitle}</h3>
+          <ol class="mt-2 divide-y divide-line border-y border-line" role="list">
+            {
+              second.highlights.map((h, i) => (
+                <li class="grid grid-cols-[2rem_minmax(0,1fr)] gap-2 py-3 text-[0.95rem]">
+                  <span class="font-label text-xs font-semibold text-accent">{pad(i + 1)}</span>
+                  <span class="text-ink">{h}</span>
+                </li>
+              ))
+            }
+          </ol>
+          <div class="mt-5 flex flex-col items-center justify-center gap-2 rounded-control border border-dashed border-muted/50 bg-surface/60 px-4 py-7 text-center">
+            <span class="sample-badge">{second.pending}</span>
+            <p class="text-sm text-muted">{second.pendingNote}</p>
+          </div>
+          <p class="mt-4 flex flex-wrap gap-1.5">
+            {second.methods.map((m) => <span class="rounded border border-line px-2 py-0.5 font-label text-[0.65rem] text-muted">{m}</span>)}
+          </p>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="border-y border-line bg-surface/60" aria-labelledby="partners-title">
+    <div class="wrap py-8 md:py-10">
+      <h2 id="partners-title" class="text-center font-label text-xs font-semibold tracking-[0.12em] text-muted uppercase">{turn.partnersTitle}</h2>
+      <PartnerGrid variant="strip" class="mt-8" />
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-2 border-t border-line pt-6">
+        <p class="eyebrow mr-2 text-accent">{turn.euTitle}</p>
+        {
+          turn.euProjects.map((p) => (
+            <a href={p.href} class="inline-flex items-baseline gap-2 rounded-control border border-line bg-paper px-3 py-1.5 text-sm hover:border-accent">
+              <span class="font-semibold text-ink">{p.name}</span>
+              {p.programme && <span class="font-label text-[0.65rem] text-muted">{p.programme}</span>}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- The invitation -->
+  <section class="wrap pb-12 md:pb-16" aria-labelledby="invite-title">
+    <div class="relative overflow-hidden rounded-card bg-inverse px-6 py-10 text-on-inverse sm:px-10 md:px-14 md:py-14">
+      <div class="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-accent/40 blur-3xl" aria-hidden="true"></div>
+      <p class="eyebrow text-on-inverse/60">{invite.eyebrow}</p>
+      <h2 id="invite-title" class="display mt-4 text-[2.4rem] md:text-6xl">{invite.title}</h2>
+      <p class="mt-5 max-w-2xl text-lg leading-relaxed text-on-inverse/75">{invite.body}</p>
+      <p class="mt-8 font-label text-xs tracking-wide text-on-inverse/60 uppercase">{invite.examplesLabel}</p>
+      <ul class="mt-3 flex flex-wrap gap-2" role="list">
+        {invite.examples.map((e) => <li class="rounded-control border border-on-inverse/25 px-3 py-2 text-[0.95rem] text-on-inverse/90">{e}</li>)}
+      </ul>
+      <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
+        <a href={invite.cta.href} class="btn btn-primary">{invite.cta.label}</a>
+        <a href={invite.email.href} class="font-semibold text-on-inverse underline decoration-on-inverse/40 underline-offset-4 hover:decoration-on-inverse">{invite.email.label}</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .chapter {
+    scroll-margin-top: 3.5rem;
+    padding-block: 2.25rem;
+  }
+  @media (width >= 64rem) {
+    .chapter {
+      padding-block: 3.5rem;
+    }
+  }
+  .bridge {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-top: 2rem;
+    font-size: 1.05rem;
+    line-height: 1.55;
+    font-weight: 500;
+    color: var(--t-ink);
+  }
+  .bridge::before {
+    content: '↓';
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    margin-top: -0.05rem;
+    border-radius: var(--t-radius-control);
+    background: var(--t-accent);
+    color: var(--t-on-accent);
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+</style>

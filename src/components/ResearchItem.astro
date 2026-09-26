@@ -1,0 +1,35 @@
+---
+import type { Localised } from '../i18n/utils';
+import { formatDate, RESEARCH_TYPES } from '../lib/content';
+import type { Locale } from '../i18n/config';
+
+interface Props {
+  entry: Localised<'research'>;
+  lang: Locale;
+  showSummary?: boolean;
+}
+const { entry, lang, showSummary = true } = Astro.props;
+const d = entry.data;
+---
+
+<article class="group relative flex h-full flex-col">
+  <p class="eyebrow flex flex-wrap items-center gap-2 text-accent">
+    {RESEARCH_TYPES[d.type]}
+    <span class="text-muted">·</span>
+    <time class="text-muted" datetime={d.date.toISOString().slice(0, 10)}>{formatDate(d.date, lang)}</time>
+    {d.placeholder && <span class="sample-badge">Sample</span>}
+  </p>
+  <h3 class="display mt-3 text-xl !leading-snug text-ink">
+    {
+      d.url ? (
+        <a href={d.url} class="after:absolute after:inset-0 group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4" rel="noopener">
+          {d.title}
+        </a>
+      ) : (
+        d.title
+      )
+    }
+  </h3>
+  <p class="mt-2 text-sm text-muted">{d.authors.join(', ')}{d.venue ? ` · ${d.venue}` : ''}</p>
+  {showSummary && <p class="mt-3 text-[0.95rem] leading-relaxed text-ink/85">{d.summary}</p>}
+</article>

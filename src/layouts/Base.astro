@@ -1,0 +1,83 @@
+---
+import '@fontsource-variable/source-serif-4/opsz.css';
+import '@fontsource-variable/inter';
+import '@fontsource-variable/inter-tight';
+import '@fontsource-variable/jetbrains-mono';
+import '@fontsource-variable/manrope';
+import '../styles/global.css';
+
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import PrototypeBar from '../components/PrototypeBar.astro';
+import { site, type Direction } from '../data/site';
+import { DEFAULT_LOCALE, LOCALES, PUBLISHED_LOCALES, type Locale } from '../i18n/config';
+import { useTranslations } from '../i18n/ui';
+
+interface Props {
+  title: string;
+  /** Use `title` as the whole document title, without the site name added. */
+  rawTitle?: boolean;
+  description?: string;
+  lang?: Locale;
+  /** Force a theme (direction pages). Otherwise the reviewer's last choice wins. */
+  theme?: Direction;
+  /** Locale-neutral path of this page, for hreflang alternates, e.g. '/work/'. */
+  path?: string;
+  homeHref?: string;
+}
+
+const { title, rawTitle = false, description, lang = DEFAULT_LOCALE, theme, path, homeHref } = Astro.props;
+const t = useTranslations(lang);
+const fullTitle = rawTitle ? title : title === site.name ? `${site.name} | ${t('site.tagline')}` : `${title} | ${site.name}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const alternates = path
+  ? PUBLISHED_LOCALES.map((l) => ({ lang: LOCALES[l].htmlLang, href: new URL(l === DEFAULT_LOCALE ? path : `/${l}${path}`, Astro.site).href }))
+  : [];
+---
+
+<!doctype html>
+<html lang={LOCALES[lang].htmlLang} data-theme={theme ?? site.homeDirection} data-theme-forced={theme ? '' : undefined} data-palette={site.bPalette}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonical} />
+    {alternates.map((a) => <link rel="alternate" hreflang={a.lang} href={a.href} />)}
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:locale" content={LOCALES[lang].ogLocale} />
+    {description && <meta property="og:description" content={description} />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="robots" content="noindex" />
+    <script is:inline>
+      // Prototype theming: direction pages force their theme and remember it;
+      // other pages use ?theme= or the remembered choice. Runs before paint.
+      (function () {
+        var d = document.documentElement, key = 'ethos-theme', valid = /^[abc]$/;
+        try {
+          // Palette (only affects direction B): ?palette=<name>, remembered.
+          var palettes = /^(plum|brand|aegean|figure|olive|midnight)$/;
+          var qp = new URLSearchParams(location.search).get('palette');
+          if (qp && palettes.test(qp)) localStorage.setItem('ethos-palette', qp);
+          var sp = localStorage.getItem('ethos-palette');
+          if (sp && palettes.test(sp)) d.dataset.palette = sp;
+          if (d.hasAttribute('data-theme-forced')) return localStorage.setItem(key, d.dataset.theme);
+          var q = new URLSearchParams(location.search).get('theme');
+          if (q && valid.test(q)) localStorage.setItem(key, q);
+          var saved = localStorage.getItem(key);
+          if (saved && valid.test(saved)) d.dataset.theme = saved;
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body class="flex min-h-dvh flex-col bg-paper font-body text-ink antialiased">
+    <a href="#main" class="sr-only z-50 bg-ink px-4 py-2 text-paper focus:not-sr-only focus:fixed focus:top-2 focus:left-2">{t('nav.skip')}</a>
+    <slot name="before-header" />
+    <Header lang={lang} homeHref={homeHref} />
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <PrototypeBar direction={theme} />
+  </body>
+</html>

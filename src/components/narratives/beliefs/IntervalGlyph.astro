@@ -1,0 +1,113 @@
+---
+/**
+ * One estimate with its interval against a zero line, drawn like a single row
+ * of EffectSizeChart (filled point: interval excludes zero; hollow: includes it).
+ * Decorative: the same numbers are always printed in the surrounding text.
+ */
+interface Props {
+  estimate: number;
+  ciLow: number;
+  ciHigh: number;
+  /** Axis range. Defaults to the interval padded symmetrically around zero. */
+  domain?: [number, number];
+  /** Tick labels for the axis ends and zero, already formatted. */
+  ticks?: { value: number; label: string }[];
+  class?: string;
+}
+const { estimate, ciLow, ciHigh, ticks = [], class: className = '' } = Astro.props;
+const reach = Math.max(Math.abs(ciLow), Math.abs(ciHigh)) * 1.6 || 1;
+const [lo, hi] = Astro.props.domain ?? [-reach, reach];
+const pos = (v: number) => ((v - lo) / (hi - lo)) * 100;
+const open = ciLow <= 0 && ciHigh >= 0;
+---
+
+<div class:list={['ig', className]} aria-hidden="true">
+  <div class="ig-track">
+    <i class="ig-zero" style={`left:${pos(0)}%`}></i>
+    <i class="ig-strip" style={`left:${pos(ciLow)}%;width:${pos(ciHigh) - pos(ciLow)}%`}></i>
+    <i class="ig-line" style={`left:${pos(ciLow)}%;width:${pos(ciHigh) - pos(ciLow)}%`}></i>
+    <i class="ig-cap" style={`left:${pos(ciLow)}%`}></i>
+    <i class="ig-cap" style={`left:${pos(ciHigh)}%`}></i>
+    <i class:list={['ig-point', open && 'ig-point--open']} style={`left:${pos(estimate)}%`}></i>
+  </div>
+  {
+    ticks.length > 0 && (
+      <div class="ig-ticks">
+        {ticks.map((t) => (
+          <span style={`left:${pos(t.value)}%`}>{t.label}</span>
+        ))}
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .ig {
+    --ig-h: 2.25rem;
+    position: relative;
+    padding-inline: 0.75rem;
+  }
+  .ig-track {
+    position: relative;
+    height: var(--ig-h);
+  }
+  .ig-track i {
+    position: absolute;
+    display: block;
+  }
+  .ig-zero {
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    transform: translateX(-0.5px);
+    background: color-mix(in oklab, var(--t-ink) 55%, transparent);
+  }
+  .ig-strip {
+    top: 50%;
+    height: 14px;
+    transform: translateY(-50%);
+    border-radius: 7px;
+    background: color-mix(in oklab, var(--t-chart) 16%, transparent);
+  }
+  .ig-line {
+    top: 50%;
+    height: 2px;
+    transform: translateY(-50%);
+    background: var(--t-chart);
+  }
+  .ig-cap {
+    top: calc(50% - 7px);
+    height: 14px;
+    width: 2px;
+    transform: translateX(-1px);
+    background: var(--t-chart);
+    border-radius: 1px;
+  }
+  .ig-point {
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: var(--t-chart);
+    box-shadow: 0 0 0 2px var(--t-paper);
+  }
+  .ig-point--open {
+    background: var(--t-paper);
+    border: 2px solid var(--t-chart);
+  }
+  .ig-ticks {
+    position: relative;
+    height: 1.25rem;
+    border-top: 1px solid color-mix(in oklab, var(--t-line) 70%, transparent);
+  }
+  .ig-ticks span {
+    position: absolute;
+    top: 0.25rem;
+    transform: translateX(-50%);
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--t-muted);
+    white-space: nowrap;
+  }
+</style>

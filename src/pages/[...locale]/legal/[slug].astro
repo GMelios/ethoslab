@@ -1,0 +1,30 @@
+---
+/** Legal pages rendered straight from the WordPress import. */
+import { render } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import PageHero from '../../../components/PageHero.astro';
+import { DEFAULT_LOCALE, PUBLISHED_LOCALES, type Locale } from '../../../i18n/config';
+import { getLocalized, type Localised } from '../../../i18n/utils';
+
+export async function getStaticPaths() {
+  // getStaticPaths runs in isolation, so this list has to live inside it.
+  const LEGAL = ['privacy-policy-gdpr', 'terms-of-use'];
+  const paths = [];
+  for (const lang of PUBLISHED_LOCALES) {
+    const pages = (await getLocalized('pages', lang)).filter((p) => LEGAL.includes(p.slug));
+    for (const entry of pages) paths.push({ params: { locale: lang === DEFAULT_LOCALE ? undefined : lang, slug: entry.slug }, props: { lang, entry } });
+  }
+  return paths;
+}
+
+const { lang, entry } = Astro.props as { lang: Locale; entry: Localised<'pages'> };
+const { Content } = await render(entry);
+---
+
+<Base title={entry.data.title} lang={lang} path={`/legal/${entry.slug}/`}>
+  <PageHero eyebrow="Legal" title={entry.data.title} />
+  <div class="wrap py-12 md:py-16">
+    <div class="prose prose-site max-w-3xl"><Content /></div>
+    {entry.data.modified && <p class="mt-10 text-sm text-muted">Last updated {entry.data.modified}. Imported from the current website.</p>}
+  </div>
+</Base>

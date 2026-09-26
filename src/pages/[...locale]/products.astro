@@ -1,0 +1,60 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { getLocalized, localeParams } from '../../i18n/utils';
+import { useTranslations } from '../../i18n/ui';
+import type { Locale } from '../../i18n/config';
+
+export const getStaticPaths = localeParams;
+const { lang } = Astro.props as { lang: Locale };
+const t = useTranslations(lang);
+const products = (await getLocalized('products', lang)).sort((a, b) => a.data.order - b.data.order);
+const statusLabel = { live: 'Live', pilot: 'Pilot', 'in development': 'In development' } as const;
+---
+
+<Base title={t('nav.products')} description="Data products and AI tools from Ethos Lab." lang={lang} path="/products/">
+  <PageHero
+    eyebrow={t('nav.products')}
+    title="Tools that put evidence in front of decision makers"
+    intro="We build a small number of data products, each on data we understand well enough to defend."
+  />
+
+  <div class="wrap space-y-10 py-14 md:space-y-16 md:py-20">
+    {
+      products.map((p, i) => (
+        <article class="grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
+          <div class:list={['overflow-hidden rounded-card border border-line bg-surface', i % 2 === 1 && 'lg:order-2']}>
+            {p.data.cover && <Image src={p.data.cover} alt={`${p.data.title} interface`} widths={[600, 1200]} sizes="(min-width: 1024px) 560px, 92vw" class="h-full w-full object-cover" />}
+          </div>
+          <div>
+            <p class="eyebrow flex flex-wrap items-center gap-3 text-accent">
+              {p.data.kicker}
+              <span class="rounded-control bg-accent-soft px-2 py-0.5 text-[0.65rem] text-accent">{statusLabel[p.data.status]}</span>
+              {p.data.placeholder && <span class="sample-badge">Draft copy</span>}
+            </p>
+            <h2 class="display mt-4 text-3xl text-ink md:text-4xl">{p.data.title}</h2>
+            <p class="mt-5 text-lg leading-relaxed text-muted">{p.data.summary}</p>
+            <ul class="mt-6 space-y-2">
+              {p.data.features.map((f) => (
+                <li class="flex gap-3 text-ink">
+                  <svg viewBox="0 0 20 20" class="mt-1 h-4 w-4 shrink-0 text-accent" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                  {f}
+                </li>
+              ))}
+            </ul>
+            {p.data.url && (
+              <a href={p.data.url} class="btn btn-ghost mt-8" rel="noopener">
+                Visit {p.data.title}
+                <span aria-hidden="true">→</span>
+              </a>
+            )}
+          </div>
+        </article>
+      ))
+    }
+  </div>
+
+  <CtaBand lang={lang} title="Need a custom index or dashboard?" body="We build bespoke data tools for public bodies and consortia, on the same standards as our evaluations." />
+</Base>

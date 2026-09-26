@@ -1,0 +1,41 @@
+---
+/**
+ * Direction C, chapter 2: who took part and how they were split. Deliberately
+ * shows no per-group sizes (they are still under review in the deliverable).
+ */
+interface Props {
+  flow: { surveyed: { value: string; label: string }; analysed: { value: string; label: string }; draw: string };
+  arms: { name: string; role: string }[];
+}
+const { flow, arms } = Astro.props;
+const arrow = '<svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 4v15M6 13l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+---
+
+<ol class="mt-6 space-y-0" role="list" data-reveal>
+  <li class="flex items-baseline gap-3 rounded-control border border-line bg-surface px-3.5 py-3">
+    <span class="text-xl font-semibold text-ink">{flow.surveyed.value}</span>
+    <span class="text-sm text-muted">{flow.surveyed.label}</span>
+  </li>
+  <li class="flex justify-center py-1.5 text-muted" aria-hidden="true" set:html={arrow} />
+  <li class="flex items-baseline gap-3 rounded-control bg-accent-soft px-3.5 py-3">
+    <span class="text-xl font-semibold text-accent">{flow.analysed.value}</span>
+    <span class="text-sm text-muted">{flow.analysed.label}</span>
+  </li>
+  <li class="flex items-center justify-center gap-2 py-2 font-label text-[0.68rem] tracking-wide text-accent uppercase">
+    <span aria-hidden="true" set:html={arrow} />
+    {flow.draw}
+    <span aria-hidden="true" set:html={arrow} />
+  </li>
+  <li>
+    <ul class="grid grid-cols-3 gap-2" role="list">
+      {
+        arms.map((a, i) => (
+          <li class:list={['flex flex-col rounded-control border p-2.5 sm:p-3', i === 0 ? 'border-line bg-paper' : 'border-accent/30 bg-paper']}>
+            <span class="font-label text-[0.6rem] tracking-wide text-muted uppercase">{a.role}</span>
+            <span class="mt-1 text-[0.85rem] leading-snug font-semibold text-ink">{a.name}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </li>
+</ol>

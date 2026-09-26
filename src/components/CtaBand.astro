@@ -1,0 +1,31 @@
+---
+import { localePath } from '../i18n/utils';
+import { useTranslations } from '../i18n/ui';
+import type { Locale } from '../i18n/config';
+
+interface Props {
+  lang: Locale;
+  title?: string;
+  body?: string;
+}
+const {
+  lang,
+  title = 'Have a policy question that needs a credible answer?',
+  body = 'Tell us what you need to know and by when. We will tell you honestly which design can answer it, what it will cost, and what it cannot tell you.',
+} = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section class="wrap py-16 md:py-24">
+  <div class="rounded-card bg-surface px-6 py-12 md:px-14 md:py-16 theme-a:border-t-4 theme-a:border-accent theme-b:bg-accent theme-b:text-on-accent theme-c:bg-inverse theme-c:text-on-inverse">
+    <div class="grid items-end gap-8 md:grid-cols-[1fr_auto]">
+      <div>
+        <h2 class="display max-w-2xl text-3xl md:text-5xl">{title}</h2>
+        <p class="mt-5 max-w-2xl text-lg leading-relaxed opacity-80">{body}</p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <a href={localePath(lang, '/contact/')} class="btn btn-primary theme-b:!bg-on-accent theme-b:!text-accent">{t('cta.commission')}</a>
+      </div>
+    </div>
+  </div>
+</section>

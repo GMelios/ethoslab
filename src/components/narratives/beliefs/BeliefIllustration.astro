@@ -1,0 +1,151 @@
+---
+/**
+ * Line illustrations for the "What we believe" narrative (direction B), in the
+ * same style as components/illustrations/Illustration.astro: ink monoline
+ * strokes (2.5, round caps) with fills from theme tokens. Decorative only.
+ *
+ *   manifesto    hero: a four-point sheet, one line highlighted, a pen
+ *   intentions   I:   a heart under the magnifying glass, bars inside the lens
+ *   nulls        II:  a prize rosette for a zero
+ *   uncertainty  III: a forest plot, one interval straddling the dashed zero line
+ *   decisions    IV:  a signpost, one arm chosen, a seedling for the follow-up
+ */
+interface Props {
+  name: 'manifesto' | 'intentions' | 'nulls' | 'uncertainty' | 'decisions';
+  class?: string;
+}
+const { name, class: className = '' } = Astro.props;
+---
+
+{
+  name === 'manifesto' && (
+    <svg viewBox="0 0 480 440" class:list={['bill', className]} aria-hidden="true">
+      <path class="f-soft no-stroke" d="M86 318c-40-52-30-150 30-196 58-45 150-62 224-30 70 30 110 104 92 176-18 74-94 116-180 118-74 2-128-20-166-68z" />
+      <circle class="f-sun" cx="404" cy="74" r="28" />
+      <path d="M404 28v-12M404 132v-12M358 74h-12M462 74h-12M372 42l-8-8M444 114l-8-8M436 42l8-8M364 114l8-8" />
+      <g transform="rotate(-4 236 236)">
+        <path class="f-paper" d="M128 62h178l38 38v284H128z" />
+        <path d="M306 62v38h38" />
+        <path d="M156 104h96" stroke-width="8" />
+        <path d="M156 124h60" stroke="var(--t-line)" stroke-width="6" />
+        <path class="hl no-stroke" d="M150 214h176v30H150z" />
+        <text x="170" y="178" class="bill-label">I</text>
+        <text x="170" y="238" class="bill-label">II</text>
+        <text x="170" y="298" class="bill-label">III</text>
+        <text x="170" y="358" class="bill-label">IV</text>
+        <path d="M204 164h104M204 180h70" stroke="var(--t-line)" stroke-width="7" />
+        <path d="M204 224h112M204 240h56" stroke="var(--t-ink)" stroke-width="3" opacity=".55" />
+        <path d="M204 284h96M204 300h80" stroke="var(--t-line)" stroke-width="7" />
+        <path d="M204 344h108M204 360h48" stroke="var(--t-line)" stroke-width="7" />
+      </g>
+      <circle class="f-accent" cx="356" cy="332" r="17" />
+      <path d="M348 332l6 6 11-12" stroke="var(--t-on-accent)" />
+      <!-- pen -->
+      <g transform="rotate(38 392 250)">
+        <rect class="f-accent" x="382" y="150" width="20" height="112" rx="4" />
+        <path class="f-paper" d="M382 262h20l-10 26z" />
+        <path d="M382 176h20" />
+      </g>
+      <path class="f-sun" d="M96 150l4 10 10 4-10 4-4 10-4-10-10-4 10-4z" />
+      <path class="f-sun" d="M430 380l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" />
+      <path d="M84 404h96M300 404h110" />
+    </svg>
+  )
+}
+{
+  name === 'intentions' && (
+    <svg viewBox="0 0 200 160" class:list={['bill', className]} aria-hidden="true">
+      <path class="f-soft" d="M78 136C38 108 18 84 18 60c0-18 14-32 31-32 13 0 23 7 29 19 6-12 16-19 29-19 17 0 31 14 31 32 0 24-20 48-60 76z" />
+      <circle class="f-paper" cx="128" cy="92" r="32" />
+      <path d="M151 115l28 28" stroke-width="8" />
+      <path d="M110 106h36" />
+      <path class="f-soft" d="M116 88h8v18h-8z" />
+      <path class="f-accent" d="M132 74h8v32h-8z" />
+      <path class="f-sun" d="M172 28l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" />
+    </svg>
+  )
+}
+{
+  name === 'nulls' && (
+    <svg viewBox="0 0 200 160" class:list={['bill', className]} aria-hidden="true">
+      <path class="f-accent" d="M86 88l-18 58 18-9 11 15 9-58z" />
+      <path class="f-soft" d="M114 88l18 58-18-9-11 15-9-58z" />
+      <path class="f-sun" d="M100 16l9 7 11-3 4 11 11 4-3 11 7 9-7 9 3 11-11 4-4 11-11-3-9 7-9-7-11 3-4-11-11-4 3-11-7-9 7-9-3-11 11-4 4-11 11 3z" />
+      <circle class="f-paper" cx="100" cy="59" r="25" />
+      <text x="100" y="71" class="bill-label bill-label--big">0</text>
+      <path class="f-sun" d="M162 40l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" />
+      <path class="f-sun" d="M36 104l3 6 6 3-6 3-3 6-3-6-6-3 6-3z" />
+    </svg>
+  )
+}
+{
+  name === 'uncertainty' && (
+    <svg viewBox="0 0 200 160" class:list={['bill', className]} aria-hidden="true">
+      <rect class="f-paper" x="22" y="18" width="156" height="124" rx="14" />
+      <path class="hl no-stroke" d="M50 70h86a10 10 0 0 1 0 20H50a10 10 0 0 1 0-20z" />
+      <path d="M88 32v96" stroke-dasharray="3 8" />
+      <path d="M104 50h52M104 44v12M156 44v12" />
+      <circle class="f-accent" cx="130" cy="50" r="6.5" />
+      <path d="M56 80h60M56 74v12M116 74v12" />
+      <circle class="f-paper" cx="80" cy="80" r="6.5" />
+      <path d="M98 110h40M98 104v12M138 104v12" />
+      <circle class="f-accent" cx="118" cy="110" r="6.5" />
+      <path class="f-sun" d="M176 20l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" />
+    </svg>
+  )
+}
+{
+  name === 'decisions' && (
+    <svg viewBox="0 0 200 160" class:list={['bill', className]} aria-hidden="true">
+      <path d="M92 150V22" />
+      <circle class="f-accent" cx="92" cy="20" r="6" />
+      <path class="f-sun" d="M92 38h62l14 14-14 14H92z" />
+      <path d="M112 52l7 7 13-14" />
+      <path class="f-paper" d="M92 80H40L26 94l14 14h52z" />
+      <path d="M44 94h32" stroke="var(--t-line)" stroke-width="6" />
+      <path d="M134 150c0-16 0-26 2-36" />
+      <path class="f-soft" d="M136 124c-14 1-22-6-23-17 13-1 22 6 23 17zM136 116c3-14 12-20 25-19-1 12-11 19-25 19z" />
+      <path d="M52 150h118" />
+    </svg>
+  )
+}
+
+<style>
+  .bill {
+    fill: none;
+    stroke: var(--t-ink);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    overflow: visible;
+  }
+  .bill :global(.no-stroke) {
+    stroke: none;
+  }
+  .f-soft {
+    fill: var(--t-accent-soft);
+  }
+  .f-sun {
+    fill: var(--t-highlight);
+  }
+  .f-accent {
+    fill: var(--t-accent);
+  }
+  .f-paper {
+    fill: var(--t-paper);
+  }
+  .hl {
+    fill: color-mix(in oklab, var(--t-highlight) 70%, transparent);
+  }
+  .bill-label {
+    fill: var(--t-ink);
+    stroke: none;
+    font-family: var(--t-font-display);
+    font-weight: 800;
+    font-size: 22px;
+    text-anchor: middle;
+  }
+  .bill-label--big {
+    font-size: 32px;
+  }
+</style>

@@ -1,0 +1,171 @@
+---
+/**
+ * Schematic (not data) for the "turn" of the evaluation-gap story.
+ * Two groups move together until the programme starts, then fork. Two brackets
+ * on the same lines compare the readings:
+ *   before and after  (dashed, outer): the whole rise of the programme group
+ *   with and without  (highlighted, inner): the gap to the comparison group
+ * Labels come from the narrative data module; `variant` only changes styling
+ * (B: monoline ink with warm fills, C: crisp lines and mono labels).
+ * BracketKey.astro draws the matching legend marks.
+ */
+interface Props {
+  variant: 'b' | 'c';
+  labels: { start: string; treated: string; control: string };
+  /** Screen-reader description. */
+  describe: string;
+  class?: string;
+}
+const { variant, labels, describe, class: className = '' } = Astro.props;
+
+// Geometry (viewBox 340 x 170).
+const x0 = 16, xs = 150, x1 = 286, base = 150;
+const y0 = 128, ys = 100; // pre-period trend, shared by both groups
+const slope = (ys - y0) / (xs - x0);
+const yc1 = ys + slope * (x1 - xs); // comparison group at the end
+const yt1 = 36; // programme group at the end
+const bIn = 298; // with and without
+const bOut = 318; // before and after
+---
+
+<figure class:list={['cf', `cf--${variant}`, className]}>
+  <svg viewBox="0 0 340 170" role="img" aria-label={describe}>
+    <path class="cf-axis" d={`M${x0 - 6} ${base}H${bOut + 6}`} />
+    <path class="cf-start" d={`M${xs} 8V${base}`} />
+    <text class="cf-label" x={xs + 6} y={base - 8}>{labels.start}</text>
+
+    <path class="cf-guide" d={`M${xs} ${ys}H${bOut}`} />
+    <rect class="cf-band" x={bIn - 6} y={yt1} width="12" height={yc1 - yt1} rx="5" />
+
+    <path class="cf-control" d={`M${xs} ${ys}L${x1} ${yc1}`} />
+    <path class="cf-treated" d={`M${x0} ${y0}L${xs} ${ys}`} />
+    <path class="cf-treated" d={`M${xs} ${ys}C194 88 240 60 ${x1} ${yt1}`} />
+
+    <path class="cf-bracket" d={`M${bIn - 5} ${yt1}H${bIn}V${yc1}H${bIn - 5}`} />
+    <path class="cf-bracket cf-bracket--outer" d={`M${bOut - 5} ${yt1}H${bOut}V${ys}H${bOut - 5}`} />
+    <circle class="cf-dot" cx={x1} cy={yt1} r="4" />
+    <circle class="cf-dot cf-dot--control" cx={x1} cy={yc1} r="4" />
+
+    <text class="cf-label cf-label--treated" x={x1 - 8} y={yt1 - 14} text-anchor="end">{labels.treated}</text>
+    <text class="cf-label" x={x1 - 4} y={ys + 20} text-anchor="end">{labels.control}</text>
+  </svg>
+</figure>
+
+<style>
+  .cf svg {
+    display: block;
+    width: 100%;
+    max-width: 30rem;
+    height: auto;
+    overflow: visible;
+  }
+  .cf path,
+  .cf circle {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .cf-label {
+    font-size: 12px;
+  }
+
+  /* B: monoline ink, plum programme line, yellow highlighter band. */
+  .cf--b .cf-axis {
+    stroke: var(--t-ink);
+    stroke-width: 2.5;
+  }
+  .cf--b .cf-start {
+    stroke: var(--t-ink);
+    stroke-width: 2;
+    stroke-dasharray: 2 7;
+  }
+  .cf--b .cf-guide {
+    stroke: var(--t-ink);
+    stroke-width: 2;
+    stroke-dasharray: 2 6;
+    opacity: 0.45;
+  }
+  .cf--b .cf-treated {
+    stroke: var(--t-accent);
+    stroke-width: 3.5;
+  }
+  .cf--b .cf-control {
+    stroke: var(--t-ink);
+    stroke-width: 2.5;
+  }
+  .cf--b .cf-band {
+    fill: var(--t-highlight);
+  }
+  .cf--b .cf-bracket {
+    stroke: var(--t-ink);
+    stroke-width: 2.5;
+  }
+  .cf--b .cf-bracket--outer {
+    stroke-dasharray: 3 6;
+  }
+  .cf--b .cf-dot {
+    fill: var(--t-accent);
+    stroke: var(--t-ink);
+    stroke-width: 2;
+  }
+  .cf--b .cf-dot--control {
+    fill: var(--t-paper);
+  }
+  .cf--b .cf-label {
+    fill: var(--t-ink);
+    font-family: var(--t-font-display);
+    font-weight: 700;
+  }
+  .cf--b .cf-label--treated {
+    fill: var(--t-accent);
+  }
+
+  /* C: hairlines, electric blue, mono labels. */
+  .cf--c .cf-axis {
+    stroke: var(--t-line);
+    stroke-width: 1.5;
+  }
+  .cf--c .cf-start,
+  .cf--c .cf-guide {
+    stroke: var(--t-muted);
+    stroke-width: 1;
+    stroke-dasharray: 3 4;
+  }
+  .cf--c .cf-treated {
+    stroke: var(--t-chart);
+    stroke-width: 2.5;
+  }
+  .cf--c .cf-control {
+    stroke: var(--t-muted);
+    stroke-width: 2;
+  }
+  .cf--c .cf-band {
+    fill: var(--t-accent-soft);
+  }
+  .cf--c .cf-bracket {
+    stroke: var(--t-chart);
+    stroke-width: 1.75;
+  }
+  .cf--c .cf-bracket--outer {
+    stroke: var(--t-muted);
+    stroke-dasharray: 3 4;
+  }
+  .cf--c .cf-dot {
+    fill: var(--t-chart);
+    stroke: var(--t-paper);
+    stroke-width: 2;
+  }
+  .cf--c .cf-dot--control {
+    fill: var(--t-muted);
+  }
+  .cf--c .cf-label {
+    fill: var(--t-muted);
+    font-family: var(--t-font-label);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .cf--c .cf-label--treated {
+    fill: var(--t-chart);
+  }
+</style>

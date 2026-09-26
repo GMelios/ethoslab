@@ -1,0 +1,60 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import ResearchItem from '../../components/ResearchItem.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { localeParams } from '../../i18n/utils';
+import { useTranslations } from '../../i18n/ui';
+import type { Locale } from '../../i18n/config';
+import { getResearch, RESEARCH_TYPES } from '../../lib/content';
+
+export const getStaticPaths = localeParams;
+const { lang } = Astro.props as { lang: Locale };
+const t = useTranslations(lang);
+const research = await getResearch(lang);
+const years = [...new Set(research.map((r) => r.data.date.getFullYear()))].sort((a, b) => b - a);
+const types = [...new Set(research.map((r) => r.data.type))];
+---
+
+<Base title={t('nav.research')} description="Working papers, policy briefs and reports from Ethos Lab." lang={lang} path="/research/">
+  <PageHero
+    eyebrow={t('nav.research')}
+    title="Research"
+    intro="Working papers, policy briefs and reports. Where we can, we publish the pre-analysis plan, the code and the data alongside them."
+  />
+
+  <div class="wrap grid gap-12 py-14 md:py-20 lg:grid-cols-12">
+    <aside class="lg:col-span-3">
+      <div class="lg:sticky lg:top-8">
+        <h2 class="eyebrow text-muted">Output types</h2>
+        <ul class="mt-4 space-y-2 text-sm">
+          {types.map((ty) => <li class="flex justify-between gap-4 border-b border-line pb-2"><span>{RESEARCH_TYPES[ty]}</span><span class="text-muted tabular-nums">{research.filter((r) => r.data.type === ty).length}</span></li>)}
+        </ul>
+        <p class="mt-8 text-sm leading-relaxed text-muted">
+          Our researchers also publish in peer-reviewed journals, including the <em>Journal of Politics</em>, <em>Political Science Research and Methods</em> and <em>Public Choice</em>.
+        </p>
+      </div>
+    </aside>
+
+    <div class="lg:col-span-9">
+      {
+        years.map((year) => (
+          <section class="mb-14 last:mb-0" aria-labelledby={`y-${year}`}>
+            <h2 id={`y-${year}`} class="display border-b-2 border-ink pb-3 text-2xl text-ink theme-b:border-b theme-b:border-line">{year}</h2>
+            <div class="divide-y divide-line">
+              {research
+                .filter((r) => r.data.date.getFullYear() === year)
+                .map((r) => (
+                  <div class="py-7">
+                    <ResearchItem entry={r} lang={lang} />
+                  </div>
+                ))}
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </div>
+
+  <CtaBand lang={lang} title="Working on something related?" body="We collaborate with academic teams on field experiments and data access in Greece and across Southern Europe." />
+</Base>

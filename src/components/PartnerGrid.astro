@@ -1,0 +1,46 @@
+---
+import { Image } from 'astro:assets';
+import { partners, featuredPartners, type Partner } from '../data/site';
+
+interface Props {
+  /** 'grid' shows every partner in tiles; 'strip' a monochrome row of featured logos. */
+  variant?: 'grid' | 'strip';
+  class?: string;
+}
+const { variant = 'grid', class: className = '' } = Astro.props;
+const list: Partner[] = variant === 'strip' ? featuredPartners : partners;
+---
+
+{
+  variant === 'grid' ? (
+    <ul class:list={['grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6', className]} role="list">
+      {list.map((p) => (
+        <li class="flex aspect-[3/2] items-center justify-center rounded-card border border-line bg-white p-5">
+          <Image src={p.logo} alt={p.name} widths={[160, 320]} sizes="160px" class="max-h-14 w-auto max-w-full object-contain" />
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <ul class:list={['grid grid-cols-3 items-center justify-items-center gap-x-4 gap-y-7 sm:grid-cols-5 lg:grid-cols-10', className]} role="list">
+      {list.map((p, i) => (
+        <li class:list={['flex h-12 w-full items-center justify-center', i >= 9 && 'max-sm:hidden']}>
+          <Image src={p.logo} alt={p.name} widths={[140, 280]} sizes="120px" class="logo-mono max-h-10 w-auto max-w-[6.5rem] object-contain" />
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  /* Full-colour partner logos rendered as one neutral row. */
+  .logo-mono {
+    filter: grayscale(1) contrast(1.1);
+    mix-blend-mode: multiply;
+    opacity: 0.72;
+    transition: opacity 0.15s, filter 0.15s;
+  }
+  .logo-mono:hover {
+    filter: none;
+    opacity: 1;
+  }
+</style>

@@ -1,0 +1,88 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import PartnerGrid from '../../components/PartnerGrid.astro';
+import { getLocalized, localeParams } from '../../i18n/utils';
+import { useTranslations } from '../../i18n/ui';
+import type { Locale } from '../../i18n/config';
+import { standards } from '../../data/services';
+
+export const getStaticPaths = localeParams;
+const { lang } = Astro.props as { lang: Locale };
+const t = useTranslations(lang);
+
+// Team profiles come from the WordPress importer (portfolio items tagged Team,
+// Executive Team or Consultants). Group order follows seniority.
+const people = await getLocalized('people', lang);
+const groups = ['Executive Team', 'Team', 'Consultants'].map((g) => ({
+  name: g === 'Team' ? 'Researchers and analysts' : g === 'Executive Team' ? 'Leadership' : g,
+  members: people
+    .filter((p) => p.data.wpCategories?.includes(g))
+    .sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title)),
+})).filter((g) => g.members.length);
+---
+
+<Base title={t('nav.about')} description="Ethos Lab is an Athens-based research and policy firm specialising in causal evaluation." lang={lang} path="/about/">
+  <PageHero
+    eyebrow={t('nav.about')}
+    title="A research firm that works to academic standards and policy deadlines"
+    intro="Ethos Lab is based in Athens and works across Europe. Our research leads are economists and political scientists who still publish in peer-reviewed journals, and every study we run is designed to the standard those journals expect."
+  />
+
+  <section class="wrap grid gap-12 py-14 md:py-20 lg:grid-cols-12" aria-labelledby="why-heading">
+    <div class="lg:col-span-5">
+      <p class="eyebrow text-accent">Why we exist</p>
+      <h2 id="why-heading" class="display mt-4 text-3xl text-ink md:text-4xl">Good intentions are not evidence</h2>
+    </div>
+    <div class="space-y-5 text-lg leading-relaxed text-ink/85 lg:col-span-7">
+      <p>Public money is spent every year on programmes that nobody has tested. Some of them work. Some do nothing. A few make things worse. Without a credible comparison, it is impossible to tell which is which.</p>
+      <p>We bring the tools that academic economists and political scientists use to answer that question, and we adapt them to the constraints of real institutions: procurement rules, data protection, political calendars, and staff who already have full-time jobs.</p>
+      <p class="sample-badge">Placeholder copy</p>
+    </div>
+  </section>
+
+  <section class="border-y border-line bg-surface/60 theme-b:border-0 theme-b:bg-transparent" aria-labelledby="team-heading">
+    <div class="wrap py-14 md:py-20">
+      <h2 id="team-heading" class="display text-3xl text-ink md:text-4xl">Our people</h2>
+      {
+        groups.map((g) => (
+          <div class="mt-12">
+            <h3 class="eyebrow border-b border-line pb-3 text-muted">{g.name}</h3>
+            <ul class="mt-6 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-4" role="list">
+              {g.members.map((p) => (
+                <li id={p.slug}>
+                  {p.data.cover ? (
+                    <Image src={p.data.cover} alt="" widths={[240, 480]} sizes="(min-width: 1024px) 260px, 45vw" class="aspect-[4/5] w-full rounded-card object-cover grayscale-[35%] theme-c:grayscale-0" />
+                  ) : (
+                    <div class="aspect-[4/5] w-full rounded-card bg-line" />
+                  )}
+                  <p class="mt-4 font-semibold text-ink">{p.data.title}</p>
+                  {p.data.role && <p class="mt-1 text-sm leading-snug text-muted">{p.data.role}</p>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="wrap py-14 md:py-20" aria-labelledby="standards-heading">
+    <h2 id="standards-heading" class="display text-3xl text-ink md:text-4xl">How we hold ourselves to account</h2>
+    <dl class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      {standards.map((s) => <div class="border-t-2 border-accent pt-4"><dt class="font-semibold text-ink">{s.title}</dt><dd class="mt-2 text-sm leading-relaxed text-muted">{s.body}</dd></div>)}
+    </dl>
+  </section>
+
+  <section class="border-t border-line" aria-labelledby="partners-heading">
+    <div class="wrap py-14 md:py-20">
+      <h2 id="partners-heading" class="display text-3xl text-ink md:text-4xl">Who we have worked with</h2>
+      <p class="mt-4 max-w-2xl text-muted">Public authorities, international organisations, universities, civil society and private-sector partners across Europe.</p>
+      <PartnerGrid class="mt-10" />
+    </div>
+  </section>
+
+  <CtaBand lang={lang} title="Join us" body="We hire researchers and analysts with strong training in causal inference. Write to us with your CV and a paper you are proud of." />
+</Base>
