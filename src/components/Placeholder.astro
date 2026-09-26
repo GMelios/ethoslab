@@ -1,0 +1,32 @@
+---
+/**
+ * Visible marker for a [TODO] in the copy brief: a "Placeholder" tag and a short note on
+ * what goes there. Inline by default; `block` draws a dashed box around slotted skeleton
+ * content. Never put invented names, figures, prices, timelines or quotes in the note.
+ */
+interface Props {
+  note?: string;
+  block?: boolean;
+  /** Light variant for accent backgrounds. */
+  onAccent?: boolean;
+  class?: string;
+}
+const { note, block = false, onAccent = false, class: className = '' } = Astro.props;
+---
+
+{
+  block ? (
+    <div class:list={['rounded-card border-2 border-dashed border-line p-6 md:p-8', className]}>
+      <p class="flex flex-wrap items-center gap-2 text-sm text-muted">
+        <span class="sample-badge">Placeholder</span>
+        {note}
+      </p>
+      <slot />
+    </div>
+  ) : (
+    <span class:list={['inline-flex flex-wrap items-center gap-2 text-xs', onAccent ? 'text-on-accent/70' : 'text-muted', className]}>
+      <span class:list={['sample-badge', onAccent && '!border-on-accent/50 !text-on-accent/80']}>Placeholder</span>
+      {note}
+    </span>
+  )
+}

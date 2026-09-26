@@ -1,90 +1,89 @@
 ---
+/**
+ * What we do: the five questions clients bring us (moved here from homepage B in copy v2).
+ * The two questions that match a product link to its page.
+ */
 import Base from '../../layouts/Base.astro';
 import PageHero from '../../components/PageHero.astro';
 import CtaBand from '../../components/CtaBand.astro';
-import { localeParams } from '../../i18n/utils';
+import { localeParams, localePath } from '../../i18n/utils';
 import { useTranslations } from '../../i18n/ui';
 import type { Locale } from '../../i18n/config';
-import { services, process, standards } from '../../data/services';
-import { methods } from '../../data/site';
+import { productById, closingCta, type Product } from '../../data/offer';
 
 export const getStaticPaths = localeParams;
 const { lang } = Astro.props as { lang: Locale };
 const t = useTranslations(lang);
+
+const questions: { question: string; weDo: string; youGet: string; product?: Product }[] = [
+  {
+    question: 'Why aren’t people doing what we expected?',
+    weDo: 'We diagnose the behavioural barriers using data, surveys and interviews.',
+    youGet: 'A clear explanation of what is holding people back and where to act.',
+  },
+  {
+    question: 'What should we do or say instead?',
+    weDo: 'We design interventions, messages, choices and processes grounded in behavioural evidence.',
+    youGet: 'Practical options, ready to test.',
+  },
+  {
+    question: 'Will it work before we scale it?',
+    weDo: 'We run experiments, pilots and message tests with real people.',
+    youGet: 'A tested answer before you commit the budget.',
+    product: productById('test'),
+  },
+  {
+    question: 'Did it actually work?',
+    weDo: 'We evaluate impact with rigorous causal methods, including on data you already hold.',
+    youGet: 'Credible proof of the effect, for whom it worked, and why.',
+    product: productById('evaluation'),
+  },
+  {
+    question: 'Can we do this ourselves?',
+    weDo: 'We train teams, provide tools such as Experimentalist, and work embedded alongside you.',
+    youGet: 'Lasting in-house capability.',
+  },
+];
 ---
 
-<Base title={t('nav.whatWeDo')} description="Randomised trials, quasi-experimental evaluation, survey experiments and behavioural design for European public policy." lang={lang} path="/what-we-do/">
-  <PageHero
-    eyebrow={t('nav.whatWeDo')}
-    title="We find out whether a policy worked, for whom, and by how much."
-    intro="Governments and funders come to us when they need an answer that will hold up in front of a minister, an auditor or a journal referee. We bring the methods of academic economics and political science, and deliver on a policy timetable."
-  />
+<Base title={t('nav.whatWeDo')} description="Every engagement starts with a question you need answered. These are the ones we hear most." lang={lang} path="/what-we-do/">
+  <PageHero eyebrow={t('nav.whatWeDo')} title="Bring us your question" intro="Every engagement starts with a question you need answered. These are the ones we hear most." />
 
-  <section class="wrap py-14 md:py-20" aria-labelledby="services-heading">
-    <h2 id="services-heading" class="sr-only">Services</h2>
-    <div class="grid gap-px overflow-hidden rounded-card border border-line bg-line md:grid-cols-2 lg:grid-cols-3 theme-b:gap-5 theme-b:border-0 theme-b:bg-transparent">
+  <section class="wrap py-14 md:py-20" aria-label="The questions we answer">
+    <!-- Six columns so the last two cards sit centred under the first three. -->
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-6">
       {
-        services.map((s, i) => (
-          <article id={s.id} class="flex flex-col bg-paper p-7 md:p-8 theme-b:rounded-card theme-b:bg-surface">
-            <p class="eyebrow text-muted">{String(i + 1).padStart(2, '0')}</p>
-            <h3 class="display mt-4 text-2xl text-ink">{s.title}</h3>
-            <p class="mt-4 leading-relaxed text-ink/85">{s.body}</p>
-            <ul class="mt-6 space-y-1.5 border-t border-line pt-5 text-sm text-muted">
-              {s.methods.map((m) => <li class="flex gap-2"><span aria-hidden="true" class="text-accent">·</span>{m}</li>)}
-            </ul>
+        questions.map((c, i) => (
+          <article class:list={['flex flex-col rounded-card bg-surface p-6 md:p-7 lg:col-span-2', i === 3 && 'lg:col-start-2', i === 4 && 'sm:max-lg:col-span-2']}>
+            <h2 class="relative rounded-2xl border-2 border-ink bg-paper px-5 py-4 text-lg leading-snug font-bold text-balance text-ink">
+              “{c.question}”
+              <svg class="absolute -bottom-[12px] left-7 h-[14px] w-[16px]" viewBox="0 0 16 14" aria-hidden="true">
+                <path d="M1 0v12L15 0" fill="var(--t-paper)" stroke="var(--t-ink)" stroke-width="2" stroke-linejoin="round" />
+              </svg>
+            </h2>
+            <dl class="mt-8 flex flex-1 flex-col gap-5">
+              <div>
+                <dt class="eyebrow text-accent">What we do</dt>
+                <dd class="mt-1.5 text-[0.95rem] leading-relaxed text-pretty text-ink/75">{c.weDo}</dd>
+              </div>
+              <div class="mt-auto border-t border-line pt-4">
+                <dt class="eyebrow text-accent">You get</dt>
+                <dd class="mt-1.5 leading-snug font-semibold text-ink">{c.youGet}</dd>
+              </div>
+            </dl>
+            {c.product && (
+              <a
+                href={localePath(lang, c.product.path)}
+                class="mt-5 inline-flex items-center gap-2 self-start font-semibold text-ink underline decoration-2 decoration-highlight underline-offset-[6px] hover:decoration-accent"
+              >
+                {c.product.name} <span aria-hidden="true">→</span>
+              </a>
+            )}
           </article>
         ))
       }
     </div>
   </section>
 
-  <section class="border-y border-line bg-surface/70 theme-b:border-0 theme-b:bg-transparent" aria-labelledby="process-heading">
-    <div class="wrap py-14 md:py-20">
-      <div class="grid gap-10 lg:grid-cols-12">
-        <div class="lg:col-span-4">
-          <p class="eyebrow text-accent">How an engagement works</p>
-          <h2 id="process-heading" class="display mt-4 text-3xl text-ink md:text-4xl">From question to decision</h2>
-          <p class="mt-5 leading-relaxed text-muted">Timelines depend on the design. A letter trial can report in three months; an evaluation of a national rollout may run for two years with interim findings along the way.</p>
-        </div>
-        <ol class="grid gap-6 sm:grid-cols-2 lg:col-span-8">
-          {
-            process.map((p) => (
-              <li class="border-t-2 border-ink pt-4 theme-b:rounded-card theme-b:border-0 theme-b:bg-surface theme-b:p-6">
-                <p class="font-label text-sm font-semibold text-accent">{p.step}</p>
-                <h3 class="mt-2 text-lg font-semibold text-ink">{p.title}</h3>
-                <p class="mt-2 text-[0.95rem] leading-relaxed text-muted">{p.body}</p>
-              </li>
-            ))
-          }
-        </ol>
-      </div>
-    </div>
-  </section>
-
-  <section class="wrap py-14 md:py-20" aria-labelledby="standards-heading">
-    <div class="grid gap-10 lg:grid-cols-12">
-      <div class="lg:col-span-4">
-        <p class="eyebrow text-accent">Our standards</p>
-        <h2 id="standards-heading" class="display mt-4 text-3xl text-ink md:text-4xl">Academic rules, applied to policy work</h2>
-      </div>
-      <dl class="grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:col-span-8">
-        {
-          standards.map((s) => (
-            <div>
-              <dt class="text-lg font-semibold text-ink">{s.title}</dt>
-              <dd class="mt-2 leading-relaxed text-muted">{s.body}</dd>
-            </div>
-          ))
-        }
-      </dl>
-    </div>
-    <div class="mt-14 border-t border-line pt-8">
-      <h3 class="eyebrow text-muted">Methods we use</h3>
-      <ul class="mt-5 flex flex-wrap gap-2">
-        {methods.map((m) => <li class="rounded-control border border-line px-3 py-1.5 text-sm text-ink">{m}</li>)}
-      </ul>
-    </div>
-  </section>
-
-  <CtaBand lang={lang} />
+  <CtaBand lang={lang} {...closingCta} />
 </Base>

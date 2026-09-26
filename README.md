@@ -41,7 +41,8 @@ src/content/<collection>/<lang>/<slug>.md
 src/assets/wp/               Downloaded WordPress images (optimised at build)
 src/data/sectors.json        Sector taxonomy: schema enum, Work filter, importer tagging
 src/data/site.ts             Contact details, nav, partner logos, proof numbers
-src/data/services.ts         Placeholder positioning copy
+src/data/offer.ts            Ethos Test and Ethos Evaluation copy, shared closing CTA
+src/data/services.ts         Placeholder positioning copy (homepage A, About)
 src/i18n/                    Locales, UI strings (EN + draft EL), helpers
 src/pages/[...locale]/       Every localised route (EN at /, EL at /el/)
 src/pages/{a,b,c}.astro      Direction review pages
@@ -87,7 +88,8 @@ All fonts include Greek glyphs.
 | Three case studies with simulated results | `src/content/projects/en/{benefit-letters-trial,youth-hiring-subsidy,trust-local-government}.md` | "Illustrative" |
 | Four research entries | `src/content/research/en/*` (all except the SSRN paper) | "Sample" |
 | Proof numbers (3 of 4) | `src/data/site.ts` `proof` | "Sample figure" |
-| B homepage: research-methods wording, logo strip, three Recent work cards, client quote | `src/components/home/HomeB.astro` | "Placeholder" |
+| B homepage: research-methods wording, logo strip, three Recent work cards, client quote, Experimentalist note | `src/components/home/HomeB.astro` | "Placeholder" |
+| Ethos Test and Ethos Evaluation: timelines, price, formats, examples | `src/data/offer.ts`, `src/pages/[...locale]/{test,evaluation}.astro` | "Placeholder" |
 | Product descriptions | `src/content/products/en/*` | "Draft copy" |
 | Positioning and service copy | `src/data/services.ts`, page intros | About page only |
 | Contact form (not connected) | `src/pages/[...locale]/contact.astro` | "Prototype" |

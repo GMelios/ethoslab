@@ -5,7 +5,7 @@
  * recolour with the theme. Decorative: always aria-hidden.
  */
 interface Props {
-  name: 'hero' | 'ministry' | 'town' | 'seedling' | 'network' | 'listen' | 'test' | 'explain' | 'plane';
+  name: 'hero' | 'ministry' | 'town' | 'company' | 'seedling' | 'network' | 'listen' | 'test' | 'explain' | 'plane';
   class?: string;
 }
 const { name, class: className = '' } = Astro.props;
@@ -77,6 +77,17 @@ const { name, class: className = '' } = Astro.props;
       <path d="M40 104V84h16v20M88 70h16v14H88z" />
       <circle class="f-paper" cx="136" cy="70" r="14" />
       <path d="M136 84v20M14 104h136" />
+    </svg>
+  )
+}
+{
+  name === 'company' && (
+    <svg viewBox="0 0 160 120" class:list={['ill', className]} aria-hidden="true">
+      <circle class="f-sun no-stroke" cx="124" cy="28" r="16" />
+      <path d="M62 44v-8a6 6 0 0 1 6-6h24a6 6 0 0 1 6 6v8" />
+      <rect class="f-paper" x="28" y="44" width="104" height="60" rx="8" />
+      <path class="f-soft" d="M28 62h104v14H28z" />
+      <rect class="f-accent" x="71" y="60" width="18" height="18" rx="3" />
     </svg>
   )
 }

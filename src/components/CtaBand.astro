@@ -7,11 +7,14 @@ interface Props {
   lang: Locale;
   title?: string;
   body?: string;
+  /** Button label. Defaults to the shared "Commission a study". */
+  button?: string;
 }
 const {
   lang,
   title = 'Have a policy question that needs a credible answer?',
   body = 'Tell us what you need to know and by when. We will tell you honestly which design can answer it, what it will cost, and what it cannot tell you.',
+  button,
 } = Astro.props;
 const t = useTranslations(lang);
 ---
@@ -24,7 +27,7 @@ const t = useTranslations(lang);
         <p class="mt-5 max-w-2xl text-lg leading-relaxed opacity-80">{body}</p>
       </div>
       <div class="flex flex-wrap gap-3">
-        <a href={localePath(lang, '/contact/')} class="btn btn-primary theme-b:!bg-on-accent theme-b:!text-accent">{t('cta.commission')}</a>
+        <a href={localePath(lang, '/contact/')} class="btn btn-primary theme-b:!bg-on-accent theme-b:!text-accent">{button ?? t('cta.commission')}</a>
       </div>
     </div>
   </div>
