@@ -34,7 +34,7 @@ const { Content } = await render(post);
       <div class="prose prose-lg prose-site lg:col-span-8"><Content /></div>
       <aside class="space-y-6 lg:col-span-4">
         {post.data.cover && <Image src={post.data.cover} alt="" widths={[400, 800]} sizes="(min-width: 1024px) 380px, 92vw" class="w-full rounded-card ring-1 ring-line" />}
-        {post.data.link && <a href={post.data.link.href} class="link-arrow" rel="noopener">{post.data.link.label} <span aria-hidden="true">↗</span></a>}
+        {post.data.link && (post.data.link.href.startsWith('/') ? <a href={localePath(lang, post.data.link.href)} class="link-arrow">{post.data.link.label} <span aria-hidden="true">→</span></a> : <a href={post.data.link.href} class="link-arrow" rel="noopener">{post.data.link.label} <span aria-hidden="true">↗</span></a>)}
         <p><a href={localePath(lang, '/insights/news/')} class="text-sm text-muted underline underline-offset-4 hover:text-ink">All news</a></p>
       </aside>
     </div>

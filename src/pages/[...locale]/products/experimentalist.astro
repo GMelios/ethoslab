@@ -1,0 +1,49 @@
+---
+/**
+ * The Experimentalist. The only confirmed copy is the line from the v2 homepage brief
+ * ("tools such as Experimentalist so you can run tests yourself"). Everything else is a
+ * visible placeholder until the product details are supplied.
+ */
+import Base from '../../../layouts/Base.astro';
+import PageHero from '../../../components/PageHero.astro';
+import SpecRow from '../../../components/SpecRow.astro';
+import Placeholder from '../../../components/Placeholder.astro';
+import CtaBand from '../../../components/CtaBand.astro';
+import { localeParams, localePath } from '../../../i18n/utils';
+import { useTranslations } from '../../../i18n/ui';
+import type { Locale } from '../../../i18n/config';
+
+export const getStaticPaths = localeParams;
+const { lang } = Astro.props as { lang: Locale };
+const t = useTranslations(lang);
+---
+
+<Base title="The Experimentalist" description="The Experimentalist: a tool so your team can run tests yourselves." lang={lang} path="/products/experimentalist/">
+  <PageHero
+    tone="deep"
+    eyebrow="Run your own tests"
+    title="The Experimentalist"
+    intro="A tool so your team can run tests yourselves."
+    crumbs={[{ label: t('nav.products'), href: localePath(lang, '/products/') }]}
+  >
+    <Placeholder note="Product description, status and availability to confirm" onAccent class="mt-8" />
+  </PageHero>
+
+  <SpecRow heading="What it does" id="what" first>
+    <Placeholder block note="What the Experimentalist does, in two or three sentences, and the kinds of tests it runs" />
+  </SpecRow>
+  <SpecRow heading="How it works" id="how">
+    <Placeholder block note="The steps a team follows, from setting up a test to reading the result" />
+  </SpecRow>
+  <SpecRow heading="Who it is for" id="who">
+    <Placeholder block note="The teams and organisations it is designed for" />
+  </SpecRow>
+  <SpecRow heading="Status" id="status">
+    <Placeholder block note="Live, pilot or in development, and how to get access" />
+  </SpecRow>
+  <SpecRow heading="Screens" id="screens">
+    <Placeholder block note="Screenshots or a short demo" />
+  </SpecRow>
+
+  <CtaBand lang={lang} title="Want to run your own tests?" body="Tell us what you would like to test and we will tell you how the Experimentalist could help." button="Talk to us" />
+</Base>

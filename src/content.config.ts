@@ -80,8 +80,8 @@ const posts = defineCollection({
       title: z.string(),
       lang,
       kind: z.enum(['news', 'blog']).default('news'),
-      /** Optional link to the source (event page, paper). */
-      link: z.object({ label: z.string(), href: z.url() }).optional(),
+      /** Optional link: a full URL, or a site path such as /products/room-wisdom/. */
+      link: z.object({ label: z.string(), href: z.string() }).optional(),
       summary: z.string().optional(),
       date: z.string().optional(),
       modified: z.string().optional(),
@@ -169,7 +169,8 @@ const products = defineCollection({
       lang,
       kicker: z.string(),
       summary: z.string(),
-      status: z.enum(['live', 'pilot', 'in development']),
+      /** Omit while the status is not confirmed. */
+      status: z.enum(['live', 'pilot', 'in development']).optional(),
       url: z.url().optional(),
       cover: image().optional(),
       features: z.array(z.string()).default([]),

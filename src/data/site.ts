@@ -36,6 +36,7 @@ export const nav: NavItem[] = [
     children: [
       { label: 'Reframing Welfare Index', path: '/products/reframing-welfare-index/' },
       { label: 'Room Wisdom', path: '/products/room-wisdom/' },
+      { label: 'The Experimentalist', path: '/products/experimentalist/' },
     ],
   },
   { key: 'nav.work', path: '/work/' },

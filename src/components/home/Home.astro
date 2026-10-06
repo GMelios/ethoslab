@@ -13,6 +13,7 @@ import Base from '../../layouts/Base.astro';
 import Ribbons from '../Ribbons.astro';
 import PartnerGrid from '../PartnerGrid.astro';
 import CtaBand from '../CtaBand.astro';
+import Placeholder from '../Placeholder.astro';
 import { services } from '../../data/offer';
 import { domains } from '../../data/ethos';
 import { getLocalized, localePath } from '../../i18n/utils';
@@ -113,22 +114,27 @@ const productHref = (slug: string) => localePath(lang, `/products/${slug}/`);
         </div>
         <a href={localePath(lang, '/products/')} class="link-arrow">All products <span aria-hidden="true">→</span></a>
       </div>
-      <div class="mt-12 grid gap-6 lg:grid-cols-2">
+      <div class="mt-12 grid gap-6 lg:grid-cols-3">
         {
           productEntries.map((p) => (
             <article class="group relative flex flex-col overflow-hidden rounded-card bg-white/[0.06] ring-1 ring-white/10 transition hover:bg-white/[0.09]">
-              <div class:list={['flex aspect-[16/8] items-center justify-center overflow-hidden', p.slug === 'room-wisdom' ? 'bg-[#f6f5f1]' : 'bg-white']}>
-                {p.data.cover && <Image src={p.data.cover} alt="" widths={[600, 1100]} sizes="(min-width: 1024px) 600px, 92vw" class:list={['h-full w-full', p.slug === 'room-wisdom' ? 'object-cover' : 'object-cover object-top']} />}
+              <div class:list={['relative flex aspect-[16/9] items-center justify-center overflow-hidden', p.slug === 'room-wisdom' ? 'bg-[#f6f5f1]' : p.data.cover ? 'bg-white' : 'bg-midnight']}>
+                {p.data.cover ? (
+                  <Image src={p.data.cover} alt="" widths={[500, 1000]} sizes="(min-width: 1024px) 400px, 92vw" class:list={['h-full w-full', p.slug === 'room-wisdom' ? 'object-cover' : 'object-cover object-top']} />
+                ) : (
+                  <Ribbons class="absolute inset-0 h-full w-full opacity-70" seed={11} layers={5} />
+                )}
               </div>
               <div class="flex flex-1 flex-col p-7 md:p-9">
                 <p class="eyebrow flex items-center gap-3 text-display-accent">
                   {p.data.kicker}
-                  <span class="rounded-full border border-line px-2 py-0.5 text-[0.62rem] tracking-[0.1em] text-muted">{p.data.status === 'pilot' ? 'Pilot' : p.data.status === 'live' ? 'Live' : 'In development'}</span>
+                  {p.data.status && <span class="rounded-full border border-line px-2 py-0.5 text-[0.62rem] tracking-[0.1em] text-muted">{p.data.status === 'pilot' ? 'Pilot' : p.data.status === 'live' ? 'Live' : 'In development'}</span>}
                 </p>
                 <h3 class="display mt-3 text-3xl text-ink md:text-4xl">
                   <a href={productHref(p.slug)} class="after:absolute after:inset-0">{p.data.title}</a>
                 </h3>
                 <p class="mt-4 leading-relaxed text-muted">{p.data.summary}</p>
+                {p.data.placeholder && <Placeholder note="Product description to confirm" onAccent class="relative z-10 mt-4" />}
                 <span class="link-arrow mt-auto self-start pt-7">Discover {p.data.title} <span aria-hidden="true">→</span></span>
               </div>
             </article>

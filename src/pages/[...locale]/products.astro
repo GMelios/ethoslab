@@ -3,6 +3,8 @@ import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import PageHero from '../../components/PageHero.astro';
 import CtaBand from '../../components/CtaBand.astro';
+import Placeholder from '../../components/Placeholder.astro';
+import Ribbons from '../../components/Ribbons.astro';
 import { getLocalized, localeParams, localePath } from '../../i18n/utils';
 import { useTranslations } from '../../i18n/ui';
 import type { Locale } from '../../i18n/config';
@@ -14,28 +16,29 @@ const products = (await getLocalized('products', lang)).sort((a, b) => a.data.or
 const statusLabel = { live: 'Live', pilot: 'Pilot', 'in development': 'In development' } as const;
 ---
 
-<Base title={t('nav.products')} description="The Reframing Welfare Index and Room Wisdom, from Ethos Lab." lang={lang} path="/products/">
+<Base title={t('nav.products')} description="The Reframing Welfare Index, Room Wisdom and the Experimentalist, from Ethos Lab." lang={lang} path="/products/">
   <PageHero
     tone="deep"
     eyebrow={t('nav.products')}
     title="Tools built on data we can defend"
-    intro="Alongside our research and evaluation work, we build products that put rigorous evidence in front of decision makers: one for measuring welfare across Europe's regions, one for hearing every voice in a group conversation."
+    intro="Alongside our research and evaluation work, we build tools that put rigorous evidence in front of decision makers: for measuring welfare across Europe's regions, for hearing every voice in a group conversation, and for running your own tests."
   />
 
   {
     products.map((p, i) => (
       <section class:list={[i % 2 === 0 ? 'band-white' : 'band-mist']} aria-labelledby={`${p.slug}-heading`}>
         <div class="wrap grid items-center gap-10 py-20 md:py-24 lg:grid-cols-2 lg:gap-16">
-          <a href={localePath(lang, `/products/${p.slug}/`)} class:list={['block overflow-hidden rounded-card shadow-[0_30px_60px_-30px_rgb(11_22_49/0.45)] ring-1 ring-line', i % 2 === 1 && 'lg:order-2', p.slug === 'room-wisdom' ? 'bg-[#f6f5f1]' : 'bg-white']} tabindex="-1" aria-hidden="true">
-            {p.data.cover && <Image src={p.data.cover} alt="" widths={[600, 1200]} sizes="(min-width: 1024px) 580px, 92vw" class="aspect-[16/10] w-full object-cover object-top" />}
+          <a href={localePath(lang, `/products/${p.slug}/`)} class:list={['relative block aspect-[16/10] overflow-hidden rounded-card shadow-[0_30px_60px_-30px_rgb(11_22_49/0.45)] ring-1 ring-line', i % 2 === 1 && 'lg:order-2', p.slug === 'room-wisdom' ? 'bg-[#f6f5f1]' : p.data.cover ? 'bg-white' : 'bg-midnight']} tabindex="-1" aria-hidden="true">
+            {p.data.cover ? <Image src={p.data.cover} alt="" widths={[600, 1200]} sizes="(min-width: 1024px) 580px, 92vw" class="h-full w-full object-cover object-top" /> : <Ribbons class="absolute inset-0 h-full w-full opacity-70" seed={11} layers={5} />}
           </a>
           <div>
             <p class="eyebrow flex flex-wrap items-center gap-3 text-display-accent">
               {p.data.kicker}
-              <span class="rounded-full border border-line px-2 py-0.5 text-[0.62rem] tracking-[0.1em] text-muted">{statusLabel[p.data.status]}</span>
+              {p.data.status && <span class="rounded-full border border-line px-2 py-0.5 text-[0.62rem] tracking-[0.1em] text-muted">{statusLabel[p.data.status]}</span>}
             </p>
             <h2 id={`${p.slug}-heading`} class="display h-section mt-4 text-ink">{p.data.title}</h2>
             <p class="mt-5 text-lg leading-relaxed text-muted">{p.data.summary}</p>
+            {p.data.placeholder && <Placeholder note="Product description, features and status to confirm" class="mt-4" />}
             <ul class="mt-7 space-y-2.5">
               {p.data.features.map((f) => (
                 <li class="flex gap-3 text-ink">
