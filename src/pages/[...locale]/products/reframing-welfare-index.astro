@@ -1,7 +1,11 @@
 ---
 /**
- * Reframing Welfare Index. Copy condensed from the RWI, Products, Our History and
- * Data Analytics & Welfare Measurement pages on ethoslab.gr.
+ * Reframing Welfare Index, rebuilt edition (2014 to 2023): 4 pillars, 16 sub-pillars,
+ * 228 regions in 30 countries. Structure and method notes from the RWI Regional Atlas
+ * (October 2026); pillar descriptions adapted from the RWI page on ethoslab.gr.
+ *
+ * The map is a pre-rendered image (src/assets/products/rwi-map-2023.png) of the overall
+ * index in 2023. No RWI scores are stored in this repository.
  */
 import { Image } from 'astro:assets';
 import Base from '../../../layouts/Base.astro';
@@ -12,52 +16,41 @@ import { useTranslations } from '../../../i18n/ui';
 import type { Locale } from '../../../i18n/config';
 
 import screenshot from '../../../assets/wp/2025/11/screenshot-2025-11-18-at-19-26-39.png';
-import opening from '../../../assets/wp/2019/03/opening-rwi.svg';
-import livelihoods from '../../../assets/wp/2019/03/secured-livelihoods.svg';
-import nature from '../../../assets/wp/2019/03/nature-and-green-futures.svg';
-import economies from '../../../assets/wp/2019/03/sustainable-open-economies.svg';
-import societies from '../../../assets/wp/2019/03/just-societies.svg';
+import map2023 from '../../../assets/products/rwi-map-2023.png';
 
 export const getStaticPaths = localeParams;
 const { lang } = Astro.props as { lang: Locale };
 const t = useTranslations(lang);
 
-const foundations = [
+const pillars = [
   {
-    name: 'Secured Livelihoods',
-    pillars: 6,
-    image: livelihoods,
-    body: 'The resources and conditions people need not only to survive but to flourish: access to essential services, the chance to pursue personal aspirations, and a life free from fear and deprivation.',
-    named: [] as string[],
+    name: 'Just Societies',
+    body: 'How people relate to the formal and informal structures that shape their collective wellbeing, and the conditions for an inclusive, equitable society.',
+    subs: ['Institutional integrity', 'Freedom and voice', 'Social capital', 'Inclusion and equal opportunity'],
   },
   {
-    name: 'Nature and Green Futures',
-    pillars: 5,
-    image: nature,
-    body: 'The interplay between the natural environment and human activity: the current state of the planet’s health and the efforts under way to move to a more sustainable future.',
-    named: [],
+    name: 'Secure Livelihoods',
+    body: 'The resources and conditions people need not only to survive but to flourish: essential services, the chance to pursue their aspirations, and a life free from fear and deprivation.',
+    subs: ['Income and material security', 'Education and skills', 'Health', 'Personal security', 'Housing and local services'],
   },
   {
     name: 'Sustainable Open Economies',
-    pillars: 5,
-    image: economies,
     body: 'The economic structures that drive prosperity: an economy’s ability to foster competitiveness, innovation and inclusive growth through open markets and sustainable practice.',
-    named: ['Output', 'Employment', 'Business environment', 'Investment environment', 'Innovation'],
+    subs: ['Output and productivity', 'Labour market', 'Investment and dynamism', 'Innovation and knowledge economy'],
   },
   {
-    name: 'Just Societies',
-    pillars: 5,
-    image: societies,
-    body: 'How people relate to the formal and informal structures that shape their collective wellbeing, and the conditions for an inclusive, equitable society.',
-    named: ['Formal institutions', 'Human rights', 'Informal institutions', 'Freedom', 'Social capital'],
+    name: 'Green Futures',
+    body: 'The interplay between the natural environment and human activity: the state of the environment today and the transition to a more sustainable future.',
+    subs: ['Clean air', 'Climate and transition', 'Land, water and biodiversity'],
   },
 ];
+const nSubs = pillars.reduce((n, p) => n + p.subs.length, 0);
 
 const uses = ['Beyond-GDP welfare indicators and indices', 'Regional disparity analysis across Europe', 'Econometric modelling of social change', 'Custom data analytics for policy questions'];
 const audiences = ['Regional governments', 'EU institutions', 'Researchers', 'Foundations'];
 ---
 
-<Base title="Reframing Welfare Index" description="A holistic measure of welfare for European regions: 21 pillars in four foundations, beyond GDP." lang={lang} path="/products/reframing-welfare-index/">
+<Base title="Reframing Welfare Index" description="A holistic measure of welfare for 228 European regions, 2014 to 2023: four pillars and sixteen sub-pillars, beyond GDP." lang={lang} path="/products/reframing-welfare-index/">
   <PageHero
     tone="deep"
     eyebrow="Welfare beyond GDP"
@@ -76,13 +69,14 @@ const audiences = ['Regional governments', 'EU institutions', 'Researchers', 'Fo
       <div class="lg:col-span-5">
         <h2 id="overview-heading" class="display h-section text-ink">What GDP leaves out</h2>
         <p class="mt-6 text-lg leading-relaxed text-ink/85">
-          The index captures social and individual wellbeing across Europe’s regions. It identifies 21 distinct pillars of welfare, each built from several indicators, and groups them into four foundations.
+          The index measures social and individual wellbeing in 228 regions across 30 European countries, every year from 2014 to 2023. Sixteen sub-pillars, each built from several indicators, are grouped into four pillars.
         </p>
-        <p class="mt-4 leading-relaxed text-muted">It now covers hundreds of European regions and informs policy decisions at regional and EU level.</p>
-        <dl class="mt-10 grid grid-cols-3 gap-6 border-t border-line pt-8">
-          <div><dt class="text-sm text-muted">Pillars</dt><dd class="display mt-1 text-5xl text-ink">21</dd></div>
-          <div><dt class="text-sm text-muted">Foundations</dt><dd class="display mt-1 text-5xl text-ink">4</dd></div>
-          <div><dt class="text-sm text-muted">Regions</dt><dd class="display mt-1 text-5xl text-ink">250+</dd></div>
+        <p class="mt-4 leading-relaxed text-muted">Scores run from 0 to 100 against goalposts fixed over 2014 to 2023, so years can be compared, and every score comes with an interval that reflects survey uncertainty.</p>
+        <dl class="mt-10 grid grid-cols-2 gap-6 border-t border-line pt-8 sm:grid-cols-4">
+          <div><dt class="text-sm text-muted">Pillars</dt><dd class="display mt-1 text-5xl text-ink">{pillars.length}</dd></div>
+          <div><dt class="text-sm text-muted">Sub-pillars</dt><dd class="display mt-1 text-5xl text-ink">{nSubs}</dd></div>
+          <div><dt class="text-sm text-muted">Regions</dt><dd class="display mt-1 text-5xl text-ink">228</dd></div>
+          <div><dt class="text-sm text-muted">Years</dt><dd class="display mt-1 text-5xl text-ink">10</dd></div>
         </dl>
       </div>
       <div class="lg:col-span-7">
@@ -91,30 +85,38 @@ const audiences = ['Regional governments', 'EU institutions', 'Researchers', 'Fo
     </div>
   </section>
 
+  <section class="band-midnight relative overflow-hidden" aria-labelledby="map-heading">
+    <div class="wrap relative grid items-center gap-10 py-20 md:py-24 lg:grid-cols-12">
+      <div class="lg:col-span-4">
+        <p class="eyebrow text-display-accent">Europe, region by region</p>
+        <h2 id="map-heading" class="display h-section mt-4 text-ink">Where welfare is highest, and where it lags</h2>
+        <p class="mt-6 text-lg leading-relaxed text-muted">The overall index in 2023. Orange regions score highest, dark navy regions lowest. The gaps run north to south and west to east, and often within a single country.</p>
+        <div class="mt-8">
+          <div class="h-2.5 w-full max-w-xs rounded-sm bg-[linear-gradient(90deg,#2c3a60,#8e5254,#f1592a)]" aria-hidden="true"></div>
+          <div class="mt-2 flex max-w-xs justify-between text-sm text-muted"><span>Lower score</span><span>Higher score</span></div>
+        </div>
+        <p class="mt-6 text-sm leading-relaxed text-muted">Reframing Welfare Index, 2023, overall score. Norway has no 2023 score and is shown in the darkest tone. Canarias, Açores and Madeira are not drawn.</p>
+      </div>
+      <figure class="lg:col-span-8">
+        <Image src={map2023} alt="Map of European regions coloured by their 2023 Reframing Welfare Index score: highest in the Nordic countries, Switzerland, southern Germany and Ireland; lowest in Romania, Bulgaria, Greece and southern Italy." widths={[700, 1200, 1600]} sizes="(min-width: 1024px) 780px, 94vw" class="mx-auto w-full max-w-3xl" />
+      </figure>
+    </div>
+  </section>
+
   <section class="band-mist" aria-labelledby="foundations-heading">
     <div class="wrap py-20 md:py-24">
-      <div class="grid items-center gap-10 lg:grid-cols-12">
-        <div class="lg:col-span-7">
-          <p class="eyebrow text-display-accent">The framework</p>
-          <h2 id="foundations-heading" class="display h-section mt-4 text-ink">Four foundations, twenty-one pillars</h2>
-        </div>
-        <Image src={opening} alt="" class="mx-auto h-40 w-auto lg:col-span-5" />
-      </div>
+      <p class="eyebrow text-display-accent">The framework</p>
+      <h2 id="foundations-heading" class="display h-section mt-4 text-ink">Four pillars, sixteen sub-pillars</h2>
       <ul class="mt-12 grid gap-6 md:grid-cols-2" role="list">
         {
-          foundations.map((f) => (
-            <li class="flex gap-6 rounded-card bg-paper p-7 md:p-8">
-              <Image src={f.image} alt="" class="h-20 w-20 shrink-0 md:h-24 md:w-24" />
-              <div>
-                <p class="eyebrow text-muted">{f.pillars} pillars</p>
-                <h3 class="display mt-2 text-2xl text-ink">{f.name}</h3>
-                <p class="mt-3 leading-relaxed text-muted">{f.body}</p>
-                {f.named.length > 0 && (
-                  <ul class="mt-4 flex flex-wrap gap-2">
-                    {f.named.map((n) => <li class="rounded-control bg-mist px-2.5 py-1 text-sm text-ink">{n}</li>)}
-                  </ul>
-                )}
-              </div>
+          pillars.map((p, i) => (
+            <li class="rounded-card bg-paper p-7 md:p-8">
+              <p class="eyebrow text-muted">Pillar {String.fromCharCode(65 + i)} · {p.subs.length} sub-pillars</p>
+              <h3 class="display mt-2 text-2xl text-ink">{p.name}</h3>
+              <p class="mt-3 leading-relaxed text-muted">{p.body}</p>
+              <ul class="mt-5 flex flex-wrap gap-2">
+                {p.subs.map((n) => <li class="rounded-control bg-mist px-2.5 py-1 text-sm text-ink">{n}</li>)}
+              </ul>
             </li>
           ))
         }
@@ -157,7 +159,7 @@ const audiences = ['Regional governments', 'EU institutions', 'Researchers', 'Fo
         <h2 id="editor-heading" class="display h-section mt-4 text-ink">EU Regions Welfare AI Editor</h2>
       </div>
       <div class="space-y-4 text-lg leading-relaxed text-muted lg:col-span-7">
-        <p>An AI editor that answers questions about regional welfare in plain language. It draws only on Reframing Welfare Index data for more than 250 European regions, and every answer comes with its sources and confidence indicators.</p>
+        <p>An AI editor that answers questions about regional welfare in plain language. It draws only on Reframing Welfare Index data for 228 European regions, and every answer comes with its sources and confidence indicators.</p>
         <p>Ask about one region, compare several, or generate a full report on housing affordability, employment, social services, the economy and environmental quality.</p>
       </div>
     </div>
