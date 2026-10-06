@@ -21,7 +21,7 @@ const { lang, title = closingCta.title, body = closingCta.body, button = closing
   </svg>
   <div class="wrap relative grid items-end gap-8 py-16 md:grid-cols-[1fr_auto] md:py-20">
     <div>
-      <h2 class="display max-w-3xl text-4xl text-ink md:text-[3.4rem]">{title}</h2>
+      <h2 class="display h-section max-w-3xl text-ink">{title}</h2>
       <p class="mt-5 max-w-2xl text-lg leading-relaxed text-ink/85">{body}</p>
     </div>
     <a href={localePath(lang, '/contact/')} class="btn btn-primary !px-7 !py-3.5 text-base">{button} <span aria-hidden="true">→</span></a>

@@ -13,6 +13,8 @@
  *   Navy 800     #1B2A4E  second dark background, panels on midnight
  *   Slate #5B6478 / Haze #A3ADC2  muted text on light / dark
  *   Line #D5D9E2 / Line Dark #2C3A60  dividers on light / dark
+ * Type scale (Claude Design typography round, adjusted): h-hero 40 to 72px, h-section
+ * 30 to 44px, body 16/17px at 1.6, labels 12px Geologica 600 at +0.1em.
  * Only the kit's approved text pairings are used. "Mist" (#F3F4F7) is a light section
  * tint derived from Line; it carries the same text colours as white.
  *
@@ -74,14 +76,15 @@
   --t-logo-b: #0b1631;
   --t-logo-a-inverse: #f1592a;
   --t-logo-b-inverse: #ffffff;
-  --t-font-display: "Piazzolla Variable", Georgia, serif;
-  --t-font-body: "Commissioner Variable", system-ui, sans-serif;
-  --t-font-label: "Commissioner Variable", system-ui, sans-serif;
+  /* Type: Geologica for headings, labels, buttons and navigation; IBM Plex Sans for text. */
+  --t-font-display: "Geologica Variable", system-ui, sans-serif;
+  --t-font-body: "IBM Plex Sans Variable", system-ui, sans-serif;
+  --t-font-label: "Geologica Variable", system-ui, sans-serif;
   --t-radius: 6px;
   --t-radius-control: 4px;
-  --t-label-tracking: 0.14em;
-  --t-display-weight: 620;
-  --t-display-tracking: -0.02em;
+  --t-label-tracking: 0.1em;
+  --t-display-weight: 600;
+  --t-display-tracking: -0.015em;
 }
 
 /*
@@ -148,6 +151,21 @@
   }
   body {
     background: #ffffff;
+    font-size: 1rem;
+    line-height: 1.6;
+    @media (width >= 64rem) {
+      font-size: 1.0625rem;
+    }
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--t-font-display);
+  }
+  table,
+  .tabular {
+    font-variant-numeric: tabular-nums;
   }
   ::selection {
     background: #ffd9cb;
@@ -166,6 +184,20 @@
   letter-spacing: var(--t-display-tracking);
   line-height: 1.04;
   text-wrap: balance;
+}
+
+/* Page titles: 40 to 72px. */
+@utility h-hero {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+
+/* Section headings: 30 to 44px (larger than the 32px proposed, to fill the full-width bands). */
+@utility h-section {
+  font-size: clamp(1.875rem, 1.2rem + 2vw, 2.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
 }
 
 /* Small uppercase kicker used above headings. */
@@ -198,8 +230,9 @@
   min-height: 2.75rem;
   padding: 0.7rem 1.3rem;
   border-radius: var(--t-radius-control);
-  font-weight: 600;
-  font-size: 0.95rem;
+  font-family: var(--t-font-display);
+  font-weight: 500;
+  font-size: 0.9375rem;
   line-height: 1.2;
   transition: background-color 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
 }

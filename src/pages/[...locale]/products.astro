@@ -34,7 +34,7 @@ const statusLabel = { live: 'Live', pilot: 'Pilot', 'in development': 'In develo
               {p.data.kicker}
               <span class="rounded-full border border-line px-2 py-0.5 text-[0.62rem] tracking-[0.1em] text-muted">{statusLabel[p.data.status]}</span>
             </p>
-            <h2 id={`${p.slug}-heading`} class="display mt-4 text-4xl text-ink md:text-5xl">{p.data.title}</h2>
+            <h2 id={`${p.slug}-heading`} class="display h-section mt-4 text-ink">{p.data.title}</h2>
             <p class="mt-5 text-lg leading-relaxed text-muted">{p.data.summary}</p>
             <ul class="mt-7 space-y-2.5">
               {p.data.features.map((f) => (

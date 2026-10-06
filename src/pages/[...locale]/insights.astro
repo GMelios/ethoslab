@@ -42,7 +42,7 @@ const sections = [
     <div class="wrap grid gap-10 py-20 md:py-24 lg:grid-cols-12">
       <div class="lg:col-span-4">
         <p class="eyebrow text-display-accent">Publications</p>
-        <h2 id="publications-heading" class="display mt-4 text-4xl text-ink">Research</h2>
+        <h2 id="publications-heading" class="display h-section mt-4 text-ink">Research</h2>
         <p class="mt-4 leading-relaxed text-muted">Working papers and reports by our team and collaborators.</p>
       </div>
       <ul class="divide-y divide-line border-y border-line lg:col-span-8" role="list">
@@ -72,7 +72,7 @@ const sections = [
       <div class="flex flex-wrap items-end justify-between gap-6">
         <div>
           <p class="eyebrow text-display-accent">{t('nav.work')}</p>
-          <h2 id="projects-heading" class="display mt-4 text-4xl text-ink">Our track record</h2>
+          <h2 id="projects-heading" class="display h-section mt-4 text-ink">Our track record</h2>
         </div>
         <a href={localePath(lang, '/work/')} class="link-arrow">All {work.length} projects, by policy area <span aria-hidden="true">→</span></a>
       </div>
@@ -86,7 +86,7 @@ const sections = [
     <div class="wrap grid gap-10 py-20 md:py-24 lg:grid-cols-12">
       <div class="lg:col-span-4">
         <p class="eyebrow text-display-accent">Events</p>
-        <h2 id="events-heading" class="display mt-4 text-4xl text-ink">Workshops and conferences</h2>
+        <h2 id="events-heading" class="display h-section mt-4 text-ink">Workshops and conferences</h2>
       </div>
       <ul class="space-y-6 lg:col-span-8" role="list">
         {

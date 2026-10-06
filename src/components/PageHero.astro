@@ -30,7 +30,7 @@ const { eyebrow, title, intro, crumbs = [], tone = 'midnight' } = Astro.props;
       )
     }
     {eyebrow && <p class="eyebrow flex items-center gap-3 text-display-accent"><span class="h-0.5 w-8 bg-ember" aria-hidden="true"></span>{eyebrow}</p>}
-    <h1 class="display mt-5 max-w-4xl text-[2.6rem] text-ink md:text-6xl">{title}</h1>
+    <h1 class="display h-hero mt-5 max-w-4xl text-ink">{title}</h1>
     {intro && <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted md:text-xl">{intro}</p>}
     <slot />
   </div>
