@@ -51,6 +51,7 @@ src/content/<collection>/<lang>/<slug>.md
   research/  products/       New content
   pages/  posts/             Imported archive (legal pages are rendered)
 src/assets/wp/               Downloaded WordPress images (optimised at build)
+src/assets/brand/            Brand kit: logo SVGs, palette and usage rules (README.md inside)
 src/data/sectors.json        Sector taxonomy: schema enum, Work filter, importer tagging
 src/data/site.ts             Contact details, nav, partner logos, proof numbers
 src/data/offer.ts            Ethos Test and Ethos Evaluation copy, shared closing CTA

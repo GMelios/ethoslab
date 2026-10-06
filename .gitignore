@@ -6,3 +6,7 @@ screenshots/
 
 # Room Wisdom source material (contains .env, transcripts and run outputs). Never commit.
 crowdwisdom/
+
+# Claude Design exports; the brand kit used by the site lives in src/assets/brand/.
+export/
+*.zip

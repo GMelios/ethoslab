@@ -1,0 +1,313 @@
+{
+  "colors": [
+    {
+      "token": "orange",
+      "name": "Ethos Orange",
+      "hex": "#F1592A",
+      "role": "Primary",
+      "use": "Logo mark and ETHOS, primary buttons, icons, headings 24px and larger. Not for body-size text on white."
+    },
+    {
+      "token": "ember",
+      "name": "Ember",
+      "hex": "#C2410C",
+      "role": "Accent",
+      "use": "Orange for text and links on light backgrounds; hover and pressed state of orange buttons."
+    },
+    {
+      "token": "navy",
+      "name": "Midnight Navy",
+      "hex": "#0B1631",
+      "role": "Dark background · Body text",
+      "use": "Main dark background; LAB and network in the logo; headings and body text on light backgrounds."
+    },
+    {
+      "token": "navy-800",
+      "name": "Navy 800",
+      "hex": "#1B2A4E",
+      "role": "Secondary dark background",
+      "use": "Cards, panels and footer bands sitting on Midnight Navy."
+    },
+    {
+      "token": "white",
+      "name": "White",
+      "hex": "#FFFFFF",
+      "role": "Light background",
+      "use": "Main page background; text on dark backgrounds."
+    },
+    {
+      "token": "slate",
+      "name": "Slate",
+      "hex": "#5B6478",
+      "role": "Muted text (light)",
+      "use": "Captions, metadata and secondary copy on light backgrounds; form-field borders."
+    },
+    {
+      "token": "haze",
+      "name": "Haze",
+      "hex": "#A3ADC2",
+      "role": "Muted text (dark)",
+      "use": "Captions, metadata and secondary copy on dark backgrounds; form-field borders on dark."
+    },
+    {
+      "token": "line",
+      "name": "Line",
+      "hex": "#D5D9E2",
+      "role": "Lines (light)",
+      "use": "Dividers and table rules on light backgrounds. Decorative only."
+    },
+    {
+      "token": "line-dark",
+      "name": "Line Dark",
+      "hex": "#2C3A60",
+      "role": "Lines (dark)",
+      "use": "Dividers and table rules on dark backgrounds. Decorative only."
+    }
+  ],
+  "links": [
+    {
+      "bg": "Light backgrounds",
+      "hex": "#C2410C",
+      "name": "Ember",
+      "note": "underlined; hover Midnight Navy"
+    },
+    {
+      "bg": "Dark backgrounds",
+      "hex": "#F1592A",
+      "name": "Ethos Orange",
+      "note": "underlined; hover White"
+    }
+  ],
+  "matrix": [
+    {
+      "text": "Midnight Navy",
+      "hex": "#0B1631",
+      "cells": [
+        {
+          "bg": "White",
+          "ratio": 17.9,
+          "grade": "AAA"
+        },
+        {
+          "bg": "Midnight Navy",
+          "ratio": null,
+          "grade": "—"
+        },
+        {
+          "bg": "Navy 800",
+          "ratio": 1.27,
+          "grade": "No"
+        },
+        {
+          "bg": "Ethos Orange",
+          "ratio": 5.29,
+          "grade": "AA"
+        }
+      ]
+    },
+    {
+      "text": "Slate",
+      "hex": "#5B6478",
+      "cells": [
+        {
+          "bg": "White",
+          "ratio": 5.93,
+          "grade": "AA"
+        },
+        {
+          "bg": "Midnight Navy",
+          "ratio": 3.02,
+          "grade": "Large/UI"
+        },
+        {
+          "bg": "Navy 800",
+          "ratio": 2.38,
+          "grade": "No"
+        },
+        {
+          "bg": "Ethos Orange",
+          "ratio": 1.75,
+          "grade": "No"
+        }
+      ]
+    },
+    {
+      "text": "Ember",
+      "hex": "#C2410C",
+      "cells": [
+        {
+          "bg": "White",
+          "ratio": 5.18,
+          "grade": "AA"
+        },
+        {
+          "bg": "Midnight Navy",
+          "ratio": 3.46,
+          "grade": "Large/UI"
+        },
+        {
+          "bg": "Navy 800",
+          "ratio": 2.73,
+          "grade": "No"
+        },
+        {
+          "bg": "Ethos Orange",
+          "ratio": 1.53,
+          "grade": "No"
+        }
+      ]
+    },
+    {
+      "text": "Ethos Orange",
+      "hex": "#F1592A",
+      "cells": [
+        {
+          "bg": "White",
+          "ratio": 3.39,
+          "grade": "Large/UI"
+        },
+        {
+          "bg": "Midnight Navy",
+          "ratio": 5.29,
+          "grade": "AA"
+        },
+        {
+          "bg": "Navy 800",
+          "ratio": 4.17,
+          "grade": "Large/UI"
+        },
+        {
+          "bg": "Ethos Orange",
+          "ratio": null,
+          "grade": "—"
+        }
+      ]
+    },
+    {
+      "text": "White",
+      "hex": "#FFFFFF",
+      "cells": [
+        {
+          "bg": "White",
+          "ratio": null,
+          "grade": "—"
+        },
+        {
+          "bg": "Midnight Navy",
+          "ratio": 17.9,
+          "grade": "AAA"
+        },
+        {
+          "bg": "Navy 800",
+          "ratio": 14.11,
+          "grade": "AAA"
+        },
+        {
+          "bg": "Ethos Orange",
+          "ratio": 3.39,
+          "grade": "Large/UI"
+        }
+      ]
+    },
+    {
+      "text": "Haze",
+      "hex": "#A3ADC2",
+      "cells": [
+        {
+          "bg": "White",
+          "ratio": 2.25,
+          "grade": "No"
+        },
+        {
+          "bg": "Midnight Navy",
+          "ratio": 7.94,
+          "grade": "AAA"
+        },
+        {
+          "bg": "Navy 800",
+          "ratio": 6.26,
+          "grade": "AA"
+        },
+        {
+          "bg": "Ethos Orange",
+          "ratio": 1.5,
+          "grade": "No"
+        }
+      ]
+    }
+  ],
+  "bgs": [
+    "White",
+    "Midnight Navy",
+    "Navy 800",
+    "Ethos Orange"
+  ],
+  "sizes": [
+    {
+      "asset": "Horizontal, full mark",
+      "file": "ethos-lab-horizontal-*.svg",
+      "screen": "96px tall (634px wide)",
+      "print": "20mm tall",
+      "use": "Hero, covers, print, slides"
+    },
+    {
+      "asset": "Horizontal, small mark",
+      "file": "ethos-lab-horizontal-small-*.svg",
+      "screen": "24px tall (161px wide)",
+      "print": "30mm wide",
+      "use": "Website header and footer, email signatures, documents"
+    },
+    {
+      "asset": "Stacked, full mark",
+      "file": "ethos-lab-stacked-*.svg",
+      "screen": "260px wide",
+      "print": "55mm wide",
+      "use": "Posters, report covers, square formats"
+    },
+    {
+      "asset": "Stacked, small mark",
+      "file": "ethos-lab-stacked-small-*.svg",
+      "screen": "100px wide",
+      "print": "25mm wide",
+      "use": "Mobile menus, badges, partner grids"
+    },
+    {
+      "asset": "Mark, full",
+      "file": "ethos-lab-mark-*.svg",
+      "screen": "96px tall",
+      "print": "20mm tall",
+      "use": "Large brand moments"
+    },
+    {
+      "asset": "Mark, small",
+      "file": "ethos-lab-mark-small-*.svg",
+      "screen": "24px tall (use up to 95px)",
+      "print": "6mm tall",
+      "use": "Avatars, app icons, social"
+    },
+    {
+      "asset": "Favicon",
+      "file": "favicon.svg / favicon-dark.svg",
+      "screen": "16px",
+      "print": "—",
+      "use": "Browser tabs, bookmarks (16–48px)"
+    }
+  ],
+  "clear": [
+    {
+      "asset": "Horizontal lockups",
+      "rule": "X = 0.5 × logo height (the cap height of ETHOS)",
+      "example": "32px tall logo → 16px clear space"
+    },
+    {
+      "asset": "Stacked lockups",
+      "rule": "X = 0.19 × logo height (the cap height of ETHOS)",
+      "example": "200px tall logo → 38px clear space"
+    },
+    {
+      "asset": "Mark and favicon",
+      "rule": "X = 0.25 × mark height",
+      "example": "48px mark → 12px clear space"
+    }
+  ]
+}

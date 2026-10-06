@@ -1,0 +1,19 @@
+:root {
+  --el-orange: #F1592A; /* Ethos Orange — Primary */
+  --el-ember: #C2410C; /* Ember — Accent */
+  --el-navy: #0B1631; /* Midnight Navy — Dark background · Body text */
+  --el-navy-800: #1B2A4E; /* Navy 800 — Secondary dark background */
+  --el-white: #FFFFFF; /* White — Light background */
+  --el-slate: #5B6478; /* Slate — Muted text (light) */
+  --el-haze: #A3ADC2; /* Haze — Muted text (dark) */
+  --el-line: #D5D9E2; /* Line — Lines (light) */
+  --el-line-dark: #2C3A60; /* Line Dark — Lines (dark) */
+  --el-link: var(--el-ember);
+  --el-link-on-dark: var(--el-orange);
+}
+
+/* Inline-SVG colour swap: the logo files group shapes by role */
+.logo-on-light .logo-primary { fill: var(--el-orange); }
+.logo-on-light .logo-secondary { fill: var(--el-navy); }
+.logo-on-dark .logo-primary { fill: var(--el-orange); }
+.logo-on-dark .logo-secondary { fill: var(--el-white); }

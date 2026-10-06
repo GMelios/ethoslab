@@ -6,9 +6,15 @@
  * (bg-paper, text-ink, font-display, rounded-card ...), and the .band-* classes
  * re-scope them, so any component placed on a dark or coloured section adapts.
  *
- * Palette: midnight navy and the Ethos Lab orange. The old logo pair (orange #F1592A
- * on blue #0F75BB) was 1.45:1 against itself; orange on midnight is 5.3:1.
- * Every text pairing below is >= 4.5:1, display accents >= 3:1 as large text.
+ * Palette: the Ethos Lab brand kit (src/assets/brand/README.md, October 2026).
+ *   Ethos Orange #F1592A  logo, primary buttons, large headings; on dark, also links and labels
+ *   Ember        #C2410C  orange for text and links on light backgrounds
+ *   Midnight     #0B1631  text on light, main dark background
+ *   Navy 800     #1B2A4E  second dark background, panels on midnight
+ *   Slate #5B6478 / Haze #A3ADC2  muted text on light / dark
+ *   Line #D5D9E2 / Line Dark #2C3A60  dividers on light / dark
+ * Only the kit's approved text pairings are used. "Mist" (#F3F4F7) is a light section
+ * tint derived from Line; it carries the same text colours as white.
  *
  * The theme-a/b/c variants are kept so older markup that still carries them compiles.
  * Only theme b is ever active (Base.astro sets data-theme="b").
@@ -34,8 +40,8 @@
   --color-on-inverse: var(--t-on-inverse);
   --color-ember: var(--t-ember);
   --color-midnight: #0b1631;
-  --color-deep: #102a5e;
-  --color-mist: #eef2f8;
+  --color-deep: #1b2a4e;
+  --color-mist: #f3f4f7;
 
   --font-display: var(--t-font-display);
   --font-body: var(--t-font-body);
@@ -48,22 +54,22 @@
 :root,
 [data-theme] {
   --t-paper: #ffffff;
-  --t-surface: #eef2f8;
+  --t-surface: #f3f4f7;
   --t-ink: #0b1631;
-  --t-muted: #4b5873;
-  --t-line: #d9e0ec;
-  /* Links and secondary actions. */
-  --t-accent: #1f55c8;
-  --t-accent-soft: #e3ebfb;
+  --t-muted: #5b6478;
+  --t-line: #d5d9e2;
+  /* Links: Ember on light backgrounds. */
+  --t-accent: #c2410c;
+  --t-accent-soft: #fde4da;
   --t-on-accent: #ffffff;
-  /* Brand orange. As text on white it is too light, so --t-display-accent uses the deeper tone. */
+  /* Ethos Orange for marks and fills; Ember wherever orange is small text on light. */
   --t-ember: #f1592a;
   --t-highlight: #f1592a;
-  --t-display-accent: #c8431a;
-  --t-chart: #1f55c8;
+  --t-display-accent: #c2410c;
+  --t-chart: #c2410c;
   --t-inverse: #0b1631;
   --t-on-inverse: #ffffff;
-  /* Logo: orange parts (a) and the wordmark parts (b). */
+  /* Logo: orange parts (a) and the navy parts (b), which turn white on dark. */
   --t-logo-a: #f1592a;
   --t-logo-b: #0b1631;
   --t-logo-a-inverse: #f1592a;
@@ -86,39 +92,45 @@
   background: #ffffff;
 }
 .band-mist {
-  background: #eef2f8;
+  background: #f3f4f7;
   --t-paper: #ffffff;
   --t-surface: #ffffff;
-  --t-muted: #46536d;
 }
 .band-midnight,
 .band-deep {
   --t-paper: #0b1631;
-  --t-surface: rgb(255 255 255 / 0.06);
+  --t-surface: #1b2a4e;
   --t-ink: #ffffff;
-  --t-muted: #b4c0d6;
-  --t-line: rgb(255 255 255 / 0.16);
-  --t-accent: #8fb4ff;
-  --t-accent-soft: rgb(143 180 255 / 0.14);
+  --t-muted: #a3adc2;
+  --t-line: #2c3a60;
+  --t-accent: #f1592a;
+  --t-accent-soft: rgb(241 89 42 / 0.16);
   --t-on-accent: #0b1631;
-  --t-display-accent: #ff8a5c;
+  --t-display-accent: #f1592a;
+  --t-chart: #f1592a;
   --t-logo-b: #ffffff;
   color: var(--t-ink);
 }
 .band-midnight {
   background: #0b1631;
 }
+/* Navy 800. Orange is only 4.17:1 here, so small orange text and links turn white. */
 .band-deep {
-  background: #102a5e;
-  --t-paper: #102a5e;
-  --t-display-accent: #ff9a73;
+  background: #1b2a4e;
+  --t-paper: #1b2a4e;
+  --t-surface: #0b1631;
+  --t-line: #3a4a74;
+  --t-accent: #ffffff;
+}
+.band-deep :is(.eyebrow, p, a, span, dt, li).text-display-accent:not(.display) {
+  color: #ffffff;
 }
 .band-ember {
   background: #f1592a;
   --t-paper: #f1592a;
   --t-surface: rgb(11 22 49 / 0.08);
   --t-ink: #0b1631;
-  --t-muted: #2a1d1a;
+  --t-muted: #0b1631;
   --t-line: rgb(11 22 49 / 0.25);
   --t-accent: #0b1631;
   --t-display-accent: #0b1631;
@@ -197,14 +209,15 @@
   background: #f1592a;
   color: #0b1631;
   &:hover {
-    background: #ff6d3f;
+    background: #c2410c;
+    color: #ffffff;
   }
   .band-ember & {
     background: #0b1631;
     color: #ffffff;
   }
   .band-ember &:hover {
-    background: #1b2a4d;
+    background: #1b2a4e;
   }
 }
 
@@ -277,7 +290,7 @@
 @utility duotone {
   position: relative;
   isolation: isolate;
-  background: #102a5e;
+  background: #1b2a4e;
   & img {
     filter: grayscale(1) contrast(1.05);
     mix-blend-mode: luminosity;

@@ -37,10 +37,10 @@ const propositions: { label: string; text: string; counts: Record<Stance, number
   { label: 'Insufficient coverage', text: 'A car-free centre would allow people to give up owning a car.', counts: { for: 1, against: 0, mixed: 1, silent: 4 } },
 ];
 const stanceStyle: Record<Stance, { label: string; cls: string }> = {
-  for: { label: 'For', cls: 'bg-[#1f55c8]' },
+  for: { label: 'For', cls: 'bg-[#0b1631]' },
   against: { label: 'Against', cls: 'bg-[#f1592a]' },
-  mixed: { label: 'Mixed', cls: 'bg-[#8a94a8]' },
-  silent: { label: 'Silent, not agreement', cls: 'bg-[repeating-linear-gradient(45deg,#d9e0ec_0_4px,#eef2f8_4px_8px)] ring-1 ring-inset ring-[#c5cedd]' },
+  mixed: { label: 'Mixed', cls: 'bg-[#a3adc2]' },
+  silent: { label: 'Silent, not agreement', cls: 'bg-[repeating-linear-gradient(45deg,#d5d9e2_0_4px,#f3f4f7_4px_8px)] ring-1 ring-inset ring-[#d5d9e2]' },
 };
 
 const steps = [
@@ -249,7 +249,7 @@ const starts = [
         {
           horizons.map((h, i) => (
             <li class:list={['relative rounded-card p-7', i === 0 ? 'bg-midnight text-white' : 'bg-paper']}>
-              <p class:list={['eyebrow', i === 0 ? 'text-[#ff8a5c]' : 'text-muted']}>{h.label}</p>
+              <p class:list={['eyebrow', i === 0 ? 'text-[#f1592a]' : 'text-muted']}>{h.label}</p>
               <h3 class="display mt-3 text-2xl">{h.title}</h3>
               <p class:list={['mt-3 leading-relaxed', i === 0 ? 'text-white/75' : 'text-muted']}>{h.body}</p>
               {h.status && <p class="mt-5 inline-block rounded-full bg-ember px-3 py-1 text-xs font-bold tracking-wide text-midnight uppercase">{h.status}</p>}
@@ -267,7 +267,7 @@ const starts = [
       <h2 id="start-heading" class="display max-w-3xl text-4xl text-ink md:text-[3.4rem]">From conversation to evidence.</h2>
       <p class="eyebrow mt-6 text-ink">Three ways to start</p>
       <ul class="mt-6 grid gap-4 md:grid-cols-3" role="list">
-        {starts.map((s) => <li class="rounded-card bg-white/90 p-7"><h3 class="text-lg font-semibold text-midnight">{s.title}</h3><p class="mt-2 leading-relaxed text-[#2c3650]">{s.body}</p></li>)}
+        {starts.map((s) => <li class="rounded-card bg-white/90 p-7"><h3 class="text-lg font-semibold text-midnight">{s.title}</h3><p class="mt-2 leading-relaxed text-[#0b1631]">{s.body}</p></li>)}
       </ul>
       <div class="mt-10 flex flex-wrap items-center gap-6">
         <a href={localePath(lang, '/contact/')} class="btn btn-primary !px-7">Start a conversation <span aria-hidden="true">→</span></a>
