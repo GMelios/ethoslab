@@ -3,17 +3,18 @@
  * is a proposal for the demo. The words come from the current ethoslab.gr pages:
  * Our History (the ETHOS Framework), Diagnose, Design, Measure, Evaluate, How we work
  * and Domains of Expertise, condensed and with the em dashes taken out.
+ * Domain photos: Unsplash, credited in src/assets/photos/CREDITS.md.
  */
 import type { ImageMetadata } from 'astro';
 
-import aiImg from '../assets/wp/2019/03/pexels-pixabay-373543-scaled.jpg';
-import businessImg from '../assets/wp/2019/03/pexels-kindelmedia-7688336-scaled.jpg';
-import democracyImg from '../assets/wp/2019/03/pexels-joshsorenson-976866-scaled.jpg';
-import educationImg from '../assets/wp/2019/03/pexels-emily-ranquist-493228-1205651-scaled.jpg';
-import governmentImg from '../assets/wp/2019/03/pexels-brett-sayles-937493-scaled.jpg';
-import transportImg from '../assets/wp/2019/03/pexels-vividcafe-681335-scaled.jpg';
-import economyImg from '../assets/wp/2019/03/pexels-davidmcbee-730547-scaled.jpg';
-import environmentImg from '../assets/wp/2019/03/pexels-felix-mittermeier-957024-scaled.jpg';
+import aiImg from '../assets/photos/domain-ai.jpg';
+import businessImg from '../assets/photos/domain-business.jpg';
+import democracyImg from '../assets/photos/domain-democracy.jpg';
+import educationImg from '../assets/photos/domain-education.jpg';
+import governmentImg from '../assets/photos/domain-government.jpg';
+import transportImg from '../assets/photos/domain-transport.jpg';
+import economyImg from '../assets/photos/domain-economy.jpg';
+import environmentImg from '../assets/photos/domain-environment.jpg';
 
 export type Stage = {
   letter: 'E' | 'T' | 'H' | 'O' | 'S';
