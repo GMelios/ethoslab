@@ -7,7 +7,7 @@ import type { Locale } from './config';
 export const ui = {
   en: {
     'site.name': 'Ethos Lab',
-    'site.tagline': 'What works, for whom and why',
+    'site.tagline': 'What works, for whom, and why',
     'nav.home': 'Home',
     'nav.services': 'Our services',
     'nav.products': 'Our products',

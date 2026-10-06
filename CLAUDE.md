@@ -6,7 +6,7 @@
 - Do not invent client names, figures, prices, timelines or quotes. If the brief does not supply one, it is a placeholder.
 - No em dashes anywhere. The importer turns them into commas; older imported pages in `src/content/pages/` may still contain some.
 - Keep the existing visual design when changing copy. Tokens and section bands (`.band-white`, `.band-mist`, `.band-midnight`, `.band-deep`, `.band-ember`) are in `src/styles/global.css`; the homepage is `src/components/home/Home.astro`.
-- Positioning: headline "What works, for whom and why.", second line "Research, data and tools for the decisions that matter." Three services in `src/data/offer.ts`: Research & Design, Evaluation & Impact, Scale up. Domains and principles in `src/data/ethos.ts`. No named method or framework (ETHOS was dropped).
+- Positioning: headline "What works, for whom, and why." (three lines), second line "Research, data and tools for the decisions that matter." Three services in `src/data/offer.ts`: Research & Design, Evaluation & Impact, Scale up. Domains and principles in `src/data/ethos.ts`. No named method or framework (ETHOS was dropped).
 
 ## Checks
 
