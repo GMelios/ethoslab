@@ -7,17 +7,18 @@ wpSlug: participation-analysing-preventing-extremism-through-participation-horiz
 wpUrl: https://ethoslab.gr/project/participation-analysing-preventing-extremism-through-participation-horizon-2020/
 wpCategories:
   - EU Programs
-  - horizon
+  - Horizon
   - Policy
 programmes:
   - EU-funded
-  - Horizon Europe
+  - Horizon 2020
   - Public policy
+date: '2020-12-29'
 cover: ../../../assets/wp/2019/03/participation.png
 summary: PARTICIPATION is a Horizon 2020 funded project aimed at preventing extremism, radicalization and polarization that can lead to violence through more effective social and education policies and interventions.
 sectors:
   - democracy
-  - equality
+  - education
 ---
 
 PARTICIPATION is a Horizon 2020 funded project aimed at preventing extremism, radicalization and polarization that can lead to violence through more effective social and education policies and interventions.

@@ -1,13 +1,13 @@
 # WordPress import report
 
-Generated 2026-09-26 14:08 UTC by `npm run import:wp` in 7s.
+Generated 2026-10-06 10:11 UTC by `npm run import:wp` in 13s.
 Source: https://ethoslab.gr (WordPress REST API, plus public HTML for the `portfolio-item` post type).
 
 | What | Imported | Source |
 |---|---|---|
 | Pages | 51 (34 EN / 17 EL) | `/wp-json/wp/v2/pages` |
 | Posts | 0 (0 EN / 0 EL) | `/wp-json/wp/v2/posts` |
-| Projects | 14 (13 EN / 1 EL) | `portfolio-item` (not in REST): discovered from portfolio grids, fetched as HTML |
+| Projects | 14 (13 EN / 1 EL) | `portfolio-item` (not in REST): listed by `/wp-sitemap.xml` and RSS feeds, covers from portfolio grids, fetched as HTML |
 | People | 9 (9 EN / 0 EL) | `portfolio-item` entries tagged Team / Executive Team / Consultants |
 | Images | 107 files, 34793 KB | 0 downloaded this run, 107 already on disk |
 | Skipped | 15 | see below |
@@ -26,13 +26,13 @@ Project sectors were inferred from keywords in `src/data/sectors.json` and need 
 | en | E.T.Ho.S – EU’s R.E.C Programme 2014-2020 | [source](https://ethoslab.gr/project/personal-injury/) | `src/content/projects/en/ethos.md` | 128 | 0 + cover | EU Programs, Policy, REC Programme |
 | en | EDU-well | [source](https://ethoslab.gr/project/edu-well/) | `src/content/projects/en/edu-well.md` | 92 | 0 + cover | Erasmus+, EU Programs, Policy |
 | en | ESG Lab | [source](https://ethoslab.gr/project/esg-lab/) | `src/content/projects/en/esg-lab.md` | 199 | 1 + cover | Business, Erasmus+, EU Programs |
-| en | Ethos-FCNC partnership for ESG | [source](https://ethoslab.gr/project/ethos-fcnc-partnership-for-esg/) | `src/content/projects/en/ethos-fcnc-partnership-for-esg.md` | 158 | 0 + cover | Business, consultation |
+| en | Ethos-FCNC partnership for ESG | [source](https://ethoslab.gr/project/ethos-fcnc-partnership-for-esg/) | `src/content/projects/en/ethos-fcnc-partnership-for-esg.md` | 158 | 0 + cover | Business, Consultation |
 | en | FAROS – FEATURE A PROTECTIVE ENVIRONMENT FOR LGBTI+ PERSONS | [source](https://ethoslab.gr/project/faros-feature-a-protective-environment-for-lgbti-persons/) | `src/content/projects/en/faros.md` | 83 | 0 + cover | EU Programs, Policy, REC Programme |
 | en | GEM – Gender Equality Matters | [source](https://ethoslab.gr/project/gem-gender-equality-matters/) | `src/content/projects/en/gem.md` | 103 | 0 + cover | EU Programs, Policy, REC Programme |
-| en | HEAL – enHancing rEcovery and integrAtion through networking, empLoyment training and psychological support for women victims of trafficking | [source](https://ethoslab.gr/project/heal-enhancing-recovery-and-integration-through-networking-employment-training-and-psychological-support-for-women-victims-of-trafficking/) | `src/content/projects/en/heal.md` | 390 | 0 + cover | EU Programs, horizon, Policy |
-| en | MultiPoD – Public Spaces for Citizen Deliberation | [source](https://ethoslab.gr/project/multipod-multilingual-and-multicultural-spaces-for-political-deliberation/) | `src/content/projects/en/multipod.md` | 455 | 0 + cover | EU Programs, horizon, Policy |
-| en | PARTICIPATION -Analysing & Preventing Extremism through Participation Horizon 2020 | [source](https://ethoslab.gr/project/participation-analysing-preventing-extremism-through-participation-horizon-2020/) | `src/content/projects/en/participation.md` | 95 | 0 + cover | EU Programs, horizon, Policy |
-| en | The Employment Effects of Disability Benefits Without Work Restrictions | [source](https://ethoslab.gr/project/the-employment-effects-of-disability-benefits-without-work-restrictions/) | `src/content/projects/en/the-employment-effects-of-disability-benefits-without-work.md` | 165 | 0 + cover |  |
+| en | HEAL – enHancing rEcovery and integrAtion through networking, empLoyment training and psychological support for women victims of trafficking | [source](https://ethoslab.gr/project/heal-enhancing-recovery-and-integration-through-networking-employment-training-and-psychological-support-for-women-victims-of-trafficking/) | `src/content/projects/en/heal.md` | 390 | 0 + cover | EU Programs, Horizon, Policy |
+| en | MultiPoD – Public Spaces for Citizen Deliberation | [source](https://ethoslab.gr/project/multipod-multilingual-and-multicultural-spaces-for-political-deliberation/) | `src/content/projects/en/multipod.md` | 455 | 0 + cover | EU Programs, Horizon, Policy |
+| en | PARTICIPATION -Analysing & Preventing Extremism through Participation Horizon 2020 | [source](https://ethoslab.gr/project/participation-analysing-preventing-extremism-through-participation-horizon-2020/) | `src/content/projects/en/participation.md` | 95 | 0 + cover | EU Programs, Horizon, Policy |
+| en | The Employment Effects of Disability Benefits Without Work Restrictions | [source](https://ethoslab.gr/project/the-employment-effects-of-disability-benefits-without-work-restrictions/) | `src/content/projects/en/the-employment-effects-of-disability-benefits-without-work.md` | 165 | 0 + cover | Reports |
 | en | VoiceIt | [source](https://ethoslab.gr/project/voiceit/) | `src/content/projects/en/voiceit.md` | 84 | 0 + cover | EU Programs, Policy, REC Programme |
 
 ## People

@@ -15,11 +15,12 @@ const work = await getWork(lang);
 const sectors = SECTORS.map((s) => ({ id: s.id, label: sectorLabel(s.id, lang), count: work.filter((w) => w.data.sectors.includes(s.id)).length })).filter((s) => s.count > 0);
 ---
 
-<Base title={t('nav.work')} description="Evaluations, experiments and EU research projects by Ethos Lab." lang={lang} path="/work/">
+<Base title={t('nav.work')} description="EU research projects, public programmes and private-sector work by Ethos Lab." lang={lang} path="/work/">
   <PageHero
     eyebrow={t('nav.work')}
-    title="Evaluations, experiments and research projects"
-    intro="Case studies of what we tested, how, and what we found, alongside the European research consortia we are part of."
+    title="Projects"
+    intro="European research consortia, public programmes and private-sector partnerships we have been part of. Filter by policy area."
+    crumbs={[{ label: t('nav.insights'), href: localePath(lang, '/insights/') }]}
   />
 
   <section class="wrap py-10 md:py-14" data-work-filter>

@@ -52,9 +52,12 @@ const facts = [
 
 <Base title={d.title} description={d.summary} lang={lang} path={`/work/${entry.slug}/`}>
   <article>
-    <header class="border-b border-line">
-      <div class="wrap pt-8 pb-12 md:pt-10 md:pb-16">
+    <header class="band-midnight relative overflow-hidden">
+      <div class="grid-dots pointer-events-none absolute inset-0 [mask-image:linear-gradient(90deg,transparent,black_60%)]" aria-hidden="true"></div>
+      <div class="wrap relative pt-8 pb-12 md:pt-10 md:pb-16">
         <nav aria-label="Breadcrumb" class="text-sm text-muted">
+          <a href={localePath(lang, '/insights/')} class="hover:text-ink hover:underline">{t('nav.insights')}</a>
+          <span aria-hidden="true" class="px-1.5">/</span>
           <a href={localePath(lang, '/work/')} class="hover:text-ink hover:underline">{t('nav.work')}</a>
           <span aria-hidden="true" class="px-1.5">/</span>
           <a href={localePath(lang, `/work/?sector=${d.sectors[0]}`)} class="hover:text-ink hover:underline">{sectorLabel(d.sectors[0], lang)}</a>
@@ -63,7 +66,7 @@ const facts = [
         <div class="mt-8 grid gap-10 lg:grid-cols-12">
           <div class="lg:col-span-8">
             <ul class="flex flex-wrap gap-x-4 gap-y-1" aria-label={t('case.sectors')}>
-              {d.sectors.map((s) => <li class="eyebrow text-accent">{sectorLabel(s, lang)}</li>)}
+              {d.sectors.map((s) => <li class="eyebrow text-display-accent">{sectorLabel(s, lang)}</li>)}
             </ul>
             <h1 class="display mt-4 text-4xl text-ink md:text-5xl lg:text-[3.4rem]">{d.title}</h1>
             <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted md:text-xl">{d.summary}</p>
@@ -72,14 +75,14 @@ const facts = [
           <aside class="lg:col-span-4 lg:pt-2">
             {
               d.cover && !d.results && (
-                <div class="mb-6 flex aspect-[4/3] items-center justify-center rounded-card border border-line bg-white p-8">
+                <div class="mb-6 flex aspect-[4/3] items-center justify-center rounded-card bg-white p-8">
                   <Image src={d.cover} alt="" widths={[400, 800]} sizes="(min-width: 1024px) 360px, 90vw" class="max-h-full w-auto object-contain" />
                 </div>
               )
             }
             {
               facts.length > 0 && (
-                <div class="rounded-card border border-line p-6 theme-a:border-x-0 theme-a:border-b-0 theme-a:border-t-2 theme-a:border-t-ink theme-a:px-0 theme-b:border-0 theme-b:bg-surface">
+                <div class="rounded-card bg-surface p-6 ring-1 ring-line">
                   <h2 class="eyebrow text-muted">{t('case.atAGlance')}</h2>
                   <dl class="mt-4 space-y-3 text-sm">
                     {facts.map((f) => (
@@ -162,11 +165,11 @@ const facts = [
 
     {
       related.length > 0 && (
-        <section class="border-t border-line bg-surface/60 theme-b:bg-transparent" aria-labelledby="related-heading">
+        <section class="band-mist mt-8" aria-labelledby="related-heading">
           <div class="wrap py-14">
             <h2 id="related-heading" class="display text-2xl text-ink md:text-3xl">{t('case.related')}</h2>
             <div class="mt-8 grid gap-6 md:grid-cols-3">
-              {related.map((r) => <WorkCard entry={r} lang={lang} />)}
+              {related.map((r) => <WorkCard entry={r} lang={lang} headingLevel="h3" />)}
             </div>
           </div>
         </section>

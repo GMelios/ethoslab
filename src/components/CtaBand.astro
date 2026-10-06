@@ -1,34 +1,29 @@
 ---
 import { localePath } from '../i18n/utils';
-import { useTranslations } from '../i18n/ui';
+import { closingCta } from '../data/offer';
 import type { Locale } from '../i18n/config';
 
 interface Props {
   lang: Locale;
   title?: string;
   body?: string;
-  /** Button label. Defaults to the shared "Commission a study". */
+  /** Button label. Defaults to the shared closing call to action. */
   button?: string;
 }
-const {
-  lang,
-  title = 'Have a policy question that needs a credible answer?',
-  body = 'Tell us what you need to know and by when. We will tell you honestly which design can answer it, what it will cost, and what it cannot tell you.',
-  button,
-} = Astro.props;
-const t = useTranslations(lang);
+const { lang, title = closingCta.title, body = closingCta.body, button = closingCta.button } = Astro.props;
 ---
 
-<section class="wrap py-16 md:py-24">
-  <div class="rounded-card bg-surface px-6 py-12 md:px-14 md:py-16 theme-a:border-t-4 theme-a:border-accent theme-b:bg-accent theme-b:text-on-accent theme-c:bg-inverse theme-c:text-on-inverse">
-    <div class="grid items-end gap-8 md:grid-cols-[1fr_auto]">
-      <div>
-        <h2 class="display max-w-2xl text-3xl md:text-5xl">{title}</h2>
-        <p class="mt-5 max-w-2xl text-lg leading-relaxed opacity-80">{body}</p>
-      </div>
-      <div class="flex flex-wrap gap-3">
-        <a href={localePath(lang, '/contact/')} class="btn btn-primary theme-b:!bg-on-accent theme-b:!text-accent">{button ?? t('cta.commission')}</a>
-      </div>
+<section class="band-ember relative overflow-hidden">
+  <svg class="pointer-events-none absolute -right-24 -bottom-40 h-[28rem] w-[28rem] opacity-[0.13]" viewBox="0 0 200 200" aria-hidden="true">
+    <g fill="none" stroke="#0b1631" stroke-width="1.2">
+      {Array.from({ length: 9 }, (_, i) => <circle cx="100" cy="100" r={12 + i * 11} />)}
+    </g>
+  </svg>
+  <div class="wrap relative grid items-end gap-8 py-16 md:grid-cols-[1fr_auto] md:py-20">
+    <div>
+      <h2 class="display max-w-3xl text-4xl text-ink md:text-[3.4rem]">{title}</h2>
+      <p class="mt-5 max-w-2xl text-lg leading-relaxed text-ink/85">{body}</p>
     </div>
+    <a href={localePath(lang, '/contact/')} class="btn btn-primary !px-7 !py-3.5 text-base">{button} <span aria-hidden="true">→</span></a>
   </div>
 </section>

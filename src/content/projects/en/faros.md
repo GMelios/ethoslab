@@ -13,6 +13,7 @@ programmes:
   - EU-funded
   - Public policy
   - REC / CERV
+date: '2020-12-29'
 cover: ../../../assets/wp/2019/03/faros1.png
 summary: The project aims to strengthen protection, monitoring and prevention mechanisms, as well as combat, hate crimes and homophobic, biphobic and transphobic discrimination and violence against LGBTI+ people, by expanding…
 sectors:

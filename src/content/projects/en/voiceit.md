@@ -13,11 +13,13 @@ programmes:
   - EU-funded
   - Public policy
   - REC / CERV
+date: '2020-12-29'
 cover: ../../../assets/wp/2019/03/voiceit-logo-01-01-1.png
 summary: By engaging institutions such as elected officials, LGBTQI+ organizations, politics and government representatives in a constructive dialogue in the decision-making process regarding LGBTQI+ rights and LGBTQI+…
 sectors:
   - equality
   - democracy
+partner: KMOP (Ethos Lab as subcontractor)
 ---
 
 **The innovative solution of VoiceIt**

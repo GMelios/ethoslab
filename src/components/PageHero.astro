@@ -1,16 +1,36 @@
 ---
+/**
+ * Inner-page hero: a midnight band with a dot grid and an orange rule.
+ * `crumbs` renders a short trail above the eyebrow, e.g. Services / Ethos Test.
+ */
 interface Props {
   eyebrow?: string;
   title: string;
   intro?: string;
+  crumbs?: { label: string; href: string }[];
+  /** 'deep' for a blue band (products), 'midnight' otherwise. */
+  tone?: 'midnight' | 'deep';
 }
-const { eyebrow, title, intro } = Astro.props;
+const { eyebrow, title, intro, crumbs = [], tone = 'midnight' } = Astro.props;
 ---
 
-<section class="border-b border-line theme-b:border-0">
-  <div class="wrap py-14 md:py-20 theme-a:md:py-24">
-    {eyebrow && <p class="eyebrow text-accent">{eyebrow}</p>}
-    <h1 class="display mt-4 max-w-4xl text-4xl text-ink md:text-6xl">{title}</h1>
+<section class:list={[tone === 'deep' ? 'band-deep' : 'band-midnight', 'relative overflow-hidden']}>
+  <div class="grid-dots pointer-events-none absolute inset-0 [mask-image:linear-gradient(90deg,transparent,black_60%)]" aria-hidden="true"></div>
+  <div class="wrap relative py-14 md:py-20">
+    {
+      crumbs.length > 0 && (
+        <nav aria-label="Breadcrumb" class="mb-6 text-sm text-muted">
+          {crumbs.map((c, i) => (
+            <>
+              {i > 0 && <span aria-hidden="true" class="mx-2">/</span>}
+              <a href={c.href} class="hover:text-ink hover:underline">{c.label}</a>
+            </>
+          ))}
+        </nav>
+      )
+    }
+    {eyebrow && <p class="eyebrow flex items-center gap-3 text-display-accent"><span class="h-0.5 w-8 bg-ember" aria-hidden="true"></span>{eyebrow}</p>}
+    <h1 class="display mt-5 max-w-4xl text-[2.6rem] text-ink md:text-6xl">{title}</h1>
     {intro && <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted md:text-xl">{intro}</p>}
     <slot />
   </div>

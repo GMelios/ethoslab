@@ -2,13 +2,16 @@
 @plugin "@tailwindcss/typography";
 
 /*
- * Three homepage directions share one component library. Each direction is a
- * theme: a set of raw --t-* tokens on [data-theme]. Tailwind utilities point at
- * those tokens (bg-paper, text-ink, font-display, rounded-card ...), so any
- * page can be viewed in any direction by switching data-theme on <html>.
+ * One theme, built from raw --t-* tokens. Tailwind utilities point at those tokens
+ * (bg-paper, text-ink, font-display, rounded-card ...), and the .band-* classes
+ * re-scope them, so any component placed on a dark or coloured section adapts.
  *
- * Chart colours (--t-chart) are separate from the brand accent and validated
- * against each theme's surface: lightness band, chroma floor, >= 3:1 contrast.
+ * Palette: midnight navy and the Ethos Lab orange. The old logo pair (orange #F1592A
+ * on blue #0F75BB) was 1.45:1 against itself; orange on midnight is 5.3:1.
+ * Every text pairing below is >= 4.5:1, display accents >= 3:1 as large text.
+ *
+ * The theme-a/b/c variants are kept so older markup that still carries them compiles.
+ * Only theme b is ever active (Base.astro sets data-theme="b").
  */
 
 @custom-variant theme-a (&:where([data-theme="a"], [data-theme="a"] *));
@@ -29,6 +32,10 @@
   --color-inverse: var(--t-inverse);
   --color-display-accent: var(--t-display-accent);
   --color-on-inverse: var(--t-on-inverse);
+  --color-ember: var(--t-ember);
+  --color-midnight: #0b1631;
+  --color-deep: #102a5e;
+  --color-mist: #eef2f8;
 
   --font-display: var(--t-font-display);
   --font-body: var(--t-font-body);
@@ -38,239 +45,84 @@
   --radius-control: var(--t-radius-control);
 }
 
-/* A: editorial, research-led. Ink on paper, burgundy accent, serif display. */
 :root,
-[data-theme="a"] {
-  --t-paper: #fbfaf7;
-  --t-surface: #f2efe8;
-  --t-ink: #13202f;
-  --t-muted: #56606d;
-  --t-line: #dcd6ca;
-  --t-accent: #9b1c31;
-  --t-accent-soft: #f4e4e6;
-  --t-on-accent: #ffffff;
-  --t-highlight: #1f3a5f;
-  --t-chart: #9b1c31;
-  --t-inverse: #13202f;
-  --t-on-inverse: #f4f1ea;
-  --t-display-accent: #9b1c31;
-  /* Logo: orange parts (a) and blue parts (b), on paper and on the inverse colour. */
-  --t-logo-a: #9b1c31;
-  --t-logo-b: #13202f;
-  --t-logo-a-inverse: #e07a88;
-  --t-logo-b-inverse: #f4f1ea;
-  --t-font-display: "Source Serif 4 Variable", Georgia, serif;
-  --t-font-body: "Inter Variable", system-ui, sans-serif;
-  --t-font-label: "Inter Variable", system-ui, sans-serif;
-  --t-radius: 2px;
-  --t-radius-control: 2px;
-  --t-label-tracking: 0.12em;
-  --t-display-weight: 500;
-  --t-display-tracking: -0.015em;
-}
-
-/* B: warm and illustrated. Cream, reddish plum (hue 345°), black line drawings, pills. */
-[data-theme="b"] {
-  --t-paper: #faf3e8;
-  --t-surface: #f2e7d5;
-  --t-ink: #221b1b;
-  --t-muted: #65584f;
-  --t-line: #e2d3bb;
-  --t-accent: #7a2238;
-  --t-accent-soft: #f4dcdf;
-  --t-on-accent: #fff8ef;
-  --t-highlight: #f2b84b;
-  --t-chart: #9c2d45;
-  --t-inverse: #7a2238;
-  --t-on-inverse: #fff8ef;
-  --t-display-accent: #7a2238;
-  --t-logo-a: #7a2238;
-  --t-logo-b: #221b1b;
-  --t-logo-a-inverse: #f2b84b;
-  --t-logo-b-inverse: #fff8ef;
-  --t-font-display: "Manrope Variable", system-ui, sans-serif;
-  --t-font-body: "Manrope Variable", system-ui, sans-serif;
-  --t-font-label: "Manrope Variable", system-ui, sans-serif;
-  --t-radius: 28px;
-  --t-radius-control: 999px;
-  --t-label-tracking: 0.02em;
-  --t-display-weight: 800;
-  --t-display-tracking: -0.03em;
-}
-
-/* C: data-forward. White, electric blue, grotesk + mono numerals. */
-[data-theme="c"] {
+[data-theme] {
   --t-paper: #ffffff;
-  --t-surface: #f4f6fb;
-  --t-ink: #0b1220;
-  --t-muted: #535e72;
-  --t-line: #e2e6ee;
-  --t-accent: #2b4eff;
-  --t-accent-soft: #e8edff;
+  --t-surface: #eef2f8;
+  --t-ink: #0b1631;
+  --t-muted: #4b5873;
+  --t-line: #d9e0ec;
+  /* Links and secondary actions. */
+  --t-accent: #1f55c8;
+  --t-accent-soft: #e3ebfb;
   --t-on-accent: #ffffff;
-  --t-highlight: #0b1220;
-  --t-chart: #2b4eff;
-  --t-inverse: #0b1220;
-  --t-on-inverse: #eef1f8;
-  --t-display-accent: #2b4eff;
-  --t-logo-a: #2b4eff;
-  --t-logo-b: #0b1220;
-  --t-logo-a-inverse: #7d93ff;
-  --t-logo-b-inverse: #eef1f8;
-  --t-font-display: "Inter Tight Variable", system-ui, sans-serif;
-  --t-font-body: "Inter Variable", system-ui, sans-serif;
-  --t-font-label: "JetBrains Mono Variable", ui-monospace, monospace;
-  --t-radius: 14px;
-  --t-radius-control: 10px;
-  --t-label-tracking: 0.08em;
-  --t-display-weight: 600;
-  --t-display-tracking: -0.03em;
-}
-
-/*
- * B in the brand colours of the Ethos Lab logo (orange #F1592A, blue #0F75BB).
- * Brand orange is 3.1:1 on cream: used for large display words and illustration
- * fills only. Buttons and small text use a deeper brand blue (5.4:1); the chart
- * uses brand blue itself (validated against the cream surface).
- */
-[data-theme="b"][data-palette="brand"] {
-  --t-accent: #0c68a8;
-  --t-accent-soft: #fce4d8;
-  --t-on-accent: #ffffff;
+  /* Brand orange. As text on white it is too light, so --t-display-accent uses the deeper tone. */
+  --t-ember: #f1592a;
   --t-highlight: #f1592a;
-  --t-chart: #0f75bb;
-  --t-inverse: #0b3d63;
-  --t-on-inverse: #fff8ef;
-  --t-display-accent: #f1592a;
+  --t-display-accent: #c8431a;
+  --t-chart: #1f55c8;
+  --t-inverse: #0b1631;
+  --t-on-inverse: #ffffff;
+  /* Logo: orange parts (a) and the wordmark parts (b). */
   --t-logo-a: #f1592a;
-  --t-logo-b: #0f75bb;
+  --t-logo-b: #0b1631;
   --t-logo-a-inverse: #f1592a;
   --t-logo-b-inverse: #ffffff;
+  --t-font-display: "Piazzolla Variable", Georgia, serif;
+  --t-font-body: "Commissioner Variable", system-ui, sans-serif;
+  --t-font-label: "Commissioner Variable", system-ui, sans-serif;
+  --t-radius: 6px;
+  --t-radius-control: 4px;
+  --t-label-tracking: 0.14em;
+  --t-display-weight: 620;
+  --t-display-tracking: -0.02em;
 }
 
 /*
- * Brand orange is unreadable on brand blue (1.7:1), so in this palette large
- * accent surfaces use navy and warm labels on dark surfaces use a light brand
- * orange (#ffb08a: 6.4:1 on navy). Buttons and links keep the brand blue.
+ * Section bands. Each re-scopes the tokens so text, lines, links and buttons inside
+ * stay readable without per-component overrides.
  */
-[data-theme="b"][data-palette="brand"] {
-  --t-highlight-on-accent: #ffb08a;
-  --t-highlight-on-inverse: #ffb08a;
+.band-white {
+  background: #ffffff;
 }
-[data-theme="b"][data-palette="brand"] .bg-accent {
-  background-color: var(--t-inverse);
+.band-mist {
+  background: #eef2f8;
+  --t-paper: #ffffff;
+  --t-surface: #ffffff;
+  --t-muted: #46536d;
 }
-
-/*
- * Further palettes for B, rooted in Athens rather than borrowed:
- * every pairing is checked (body and muted text >= 4.5:1, buttons >= 4.5:1,
- * display accents >= 3:1 as large text, labels on dark cards >= 4.5:1) and each
- * chart colour passes the dataviz validator for its surface.
- */
-
-/* Aegean: marble, terracotta and sea. Terracotta carries actions and cards, the sea carries headlines and the footer. */
-[data-theme="b"][data-palette="aegean"] {
-  --t-paper: #f6f3ee;
-  --t-surface: #ece6db;
-  --t-ink: #11212d;
-  --t-muted: #536170;
-  --t-line: #ddd5c8;
-  --t-accent: #9e4222;
-  --t-accent-soft: #dce8ef;
-  --t-on-accent: #ffffff;
-  --t-highlight: #d4613a;
-  --t-highlight-on-accent: #fce3d2;
-  --t-highlight-on-inverse: #f4b294;
-  --t-chart: #2a7aae;
-  --t-inverse: #0a3552;
-  --t-on-inverse: #f6f3ee;
-  --t-display-accent: #0e4a6e;
-  --t-logo-a: #d4613a;
-  --t-logo-b: #0e4a6e;
-  --t-logo-a-inverse: #f08a5d;
-  --t-logo-b-inverse: #f6f3ee;
+.band-midnight,
+.band-deep {
+  --t-paper: #0b1631;
+  --t-surface: rgb(255 255 255 / 0.06);
+  --t-ink: #ffffff;
+  --t-muted: #b4c0d6;
+  --t-line: rgb(255 255 255 / 0.16);
+  --t-accent: #8fb4ff;
+  --t-accent-soft: rgb(143 180 255 / 0.14);
+  --t-on-accent: #0b1631;
+  --t-display-accent: #ff8a5c;
+  --t-logo-b: #ffffff;
+  color: var(--t-ink);
 }
-
-/* Black-figure: black glaze on fired clay, like an Attic vase. The line drawings become vase paintings. */
-[data-theme="b"][data-palette="figure"] {
-  --t-paper: #f2e4cf;
-  --t-surface: #e8d2b3;
-  --t-ink: #17110d;
-  --t-muted: #5a4a3c;
-  --t-line: #d9c09e;
-  --t-accent: #17110d;
-  --t-accent-soft: #e9c29b;
-  --t-on-accent: #f2e4cf;
-  --t-highlight: #c9582a;
-  --t-highlight-on-accent: #e88a55;
-  --t-highlight-on-inverse: #e88a55;
-  --t-chart: #b24a20;
-  --t-inverse: #17110d;
-  --t-on-inverse: #f2e4cf;
-  --t-display-accent: #a8431c;
-  --t-logo-a: #c9582a;
-  --t-logo-b: #17110d;
-  --t-logo-a-inverse: #e88a55;
-  --t-logo-b-inverse: #f2e4cf;
+.band-midnight {
+  background: #0b1631;
 }
-
-/* Olive: the leaf in the logo and the green wordmark, with saffron for warmth. */
-[data-theme="b"][data-palette="olive"] {
-  --t-paper: #f5f1e4;
-  --t-surface: #e9e3cc;
-  --t-ink: #1c2014;
-  --t-muted: #595d48;
-  --t-line: #dad3b8;
-  --t-accent: #3e4e1e;
-  --t-accent-soft: #e3e7c8;
-  --t-on-accent: #fffbef;
-  --t-highlight: #e3a81b;
-  --t-highlight-on-accent: #f0c03c;
-  --t-highlight-on-inverse: #f0c03c;
-  --t-chart: #6e7f2b;
-  --t-inverse: #252b17;
-  --t-on-inverse: #f5f1e4;
-  --t-display-accent: #5b6e22;
-  --t-logo-a: #5e8f2e;
-  --t-logo-b: #1c2014;
-  --t-logo-a-inverse: #a9cf6a;
-  --t-logo-b-inverse: #f5f1e4;
+.band-deep {
+  background: #102a5e;
+  --t-paper: #102a5e;
+  --t-display-accent: #ff9a73;
 }
-
-/* Midnight: a dark palette, night blue with marigold and cream line drawings. */
-[data-theme="b"][data-palette="midnight"] {
-  --t-paper: #0e1726;
-  --t-surface: #16233a;
-  --t-ink: #f2ece0;
-  --t-muted: #a7b0bf;
-  --t-line: #2b3a55;
-  --t-accent: #f2b84b;
-  --t-accent-soft: #1e2e4a;
-  --t-on-accent: #0e1726;
-  --t-highlight: #f2b84b;
-  --t-highlight-on-accent: #0e1726;
-  --t-highlight-on-inverse: #f2b84b;
-  --t-chart: #c4861f;
-  --t-inverse: #070d18;
-  --t-on-inverse: #f2ece0;
-  --t-display-accent: #f2b84b;
-  --t-logo-a: #f2b84b;
-  --t-logo-b: #f2ece0;
-  --t-logo-a-inverse: #f2b84b;
-  --t-logo-b-inverse: #f2ece0;
-  color-scheme: dark;
-}
-/* In a dark palette "ink" is light, so text on marigold chips must be set dark explicitly. */
-[data-theme="b"][data-palette="midnight"] :is(.bg-highlight, .bg-highlight .text-ink, .bg-highlight.text-ink) {
-  color: #0e1726;
-}
-
-/* Warm labels on dark cards use each palette's readable variant. */
-[data-theme="b"] .bg-accent .text-highlight {
-  color: var(--t-highlight-on-accent, var(--t-highlight));
-}
-[data-theme="b"] .bg-inverse .text-highlight {
-  color: var(--t-highlight-on-inverse, var(--t-highlight));
+.band-ember {
+  background: #f1592a;
+  --t-paper: #f1592a;
+  --t-surface: rgb(11 22 49 / 0.08);
+  --t-ink: #0b1631;
+  --t-muted: #2a1d1a;
+  --t-line: rgb(11 22 49 / 0.25);
+  --t-accent: #0b1631;
+  --t-display-accent: #0b1631;
+  color: var(--t-ink);
 }
 
 @layer base {
@@ -280,13 +132,14 @@
     font-family: var(--t-font-body);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
   }
   body {
-    background: var(--t-paper);
+    background: #ffffff;
   }
   ::selection {
-    background: var(--t-accent-soft);
-    color: var(--t-ink);
+    background: #ffd9cb;
+    color: #0b1631;
   }
   :focus-visible {
     outline: 2px solid var(--t-accent);
@@ -297,12 +150,13 @@
 @utility display {
   font-family: var(--t-font-display);
   font-weight: var(--t-display-weight);
+  font-optical-sizing: auto;
   letter-spacing: var(--t-display-tracking);
   line-height: 1.04;
   text-wrap: balance;
 }
 
-/* Small uppercase kicker used above headings. Mono in C, sans elsewhere. */
+/* Small uppercase kicker used above headings. */
 @utility eyebrow {
   font-family: var(--t-font-label);
   font-size: 0.75rem;
@@ -314,7 +168,7 @@
 
 @utility wrap {
   width: 100%;
-  max-width: 76rem;
+  max-width: 78rem;
   margin-inline: auto;
   padding-inline: 1rem;
   @media (width >= 40rem) {
@@ -330,27 +184,51 @@
   align-items: center;
   gap: 0.5rem;
   min-height: 2.75rem;
-  padding: 0.65rem 1.2rem;
+  padding: 0.7rem 1.3rem;
   border-radius: var(--t-radius-control);
   font-weight: 600;
   font-size: 0.95rem;
   line-height: 1.2;
-  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
 }
 
+/* Orange with midnight text: 5.3:1, and it reads as the brand on every band except orange. */
 @utility btn-primary {
-  background: var(--t-accent);
-  color: var(--t-on-accent);
+  background: #f1592a;
+  color: #0b1631;
   &:hover {
-    background: color-mix(in oklab, var(--t-accent), black 14%);
+    background: #ff6d3f;
+  }
+  .band-ember & {
+    background: #0b1631;
+    color: #ffffff;
+  }
+  .band-ember &:hover {
+    background: #1b2a4d;
   }
 }
 
 @utility btn-ghost {
-  border: 1px solid color-mix(in oklab, var(--t-ink), transparent 70%);
+  border: 1px solid color-mix(in oklab, var(--t-ink), transparent 65%);
   color: var(--t-ink);
   &:hover {
     border-color: var(--t-ink);
+  }
+}
+
+/* Underlined text link with an arrow, used for "see all" style links. */
+@utility link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 600;
+  color: var(--t-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--t-ember);
+  text-underline-offset: 6px;
+  &:hover {
+    text-decoration-color: currentColor;
   }
 }
 
@@ -363,7 +241,7 @@
   --tw-prose-bullets: var(--t-muted);
   --tw-prose-counters: var(--t-muted);
   --tw-prose-quotes: var(--t-ink);
-  --tw-prose-quote-borders: var(--t-accent);
+  --tw-prose-quote-borders: var(--t-ember);
   --tw-prose-hr: var(--t-line);
   --tw-prose-captions: var(--t-muted);
   --tw-prose-th-borders: var(--t-line);
@@ -393,6 +271,31 @@
   text-transform: uppercase;
   color: var(--t-muted);
   white-space: nowrap;
+}
+
+/* Photos in the brand duotone: midnight shadows, the image's light kept. */
+@utility duotone {
+  position: relative;
+  isolation: isolate;
+  background: #102a5e;
+  & img {
+    filter: grayscale(1) contrast(1.05);
+    mix-blend-mode: luminosity;
+    opacity: 0.55;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgb(11 22 49 / 0) 30%, rgb(11 22 49 / 0.85) 100%);
+    pointer-events: none;
+  }
+}
+
+/* Fine dotted grid used behind dark heroes. */
+@utility grid-dots {
+  background-image: radial-gradient(rgb(255 255 255 / 0.09) 1px, transparent 1px);
+  background-size: 22px 22px;
 }
 
 @media (prefers-reduced-motion: reduce) {

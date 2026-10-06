@@ -1,100 +1,128 @@
 ---
+/**
+ * Two-row header: a small utility row (Contact us, languages) above the logo,
+ * primary navigation and search. On small screens the utility links move into the menu.
+ */
 import Logo from './Logo.astro';
 import { nav } from '../data/site';
 import { useTranslations } from '../i18n/ui';
-import { localePath } from '../i18n/utils';
+import { localePath, withBase } from '../i18n/utils';
 import { LOCALES, PUBLISHED_LOCALES, type Locale } from '../i18n/config';
 
 interface Props {
   lang: Locale;
-  /** Where the logo points. Direction pages point back to themselves. */
-  homeHref?: string;
 }
-const { lang, homeHref } = Astro.props;
+const { lang } = Astro.props;
 const t = useTranslations(lang);
-const path = Astro.url.pathname;
-const isActive = (p: string) => path.startsWith(localePath(lang, p));
+const path = Astro.url.pathname.replace(/\/?$/, '/');
+const home = localePath(lang, '/');
+const isActive = (p: string) => {
+  const target = localePath(lang, p);
+  return target === home ? path === home : path.startsWith(target);
+};
+// The Work pages sit under Insights in the navigation.
+const section = (p: string) => isActive(p) || (p === '/insights/' && path.startsWith(withBase('/work/')));
+
+const languages = Object.entries(LOCALES).map(([code, meta]) => ({
+  code: code as Locale,
+  label: meta.label,
+  htmlLang: meta.htmlLang,
+  live: PUBLISHED_LOCALES.includes(code as Locale),
+}));
+const utilityLink = 'eyebrow !text-[0.7rem] !tracking-[0.12em] text-ink/75 transition-colors hover:text-ink';
 ---
 
-<header class="relative z-30 theme-a:border-t-4 theme-a:border-accent theme-b:px-3 theme-b:pt-3 theme-c:border-b theme-c:border-line theme-c:bg-paper">
-  <div
-    class="wrap flex h-16 items-center justify-between gap-6 theme-a:h-20 theme-a:border-b theme-a:border-line
-           theme-b:h-16 theme-b:max-w-[74rem] theme-b:rounded-full theme-b:border theme-b:border-line theme-b:bg-paper/90 theme-b:backdrop-blur theme-b:pl-6 theme-b:pr-2"
-  >
-    <a href={homeHref ?? localePath(lang, '/')} data-home-link class="block shrink-0" aria-label="Ethos Lab, home">
-      <Logo class="h-8 sm:h-9 theme-a:sm:h-10" />
-    </a>
-
-    <nav aria-label="Primary" class="hidden items-center gap-1 lg:flex">
-      {
-        nav.map((item) => (
-          <a
-            href={localePath(lang, item.path)}
-            aria-current={isActive(item.path) ? 'page' : undefined}
-            class="rounded-control px-3 py-2 text-[0.94rem] font-medium text-ink/80 transition-colors hover:text-ink aria-[current=page]:text-accent
-                   theme-a:text-[0.8rem] theme-a:font-semibold theme-a:uppercase theme-a:tracking-[0.1em]
-                   theme-b:hover:bg-surface"
-          >
-            {t(item.key)}
-          </a>
-        ))
-      }
-    </nav>
-
-    <div class="flex items-center gap-2">
-      <div class="hidden items-center gap-1 text-xs font-semibold sm:flex" aria-label="Language">
+<header class="relative z-30 border-b border-line bg-white">
+  <div class="wrap">
+    <div class="hidden h-10 items-center justify-end gap-7 lg:flex">
+      <a href={localePath(lang, '/contact/')} class={utilityLink} aria-current={isActive('/contact/') ? 'page' : undefined}>{t('nav.contact')}</a>
+      <ul class="flex items-center gap-5" aria-label="Language">
         {
-          Object.entries(LOCALES).map(([code, meta]) =>
-            PUBLISHED_LOCALES.includes(code as Locale) ? (
-              <a href={localePath(code as Locale, '/')} lang={meta.htmlLang} aria-current={code === lang ? 'true' : undefined} class="rounded px-1.5 py-1 text-ink aria-[current=true]:underline aria-[current=true]:underline-offset-4">
-                {meta.short}
-              </a>
-            ) : (
-              <span lang={meta.htmlLang} aria-disabled="true" title="Greek version in preparation" class="cursor-not-allowed rounded px-1.5 py-1 text-muted/60">
-                {meta.short}
-              </span>
-            ),
-          )
+          languages.map((l) => (
+            <li>
+              {l.live ? (
+                <a href={localePath(l.code, '/')} lang={l.htmlLang} aria-current={l.code === lang ? 'true' : undefined} class={`${utilityLink} aria-[current=true]:text-ink aria-[current=true]:underline aria-[current=true]:decoration-ember aria-[current=true]:decoration-2 aria-[current=true]:underline-offset-[6px]`}>
+                  {l.label}
+                </a>
+              ) : (
+                <span lang={l.htmlLang} title={t('lang.soon')} class="eyebrow cursor-not-allowed !text-[0.7rem] !tracking-[0.12em] text-ink/40">{l.label}</span>
+              )}
+            </li>
+          ))
         }
-      </div>
-      <a href={localePath(lang, '/contact/')} class="btn btn-primary hidden !min-h-10 !py-2 text-sm sm:inline-flex theme-a:!px-4">
-        <span class="theme-c:hidden">{t('nav.contact')}</span>
-        <span class="hidden theme-c:inline">{t('cta.talk')}</span>
+      </ul>
+    </div>
+
+    <div class="flex h-16 items-center justify-between gap-6 lg:h-[4.25rem] lg:pb-3">
+      <a href={home} class="block shrink-0" aria-label="Ethos Lab, home">
+        <Logo class="h-7 sm:h-8 lg:h-9" />
       </a>
-      <button
-        type="button"
-        class="inline-flex h-11 w-11 items-center justify-center rounded-control text-ink lg:hidden"
-        aria-expanded="false"
-        aria-controls="mobile-nav"
-        data-menu-toggle
-      >
-        <span class="sr-only" data-menu-label>{t('nav.menu')}</span>
-        <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-          <path data-icon-open d="M4 7h16M4 12h16M4 17h16"></path>
-          <path data-icon-close class="hidden" d="M6 6l12 12M18 6L6 18"></path>
-        </svg>
-      </button>
+
+      <div class="flex items-center gap-1 lg:gap-2">
+        <nav aria-label="Primary" class="hidden lg:block">
+          <ul class="flex items-center gap-1">
+            {
+              nav.map((item) => (
+                <li>
+                  <a
+                    href={localePath(lang, item.path)}
+                    aria-current={section(item.path) ? 'page' : undefined}
+                    class="relative block px-3.5 py-2 text-[1.02rem] font-medium text-ink transition-colors after:absolute after:inset-x-3.5 after:-bottom-0.5 after:h-0.5 after:origin-left after:scale-x-0 after:bg-ember after:transition-transform hover:after:scale-x-100 aria-[current=page]:after:scale-x-100"
+                  >
+                    {t(item.key)}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+
+        <button type="button" class="inline-flex h-11 w-11 items-center justify-center rounded-control text-ink hover:bg-mist" data-search-open aria-haspopup="dialog">
+          <span class="sr-only">{t('nav.search')}</span>
+          <svg viewBox="0 0 24 24" class="h-[1.3rem] w-[1.3rem]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="10.5" cy="10.5" r="6.5"></circle>
+            <path d="M15.5 15.5L20 20"></path>
+          </svg>
+        </button>
+
+        <button
+          type="button"
+          class="inline-flex h-11 w-11 items-center justify-center rounded-control text-ink lg:hidden"
+          aria-expanded="false"
+          aria-controls="mobile-nav"
+          data-menu-toggle
+        >
+          <span class="sr-only" data-menu-label>{t('nav.menu')}</span>
+          <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path data-icon-open d="M4 7h16M4 12h16M4 17h16"></path>
+            <path data-icon-close class="hidden" d="M6 6l12 12M18 6L6 18"></path>
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 
-  <nav
-    id="mobile-nav"
-    aria-label="Primary"
-    hidden
-    class="absolute inset-x-0 top-full border-b border-line bg-paper shadow-lg lg:hidden theme-b:mx-3 theme-b:mt-2 theme-b:rounded-card theme-b:border"
-  >
+  <nav id="mobile-nav" aria-label="Primary" hidden class="absolute inset-x-0 top-full border-b border-line bg-white shadow-xl lg:hidden">
     <ul class="wrap flex flex-col py-3">
       {
         nav.map((item) => (
           <li>
-            <a href={localePath(lang, item.path)} aria-current={isActive(item.path) ? 'page' : undefined} class="block border-b border-line/70 py-3.5 text-lg font-medium text-ink aria-[current=page]:text-accent">
+            <a href={localePath(lang, item.path)} aria-current={section(item.path) ? 'page' : undefined} class="block border-b border-line/70 py-3.5 text-lg font-medium text-ink aria-[current=page]:text-display-accent">
               {t(item.key)}
             </a>
           </li>
         ))
       }
-      <li class="pt-4 pb-2">
-        <a href={localePath(lang, '/contact/')} class="btn btn-primary w-full justify-center">{t('nav.contact')}</a>
+      <li class="flex items-center justify-between gap-4 pt-5 pb-2">
+        <a href={localePath(lang, '/contact/')} class="btn btn-primary">{t('nav.contact')}</a>
+        <span class="text-sm text-muted">
+          {languages.map((l, i) => (
+            <>
+              {i > 0 && <span aria-hidden="true"> · </span>}
+              {l.live ? <a href={localePath(l.code, '/')} lang={l.htmlLang} class="font-semibold text-ink">{l.label}</a> : <span lang={l.htmlLang} title={t('lang.soon')}>{l.label}</span>}
+            </>
+          ))}
+        </span>
       </li>
     </ul>
   </nav>

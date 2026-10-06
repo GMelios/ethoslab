@@ -3,3 +3,6 @@ dist/
 .astro/
 .DS_Store
 screenshots/
+
+# Room Wisdom source material (contains .env, transcripts and run outputs). Never commit.
+crowdwisdom/

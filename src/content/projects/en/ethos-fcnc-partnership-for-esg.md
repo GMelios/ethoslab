@@ -7,14 +7,16 @@ wpSlug: ethos-fcnc-partnership-for-esg
 wpUrl: https://ethoslab.gr/project/ethos-fcnc-partnership-for-esg/
 wpCategories:
   - Business
-  - consultation
+  - Consultation
 programmes:
   - Private sector
   - Consulting
+date: '2025-11-22'
 cover: ../../../assets/wp/2019/03/untitled.jpg
 summary: Ethos Lab provides specialized advisory services to FCNC to support the development of a comprehensive Corporate Governance and Corporate Social Responsibility (CSR) Framework for its clients. Our work typically…
 sectors:
   - economy
+partner: FCNC
 ---
 
 Ethos Lab provides specialized advisory services to FCNC to support the development of a comprehensive Corporate Governance and Corporate Social Responsibility (CSR) Framework for its clients. Our work typically involves in-depth analysis of the client's existing structures and practices, followed by the design and delivery of key governance tools and organizational improvements.

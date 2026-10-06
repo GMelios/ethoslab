@@ -1,13 +1,14 @@
 /**
  * The two products and the shared closing call to action, from "Ethos Lab homepage copy (v2)".
- * Used by homepage B, /test and /evaluation. `todos` are [TODO]s in the brief: they render
+ * Used by the homepage, /services/ and the two engagement pages under /services/. `todos` are [TODO]s in the brief: they render
  * as visible placeholders. Do not fill them with invented timelines or prices.
  */
 export type Product = {
   id: 'test' | 'evaluation';
   name: string;
   path: string;
-  illustration: 'test' | 'explain';
+  /** ETHOS stages this engagement covers. */
+  stages: string;
   tagline: string;
   for: string;
   questions: string;
@@ -20,8 +21,8 @@ export const products: Product[] = [
   {
     id: 'test',
     name: 'Ethos Test',
-    path: '/test/',
-    illustration: 'test',
+    path: '/services/ethos-test/',
+    stages: 'Explore, Test, Hone',
     tagline: 'Know before you launch.',
     for: 'A message, letter, policy option, service change, campaign or product idea you have not rolled out yet.',
     questions: 'Which version will people actually respond to? Will this change be understood and accepted?',
@@ -37,8 +38,8 @@ export const products: Product[] = [
   {
     id: 'evaluation',
     name: 'Ethos Evaluation',
-    path: '/evaluation/',
-    illustration: 'explain',
+    path: '/services/ethos-evaluation/',
+    stages: 'Optimise, Scale',
     tagline: 'Prove what worked.',
     for: 'A programme, policy or funded project that is running, finished, or about to start.',
     questions: 'Did it change outcomes? For whom, and why? What should we keep, fix or stop?',

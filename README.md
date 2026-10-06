@@ -1,4 +1,6 @@
-# Ethos Lab website (prototype)
+# Ethos Lab website (demo)
+
+Live demo: https://gmelios.github.io/ethoslab/ (deployed from `main` by `.github/workflows/deploy.yml`).
 
 Astro 7 + Tailwind 4, content in Markdown collections, English now and structured for Greek.
 
@@ -15,17 +17,27 @@ Astro 7 runs `astro dev` as a background daemon when it is not attached to a ter
 | Command | What it does |
 |---|---|
 | `npm run dev` | Dev server on port 4321 |
-| `npm run build` | Static build to `dist/` (also writes `sitemap-index.xml`) |
+| `npm run build` | Static build to `dist/`, plus the Pagefind search index and `sitemap-index.xml` |
 | `npm run import:wp` | Re-import pages, posts, projects, people and images from ethoslab.gr. Report: `docs/wp-import-report.md` |
-| `npm run shots` | Build first, then screenshot every direction and key page at 1440px and 390px into `screenshots/`, with layout checks |
-| `npm run shots -- --themes=a,b,c` | Also screenshot the inner pages in each direction |
+| `npm run shots` | Build first, then screenshot the key pages at 1440px and 390px into `screenshots/`, with layout checks |
 | `npm run check` | Type-check |
 
-## Reviewing the three directions
+## Site map
 
-- `/a` editorial and research-led, `/b` warm and illustrated, `/c` data-forward.
-- `/` renders whichever is set in `src/data/site.ts` (`homeDirection`).
-- Each direction is a **theme** (CSS tokens in `src/styles/global.css`), not a separate site. Visiting `/b` remembers B, and every inner page (Work, case studies, About...) then renders in B. The black switcher at the bottom does the same; `?theme=c` on any URL works too. Delete `PrototypeBar.astro` from `Base.astro` once a direction is chosen.
+| Page | Route | Source |
+|---|---|---|
+| Home | `/` | `src/components/home/Home.astro` |
+| Our services (the ETHOS method, domains, how we work) | `/services/` | `src/data/ethos.ts` |
+| Ethos Test, Ethos Evaluation | `/services/ethos-test/`, `/services/ethos-evaluation/` | `src/data/offer.ts` |
+| Our products | `/products/`, `/products/reframing-welfare-index/`, `/products/room-wisdom/` | `src/content/products/`, page files |
+| Room Wisdom demo dashboard (synthetic session) | `/products/room-wisdom/demo/` | `public/products/room-wisdom/demo/index.html` |
+| Insights (publications, projects, events) | `/insights/` | `src/content/research/`, `src/data/events.ts` |
+| Projects | `/work/`, `/work/<slug>/` | `src/content/projects/` |
+| About us, Contact us | `/about/`, `/contact/` | page files |
+
+`/test/`, `/evaluation/`, `/what-we-do/` and `/research/` redirect to their new homes. Search is built by Pagefind after `astro build` (`dist/pagefind/`), so it works in `npm run preview`, not in `npm run dev`.
+
+To build exactly as GitHub Pages does: `SITE=https://gmelios.github.io BASE_PATH=/ethoslab npm run build`.
 
 ## Structure
 
@@ -42,11 +54,10 @@ src/assets/wp/               Downloaded WordPress images (optimised at build)
 src/data/sectors.json        Sector taxonomy: schema enum, Work filter, importer tagging
 src/data/site.ts             Contact details, nav, partner logos, proof numbers
 src/data/offer.ts            Ethos Test and Ethos Evaluation copy, shared closing CTA
-src/data/services.ts         Placeholder positioning copy (homepage A, About)
+src/data/ethos.ts            Services: ETHOS stages, domains, principles
 src/i18n/                    Locales, UI strings (EN + draft EL), helpers
 src/pages/[...locale]/       Every localised route (EN at /, EL at /el/)
-src/pages/{a,b,c}.astro      Direction review pages
-src/components/home/         HomeA, HomeB, HomeC
+src/components/home/Home.astro  Homepage
 src/components/EffectSizeChart.astro   Forest plot with confidence intervals
 ```
 
@@ -69,7 +80,7 @@ The build fails if any estimate lies outside its own interval. Filled points mea
 
 ## Importer
 
-- Pages and posts come from `/wp-json/wp/v2/`. The theme's `portfolio-item` type (projects and team profiles) is not exposed in REST, so projects are discovered from the portfolio grid in page content and fetched as HTML.
+- Pages and posts come from `/wp-json/wp/v2/`. The theme's `portfolio-item` type (projects and team profiles) is not exposed in REST, so projects are discovered from the WordPress sitemaps, RSS feeds and portfolio grids, and fetched as HTML.
 - Re-running is safe: WordPress fields and the body are refreshed; your fields (`sectors`, `featured`, `listed`, `results`, ...) are kept. Add `sync: false` to freeze an entry. `--prune` deletes imported files that no longer exist upstream.
 - Sectors on imported projects are a keyword guess. Review them.
 
@@ -85,11 +96,6 @@ All fonts include Greek glyphs.
 
 | What | Where | Marked on site |
 |---|---|---|
-| Three case studies with simulated results | `src/content/projects/en/{benefit-letters-trial,youth-hiring-subsidy,trust-local-government}.md` | "Illustrative" |
-| Four research entries | `src/content/research/en/*` (all except the SSRN paper) | "Sample" |
-| Proof numbers (3 of 4) | `src/data/site.ts` `proof` | "Sample figure" |
-| B homepage: research-methods wording, logo strip, three Recent work cards, client quote, Experimentalist note | `src/components/home/HomeB.astro` | "Placeholder" |
-| Ethos Test and Ethos Evaluation: timelines, price, formats, examples | `src/data/offer.ts`, `src/pages/[...locale]/{test,evaluation}.astro` | "Placeholder" |
-| Product descriptions | `src/content/products/en/*` | "Draft copy" |
-| Positioning and service copy | `src/data/services.ts`, page intros | About page only |
-| Contact form (not connected) | `src/pages/[...locale]/contact.astro` | "Prototype" |
+| Ethos Test and Ethos Evaluation: timelines, price, formats, examples | `src/data/offer.ts`, `src/pages/[...locale]/services/ethos-{test,evaluation}.astro` | "Placeholder" |
+| MultiPoD language experiment: provisional results from deliverable D1.1, under review | `src/content/projects/en/multipod-language-experiment.md` | "Provisional" |
+| Greek version | `src/i18n/`, `src/content/*/el/` | "Ελληνικά" shown as coming soon |

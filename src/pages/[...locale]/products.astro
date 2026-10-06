@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import PageHero from '../../components/PageHero.astro';
 import CtaBand from '../../components/CtaBand.astro';
-import { getLocalized, localeParams } from '../../i18n/utils';
+import { getLocalized, localeParams, localePath } from '../../i18n/utils';
 import { useTranslations } from '../../i18n/ui';
 import type { Locale } from '../../i18n/config';
 
@@ -14,47 +14,42 @@ const products = (await getLocalized('products', lang)).sort((a, b) => a.data.or
 const statusLabel = { live: 'Live', pilot: 'Pilot', 'in development': 'In development' } as const;
 ---
 
-<Base title={t('nav.products')} description="Data products and AI tools from Ethos Lab." lang={lang} path="/products/">
+<Base title={t('nav.products')} description="The Reframing Welfare Index and Room Wisdom, from Ethos Lab." lang={lang} path="/products/">
   <PageHero
+    tone="deep"
     eyebrow={t('nav.products')}
-    title="Tools that put evidence in front of decision makers"
-    intro="We build a small number of data products, each on data we understand well enough to defend."
+    title="Tools built on data we can defend"
+    intro="Alongside our research and evaluation work, we build products that put rigorous evidence in front of decision makers: one for measuring welfare across Europe's regions, one for hearing every voice in a group conversation."
   />
 
-  <div class="wrap space-y-10 py-14 md:space-y-16 md:py-20">
-    {
-      products.map((p, i) => (
-        <article class="grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
-          <div class:list={['overflow-hidden rounded-card border border-line bg-surface', i % 2 === 1 && 'lg:order-2']}>
-            {p.data.cover && <Image src={p.data.cover} alt={`${p.data.title} interface`} widths={[600, 1200]} sizes="(min-width: 1024px) 560px, 92vw" class="h-full w-full object-cover" />}
-          </div>
+  {
+    products.map((p, i) => (
+      <section class:list={[i % 2 === 0 ? 'band-white' : 'band-mist']} aria-labelledby={`${p.slug}-heading`}>
+        <div class="wrap grid items-center gap-10 py-20 md:py-24 lg:grid-cols-2 lg:gap-16">
+          <a href={localePath(lang, `/products/${p.slug}/`)} class:list={['block overflow-hidden rounded-card shadow-[0_30px_60px_-30px_rgb(11_22_49/0.45)] ring-1 ring-line', i % 2 === 1 && 'lg:order-2', p.slug === 'room-wisdom' ? 'bg-[#f6f5f1]' : 'bg-white']} tabindex="-1" aria-hidden="true">
+            {p.data.cover && <Image src={p.data.cover} alt="" widths={[600, 1200]} sizes="(min-width: 1024px) 580px, 92vw" class="aspect-[16/10] w-full object-cover object-top" />}
+          </a>
           <div>
-            <p class="eyebrow flex flex-wrap items-center gap-3 text-accent">
+            <p class="eyebrow flex flex-wrap items-center gap-3 text-display-accent">
               {p.data.kicker}
-              <span class="rounded-control bg-accent-soft px-2 py-0.5 text-[0.65rem] text-accent">{statusLabel[p.data.status]}</span>
-              {p.data.placeholder && <span class="sample-badge">Draft copy</span>}
+              <span class="rounded-full border border-line px-2 py-0.5 text-[0.62rem] tracking-[0.1em] text-muted">{statusLabel[p.data.status]}</span>
             </p>
-            <h2 class="display mt-4 text-3xl text-ink md:text-4xl">{p.data.title}</h2>
+            <h2 id={`${p.slug}-heading`} class="display mt-4 text-4xl text-ink md:text-5xl">{p.data.title}</h2>
             <p class="mt-5 text-lg leading-relaxed text-muted">{p.data.summary}</p>
-            <ul class="mt-6 space-y-2">
+            <ul class="mt-7 space-y-2.5">
               {p.data.features.map((f) => (
                 <li class="flex gap-3 text-ink">
-                  <svg viewBox="0 0 20 20" class="mt-1 h-4 w-4 shrink-0 text-accent" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                  <span class="mt-[0.7em] h-0.5 w-4 shrink-0 bg-ember" aria-hidden="true" />
                   {f}
                 </li>
               ))}
             </ul>
-            {p.data.url && (
-              <a href={p.data.url} class="btn btn-ghost mt-8" rel="noopener">
-                Visit {p.data.title}
-                <span aria-hidden="true">→</span>
-              </a>
-            )}
+            <a href={localePath(lang, `/products/${p.slug}/`)} class="btn btn-primary mt-9">Discover {p.data.title} <span aria-hidden="true">→</span></a>
           </div>
-        </article>
-      ))
-    }
-  </div>
+        </div>
+      </section>
+    ))
+  }
 
-  <CtaBand lang={lang} title="Need a custom index or dashboard?" body="We build bespoke data tools for public bodies and consortia, on the same standards as our evaluations." />
+  <CtaBand lang={lang} title="Want to use one of our products?" body="Tell us about your region, your study or your consultation. We will reply within two working days." button="Talk to us" />
 </Base>

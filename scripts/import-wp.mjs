@@ -13,8 +13,13 @@
  *   posts     REST  /wp-json/wp/v2/posts            -> src/content/posts/<lang>/<slug>.md
  *   projects  The theme registers projects as a `portfolio-item` post type with
  *             show_in_rest = false, so REST cannot list them. We discover them from
- *             the portfolio grid embedded in REST page content (title, tags, cover),
- *             then fetch each project's public HTML and convert its <main>.
+ *             three public sources and merge them:
+ *               - WP core sitemaps (/wp-sitemap.xml): every published item, plus the
+ *                 list of portfolio-category terms;
+ *               - RSS feeds (?post_type=portfolio-item, ?portfolio-category=<slug>):
+ *                 publish dates and each item's categories (tags);
+ *               - portfolio grids embedded in REST page content: cover images.
+ *             Then we fetch each project's public HTML and convert its <main>.
  *                                                  -> src/content/projects/<lang>/<slug>.md
  *   people    The same post type also holds team profiles (tagged Team, Executive
  *             Team, Consultants). They are split out by tag.
@@ -180,6 +185,12 @@ function summarise(markdown, max = 220) {
   return para.slice(0, max).replace(/\s+\S*$/, '') + '…';
 }
 
+/** The WP `horizon` tag covers both framework programmes; the text says which. */
+function programmeLabel(category, text) {
+  if (category === 'horizon' && /horizon\s*2020|\bH2020\b/i.test(text) && !/horizon europe/i.test(text)) return 'Horizon 2020';
+  return PROGRAMMES[category];
+}
+
 // Used when no sector keyword matches (e.g. stub entries with no body text).
 const CATEGORY_SECTORS = { business: 'economy', 'commerce-el': 'economy', consultation: 'economy', 'consultation-el': 'economy', horizon: 'democracy', erasmus: 'education', 'rec-programme': 'equality' };
 
@@ -267,6 +278,8 @@ function toMarkdown(html) {
   return turndown
     .turndown(html)
     .replace(/ /g, ' ')
+    // House style has no em dashes: "X—Y" and "X — Y" become "X, Y".
+    .replace(/\s*—\s*/g, ', ')
     .replace(/^[ \t]+$/gm, '')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
@@ -449,9 +462,85 @@ async function importRestType(endpoint, collection) {
 }
 
 // ---------------------------------------------------------------------------
-// Projects and people (portfolio-item: discovered from grids, fetched as HTML)
+// Projects and people (portfolio-item: discovered from sitemaps, feeds and grids,
+// fetched as HTML)
 // ---------------------------------------------------------------------------
-function discoverPortfolio(pages) {
+const xmlLocs = (xml) => [...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map((m) => decodeEntities(m[1]));
+const xmlTag = (xml, tag) => xml.match(new RegExp(`<${tag}>(?:<!\\[CDATA\\[)?([\\s\\S]*?)(?:\\]\\]>)?</${tag}>`))?.[1];
+const normUrl = (u) => u.replace(/\/?$/, '/');
+
+/** All items of a paged RSS feed: [{ url, title, date }], plus the channel title. */
+async function readFeed(query) {
+  const items = [];
+  let channel;
+  for (let page = 1; page <= 50; page++) {
+    let xml;
+    try {
+      xml = (await http(`${BASE}/?${query}&feed=rss2&paged=${page}`, { as: 'text' })).data;
+    } catch (err) {
+      if (err.status === 404) break; // past the last page
+      throw err;
+    }
+    channel ??= decodeEntities(xmlTag(xml.split('<item>')[0], 'title'));
+    const chunk = xml.split('<item>').slice(1);
+    if (!chunk.length) break;
+    for (const it of chunk) {
+      const url = xmlTag(it, 'link');
+      if (!url) continue;
+      const pub = xmlTag(it, 'pubDate');
+      items.push({ url: normUrl(decodeEntities(url)), title: decodeEntities(xmlTag(it, 'title')), date: pub ? new Date(pub).toISOString().slice(0, 10) : undefined });
+    }
+  }
+  return { channel, items };
+}
+
+/**
+ * Every published portfolio item, from WordPress core sitemaps and feeds. Unlike the
+ * grids, this also finds items no page links to. Returns Map url -> partial entry.
+ */
+async function discoverFromSitemaps() {
+  const found = new Map();
+  const get = (url) => {
+    if (!found.has(url)) found.set(url, { url, categories: [], categoryLabels: {} });
+    return found.get(url);
+  };
+  let index;
+  try {
+    index = xmlLocs((await http(`${BASE}/wp-sitemap.xml`, { as: 'text' })).data);
+  } catch (err) {
+    report.errors.push(`sitemap index failed: ${err.message} (falling back to portfolio grids only)`);
+    return found;
+  }
+  const sitemaps = (re) => index.filter((u) => re.test(new URL(u).pathname));
+
+  for (const sm of sitemaps(/wp-sitemap-posts-portfolio-item-\d+\.xml$/)) {
+    for (const url of xmlLocs((await http(sm, { as: 'text' })).data)) get(normUrl(url));
+  }
+
+  // Dates (and titles) from the post-type feed.
+  const all = await readFeed('post_type=portfolio-item');
+  for (const it of all.items) Object.assign(get(it.url), { title: it.title, date: it.date });
+
+  // Category membership from one feed per portfolio-category term.
+  const terms = [];
+  for (const sm of sitemaps(/wp-sitemap-taxonomies-portfolio-category-\d+\.xml$/)) {
+    for (const url of xmlLocs((await http(sm, { as: 'text' })).data)) terms.push(new URL(url).pathname.split('/').filter(Boolean).pop());
+  }
+  await pool(terms, 4, async (slug) => {
+    const feed = await readFeed(`portfolio-category=${encodeURIComponent(slug)}`);
+    const label = feed.channel?.replace(/\s+[–—-]\s+[^–—-]+$/, '') || slug.replace(/-/g, ' ');
+    for (const it of feed.items) {
+      const e = get(it.url);
+      if (!e.categories.includes(slug)) e.categories.push(slug);
+      e.categoryLabels[slug] = label;
+      e.title ??= it.title;
+    }
+  });
+  console.log(`  portfolio-item: ${found.size} in sitemap/feeds, ${terms.length} categories`);
+  return found;
+}
+
+function discoverPortfolio(pages, listed = new Map()) {
   const found = new Map();
   for (const p of pages) {
     const html = p.content?.rendered || '';
@@ -478,6 +567,24 @@ function discoverPortfolio(pages) {
     }
   }
 
+  // Merge in items from the sitemap and feeds. Grid data wins for titles and covers;
+  // categories are unioned (the feeds know tags some grids omit, e.g. Reports).
+  for (const [url, s] of listed) {
+    const g = found.get(url);
+    if (!g && !s.title) {
+      report.errors.push(`portfolio item without a title in feeds: ${url}`);
+      continue;
+    }
+    found.set(url, {
+      url,
+      title: g?.title || s.title,
+      date: s.date,
+      categories: [...new Set([...(g?.categories || []), ...s.categories])],
+      categoryLabels: { ...(g?.categoryLabels || {}), ...s.categoryLabels }, // term names beat grid filter labels
+      cover: g?.cover,
+    });
+  }
+
   // Classify and assign slugs up front so cross-links can be rewritten while converting.
   const entries = [...found.values()];
   for (const e of entries) {
@@ -491,7 +598,7 @@ function discoverPortfolio(pages) {
 }
 
 async function importPortfolio(pages) {
-  const entries = discoverPortfolio(pages);
+  const entries = discoverPortfolio(pages, await discoverFromSitemaps());
   const n = (k) => entries.filter((e) => e.kind === k).length;
   console.log(`  portfolio-item: ${entries.length} discovered (${n('projects')} projects, ${n('people')} people)`);
   await pool(entries, 4, async (entry) => {
@@ -508,7 +615,9 @@ async function importPortfolio(pages) {
     const main = doc.querySelector('main') || doc.querySelector('.site-main');
     main?.querySelectorAll('.gtc_portfolio_title').forEach((n) => n.remove()); // duplicated H2 title
     const { root, images } = cleanHtml(main?.innerHTML || '');
-    const cover = entry.cover?.startsWith('http') ? originalOf(entry.cover) : undefined;
+    // Grid thumbnail first; items no grid shows fall back to their first uploaded image.
+    const firstUpload = root.querySelectorAll('img').map((i) => i.getAttribute('src')).find(isUpload);
+    const cover = entry.cover?.startsWith('http') ? originalOf(entry.cover) : firstUpload && originalOf(firstUpload);
     // The cover usually repeats as the first body image; drop the duplicate.
     if (cover) for (const img of root.querySelectorAll('img')) if (originalOf(img.getAttribute('src')) === cover) { images.delete(img.getAttribute('src')); img.remove(); }
     let body = toMarkdown(root.toString());
@@ -538,7 +647,8 @@ async function importPortfolio(pages) {
       if (role) body = body.replace(/^#{1,4}\s+.+\n*/m, '').trim();
       seed = { role, summary: summarise(body) };
     } else {
-      fields.programmes = [...new Set(entry.categories.map((c) => PROGRAMMES[c]).filter(Boolean))];
+      fields.date = entry.date;
+      fields.programmes = [...new Set(entry.categories.map((c) => programmeLabel(c, `${entry.title} ${root.text}`)).filter(Boolean))];
       seed = { summary: summarise(body), sectors: inferSectors(`${entry.title} ${root.text}`, entry.categories) };
     }
 
@@ -589,7 +699,7 @@ Source: ${BASE} (WordPress REST API, plus public HTML for the \`portfolio-item\`
 |---|---|---|
 | Pages | ${report.pages.length} (${byLang(report.pages)}) | \`/wp-json/wp/v2/pages\` |
 | Posts | ${report.posts.length} (${byLang(report.posts)}) | \`/wp-json/wp/v2/posts\` |
-| Projects | ${report.projects.length} (${byLang(report.projects)}) | \`portfolio-item\` (not in REST): discovered from portfolio grids, fetched as HTML |
+| Projects | ${report.projects.length} (${byLang(report.projects)}) | \`portfolio-item\` (not in REST): listed by \`/wp-sitemap.xml\` and RSS feeds, covers from portfolio grids, fetched as HTML |
 | People | ${report.people.length} (${byLang(report.people)}) | \`portfolio-item\` entries tagged Team / Executive Team / Consultants |
 | Images | ${imgs.length} files, ${kb(imgs.reduce((n, i) => n + i.bytes, 0))} | ${imgs.filter((i) => !i.cached).length} downloaded this run, ${imgs.filter((i) => i.cached).length} already on disk |
 | Skipped | ${report.skipped.length} | see below |

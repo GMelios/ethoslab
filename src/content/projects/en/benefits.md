@@ -13,6 +13,7 @@ programmes:
   - EU-funded
   - Horizon Europe
   - Public policy
+date: '2025-05-21'
 cover: ../../../assets/wp/2019/03/benefits-logo.png
 summary: BENEFITS will develop a Holistic Appraisal Framework (HAF) to measure the social, economic and environmental value-added of social services. HAF consists of a set of innovative research, technology and experimental…
 sectors:

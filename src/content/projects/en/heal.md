@@ -7,12 +7,13 @@ wpSlug: heal-enhancing-recovery-and-integration-through-networking-employment-tr
 wpUrl: https://ethoslab.gr/project/heal-enhancing-recovery-and-integration-through-networking-employment-training-and-psychological-support-for-women-victims-of-trafficking/
 wpCategories:
   - EU Programs
-  - horizon
+  - Horizon
   - Policy
 programmes:
   - EU-funded
   - Horizon Europe
   - Public policy
+date: '2020-12-29'
 cover: ../../../assets/wp/2019/03/heal-logo.png
 summary: The general objective of HEAL is to facilitate the integration of third country national women victims of trafficking for the purpose of sexual exploitation through promoting a comprehensive healing process based on…
 sectors:

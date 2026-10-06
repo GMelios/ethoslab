@@ -11,46 +11,67 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const year = new Date().getFullYear();
+
+const columns = [
+  {
+    title: t('nav.services'),
+    links: [
+      { label: 'The ETHOS method', path: '/services/#method' },
+      { label: 'Ethos Test', path: '/services/ethos-test/' },
+      { label: 'Ethos Evaluation', path: '/services/ethos-evaluation/' },
+      { label: 'Where we work', path: '/services/#domains' },
+    ],
+  },
+  {
+    title: t('nav.products'),
+    links: [
+      { label: 'Reframing Welfare Index', path: '/products/reframing-welfare-index/' },
+      { label: 'Room Wisdom', path: '/products/room-wisdom/' },
+    ],
+  },
+  {
+    title: 'Ethos Lab',
+    links: [...nav.filter((n) => n.path !== '/' && n.path !== '/services/' && n.path !== '/products/').map((n) => ({ label: t(n.key), path: n.path })), { label: t('nav.work'), path: '/work/' }, { label: t('nav.contact'), path: '/contact/' }],
+  },
+];
 ---
 
-<footer class="mt-auto bg-inverse text-on-inverse theme-b:mx-3 theme-b:mb-3 theme-b:rounded-card">
-  <div class="wrap grid gap-10 py-14 md:grid-cols-12">
-    <div class="md:col-span-5">
-      <Logo inverse class="h-10" />
-      <p class="mt-4 max-w-sm text-sm leading-relaxed text-on-inverse/75 theme-b:hidden">
-        Experiments and causal evaluation for public bodies, funders and research consortia across Europe. Based in Athens.
-      </p>
-      <!-- Direction B uses the v2 homepage copy. -->
-      <p class="mt-4 hidden max-w-sm text-sm leading-relaxed text-on-inverse/75 theme-b:block">
+<footer class="band-midnight mt-auto">
+  <div class="wrap grid gap-12 pt-16 pb-12 md:grid-cols-12">
+    <div class="md:col-span-4">
+      <Logo inverse class="h-9" />
+      <p class="mt-6 max-w-sm text-[0.95rem] leading-relaxed text-muted">
         Ethos Lab tests ideas with real people before launch and proves what worked after. For governments, organisations and research consortia across Europe. Based in Athens.
       </p>
+      <ul class="mt-6 flex gap-5 text-sm">
+        {site.social.map((s) => <li><a class="font-semibold underline decoration-ember decoration-2 underline-offset-4 hover:decoration-white" href={s.href} rel="noopener">{s.label}</a></li>)}
+      </ul>
     </div>
 
-    <nav aria-label="Footer" class="md:col-span-3">
-      <h2 class="eyebrow text-on-inverse/60">Navigate</h2>
-      <ul class="mt-4 space-y-2 text-sm">
-        {nav.map((item) => <li><a class="hover:underline" href={localePath(lang, item.path)}>{t(item.key)}</a></li>)}
-        <li><a class="hover:underline" href={localePath(lang, '/contact/')}>{t('nav.contact')}</a></li>
-      </ul>
+    <nav aria-label="Footer" class="grid gap-10 sm:grid-cols-3 md:col-span-5">
+      {
+        columns.map((c) => (
+          <div>
+            <h2 class="eyebrow text-muted">{c.title}</h2>
+            <ul class="mt-4 space-y-2.5 text-[0.95rem]">
+              {c.links.map((l) => <li><a class="hover:underline" href={localePath(lang, l.path)}>{l.label}</a></li>)}
+            </ul>
+          </div>
+        ))
+      }
     </nav>
 
-    <div class="text-sm md:col-span-4">
-      <h2 class="eyebrow text-on-inverse/60">{t('nav.contact')}</h2>
+    <div class="text-[0.95rem] md:col-span-3">
+      <h2 class="eyebrow text-muted">{t('nav.contact')}</h2>
       <address class="mt-4 space-y-3 not-italic leading-relaxed">
-        <p><span class="text-on-inverse/60">{t('footer.offices')}:</span> {site.offices.street}, {site.offices.postcode} {site.offices.city}</p>
-        <p><span class="text-on-inverse/60">{t('footer.hq')}:</span> {site.registered.street}, {site.registered.city}</p>
-        <p>
-          <a class="hover:underline" href={`mailto:${site.email}`}>{site.email}</a><br />
-          <a class="hover:underline" href={site.phoneHref}>{site.phone}</a>
-        </p>
+        <p><a class="font-semibold hover:underline" href={`mailto:${site.email}`}>{site.email}</a><br /><a class="hover:underline" href={site.phoneHref}>{site.phone}</a></p>
+        <p><span class="text-muted">{t('footer.offices')}:</span><br />{site.offices.street}, {site.offices.postcode} {site.offices.city}</p>
+        <p><span class="text-muted">{t('footer.hq')}:</span><br />{site.registered.street}, {site.registered.city}</p>
       </address>
-      <ul class="mt-4 flex gap-4 text-sm">
-        {site.social.map((s) => <li><a class="underline-offset-4 hover:underline" href={s.href} rel="noopener">{s.label}</a></li>)}
-      </ul>
     </div>
   </div>
-  <div class="border-t border-on-inverse/15">
-    <div class="wrap flex flex-col gap-2 py-5 text-xs text-on-inverse/60 sm:flex-row sm:items-center sm:justify-between">
+  <div class="border-t border-line">
+    <div class="wrap flex flex-col gap-2 py-5 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
       <p>© {year} Ethos Lab. {t('footer.rights')} {t('footer.registry')} {site.gemi}</p>
       <p class="flex gap-4">
         <a class="hover:underline" href={localePath(lang, '/legal/privacy-policy-gdpr/')}>{t('footer.privacy')}</a>

@@ -13,11 +13,19 @@ programmes:
   - EU-funded
   - Public policy
   - REC / CERV
+date: '2020-12-29'
 cover: ../../../assets/wp/2019/03/gem-logo-1.png
 summary: The GEM project was initiated by staff in Dublin City University (DCU) who were joined by four partners in Spain, Italy, Greece and The Netherlands all of whom are passionate about gender equality rights as a way of…
 sectors:
   - equality
   - education
+partner: Dublin City University (DCU), which initiated the project
+countries:
+  - Ireland
+  - Spain
+  - Italy
+  - Greece
+  - Netherlands
 ---
 
 The GEM project was initiated by staff in Dublin City University (DCU) who were joined by four partners in Spain, Italy, Greece and The Netherlands all of whom are passionate about gender equality rights as a way of tackling gender stereotyping, gender-based bullying and gender-based violence (GBV).

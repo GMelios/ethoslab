@@ -13,7 +13,8 @@ export function sectorLabel(id: string, lang: Locale) {
 export async function getWork(lang: Locale) {
   const all = await getLocalized('projects', lang);
   return all
-    .filter((p) => p.data.listed)
+    // Illustrative case studies (simulated numbers) never appear on the demo.
+    .filter((p) => p.data.listed && !p.data.illustrative)
     .sort(
       (a, b) =>
         Number(Boolean(b.data.results)) - Number(Boolean(a.data.results)) ||

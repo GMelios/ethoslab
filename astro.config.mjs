@@ -3,8 +3,12 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
+// The demo is served from GitHub Pages at https://gmelios.github.io/ethoslab/.
+// SITE and BASE_PATH are set by .github/workflows/deploy.yml; locally the site runs at /.
 export default defineConfig({
-  site: 'https://ethoslab.gr',
+  site: process.env.SITE ?? 'https://ethoslab.gr',
+  base: process.env.BASE_PATH ?? '/',
+  trailingSlash: 'ignore',
   // English lives at the root, Greek will live under /el/. Routes are generated from
   // PUBLISHED_LOCALES in src/i18n/config.ts, so only English pages are built today.
   i18n: {
@@ -15,8 +19,7 @@ export default defineConfig({
   integrations: [
     sitemap({
       i18n: { defaultLocale: 'en', locales: { en: 'en-GB', el: 'el-GR' } },
-      // Review routes (directions, story variants, the review hub) stay out of the sitemap.
-      filter: (page) => !/^\/(a|b|c|review)(\/|$)/.test(new URL(page).pathname),
+      filter: (page) => !/\/search\/?$/.test(new URL(page).pathname),
     }),
   ],
   vite: { plugins: [tailwindcss()] },

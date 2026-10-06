@@ -11,6 +11,7 @@ wpCategories:
 programmes:
   - Commerce
   - Consulting
+date: '2019-03-30'
 cover: ../../../assets/wp/2019/03/pkr.png
 summary: More info soon
 sectors:

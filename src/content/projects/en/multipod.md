@@ -7,16 +7,18 @@ wpSlug: multipod-multilingual-and-multicultural-spaces-for-political-deliberatio
 wpUrl: https://ethoslab.gr/project/multipod-multilingual-and-multicultural-spaces-for-political-deliberation/
 wpCategories:
   - EU Programs
-  - horizon
+  - Horizon
   - Policy
 programmes:
   - EU-funded
   - Horizon Europe
   - Public policy
+date: '2024-11-20'
 cover: ../../../assets/wp/2019/03/multipod-logo.png
 summary: The MultiPoD project pursues an open, context-aware, multilingual and cross-cultural approach to supporting communication and collaboration in a European Public Space for Citizen Deliberation. It will develop new…
 sectors:
   - democracy
+  - digital
 featured: true
 order: 11
 ---

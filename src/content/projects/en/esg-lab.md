@@ -13,6 +13,7 @@ programmes:
   - Private sector
   - Erasmus+
   - EU-funded
+date: '2026-05-22'
 cover: ../../../assets/wp/2019/03/esg-lab.jpg
 summary: The ESG LAB Project is a collaborative initiative that unites a consortium of expert organizations dedicated to advancing Environmental, Social, and Governance (ESG) practices. Our goal is to help Small and Medium-sized…
 sectors:
@@ -20,7 +21,7 @@ sectors:
   - environment
 ---
 
-The ESG LAB Project is a collaborative initiative that unites a consortium of expert organizations dedicated to advancing Environmental, Social, and Governance (ESG) practices. Our goal is to help Small and Medium-sized Enterprises (SMEs) in Blue Economy sectors—such as tourism, shipbuilding, and aquaculture—adopt sustainable practices that align with the European Green Deal and global sustainability goals.
+The ESG LAB Project is a collaborative initiative that unites a consortium of expert organizations dedicated to advancing Environmental, Social, and Governance (ESG) practices. Our goal is to help Small and Medium-sized Enterprises (SMEs) in Blue Economy sectors, such as tourism, shipbuilding, and aquaculture, adopt sustainable practices that align with the European Green Deal and global sustainability goals.
 
 Through tailored training, a digital learning platform, and a Community of Practice (CoP), we empower SMEs to reduce their environmental footprint, enhance social equity, and strengthen governance. By fostering innovation and resilience, the ESG LAB Project helps businesses gain a competitive edge and contribute to a sustainable future.
 

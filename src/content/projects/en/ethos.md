@@ -13,10 +13,16 @@ programmes:
   - EU-funded
   - Public policy
   - REC / CERV
+date: '2019-03-30'
 cover: ../../../assets/wp/2019/03/ethospr.png
 summary: Eliminating Transphobic, HOmophobic and biphobic Stereotypes through better media representation
 sectors:
   - equality
+partner: KMOP (Ethos Lab as subcontractor)
+countries:
+  - Greece
+  - Lithuania
+  - Croatia
 ---
 
 Eliminating Transphobic, HOmophobic and biphobic Stereotypes through better media representation

@@ -1,15 +1,10 @@
 ---
-/** Home renders whichever direction is selected in src/data/site.ts (homeDirection). */
-import HomeA from '../../components/home/HomeA.astro';
-import HomeB from '../../components/home/HomeB.astro';
-import HomeC from '../../components/home/HomeC.astro';
+import Home from '../../components/home/Home.astro';
 import { localeParams } from '../../i18n/utils';
-import { site } from '../../data/site';
 import type { Locale } from '../../i18n/config';
 
 export const getStaticPaths = localeParams;
 const { lang } = Astro.props as { lang: Locale };
-const Home = { a: HomeA, b: HomeB, c: HomeC }[site.homeDirection];
 ---
 
 <Home lang={lang} />

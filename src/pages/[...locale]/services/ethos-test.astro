@@ -1,0 +1,92 @@
+---
+/** Ethos Test: from the v2 copy brief. Placeholders mark its [TODO]s. */
+import Base from '../../../layouts/Base.astro';
+import PageHero from '../../../components/PageHero.astro';
+import CtaBand from '../../../components/CtaBand.astro';
+import SpecRow from '../../../components/SpecRow.astro';
+import CheckList from '../../../components/CheckList.astro';
+import Placeholder from '../../../components/Placeholder.astro';
+import { localeParams, localePath } from '../../../i18n/utils';
+import { stages } from '../../../data/ethos';
+import { useTranslations } from '../../../i18n/ui';
+import type { Locale } from '../../../i18n/config';
+import { productById } from '../../../data/offer';
+
+export const getStaticPaths = localeParams;
+const { lang } = Astro.props as { lang: Locale };
+const product = productById('test');
+const t = useTranslations(lang);
+const covered = stages.filter((s) => s.engagement === 'test');
+
+const testable = ['Messages and letters', 'Policy options', 'Service changes', 'Campaigns', 'Products and prices'];
+const steps = ['Agree the question and options', 'Design the test', 'Run it with real people', 'Deliver the answer'];
+const receive = ['The results', 'Confidence level', 'Recommendations', 'A short presentation for decision makers'];
+const formats = ['Online survey experiment', 'Field trial', 'A/B test on your own channels'];
+const chip = 'rounded-control bg-mist px-4 py-2 font-medium text-ink';
+---
+
+<Base title={product.name} description={`${product.tagline} ${product.weDo}`} lang={lang} path={product.path}>
+  <PageHero eyebrow={product.name} title={product.tagline} intro={product.weDo} crumbs={[{ label: t('nav.services'), href: localePath(lang, '/services/') }]}>
+    <ul class="mt-10 flex flex-wrap gap-3" aria-label="ETHOS stages covered">
+      {
+        covered.map((s) => (
+          <li>
+            <a href={`${localePath(lang, '/services/')}#${s.id}`} class="flex items-center gap-3 rounded-control border border-line py-2 pr-4 pl-2 text-sm font-semibold text-ink hover:border-ink">
+              <span class="display flex h-8 w-8 items-center justify-center rounded-control bg-ember text-lg text-midnight">{s.letter}</span>
+              {s.name}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </PageHero>
+
+  <SpecRow heading="What you can test" id="what" first>
+    <ul class="flex flex-wrap gap-3 text-lg">
+      {testable.map((x) => <li class={chip}>{x}</li>)}
+    </ul>
+  </SpecRow>
+
+  <SpecRow heading="How it works" id="how">
+    <ol class="grid gap-4 sm:grid-cols-2">
+      {
+        steps.map((s, i) => (
+          <li class="rounded-card border-t-2 border-ember bg-mist p-6">
+            <p class="font-label text-sm font-semibold text-display-accent">{String(i + 1).padStart(2, '0')}</p>
+            <p class="mt-2 text-lg leading-snug font-semibold text-ink">{s}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </SpecRow>
+
+  <SpecRow heading="What you receive" id="receive">
+    <CheckList items={receive} />
+  </SpecRow>
+
+  <SpecRow heading="Formats" id="formats">
+    <ul class="flex flex-wrap gap-3 text-lg">
+      {formats.map((x) => <li class={chip}>{x}</li>)}
+    </ul>
+    <Placeholder note="Confirm formats" class="mt-4" />
+  </SpecRow>
+
+  <SpecRow heading="Timeline and price" id="timeline">
+    <dl class="flex flex-wrap gap-x-12 gap-y-4">
+      {
+        product.todos.map((todo) => (
+          <div>
+            <dt class="eyebrow text-display-accent">{todo.label}</dt>
+            <dd class="mt-2"><Placeholder note={todo.note} /></dd>
+          </div>
+        ))
+      }
+    </dl>
+  </SpecRow>
+
+  <SpecRow heading="Example" id="example">
+    <Placeholder block note="A real Ethos Test engagement" />
+  </SpecRow>
+
+  <CtaBand lang={lang} />
+</Base>

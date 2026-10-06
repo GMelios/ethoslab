@@ -1,0 +1,110 @@
+---
+/**
+ * Insights: publications, projects and events. Sample research entries
+ * (placeholder: true) are left out of the demo.
+ */
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import WorkCard from '../../components/WorkCard.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { localeParams, localePath } from '../../i18n/utils';
+import { useTranslations } from '../../i18n/ui';
+import type { Locale } from '../../i18n/config';
+import { getResearch, getWork, formatDate, RESEARCH_TYPES } from '../../lib/content';
+import { events } from '../../data/events';
+
+export const getStaticPaths = localeParams;
+const { lang } = Astro.props as { lang: Locale };
+const t = useTranslations(lang);
+const research = (await getResearch(lang)).filter((r) => !r.data.placeholder);
+const work = await getWork(lang);
+const sections = [
+  { id: 'publications', label: 'Publications', count: research.length },
+  { id: 'projects', label: t('nav.work'), count: work.length },
+  { id: 'events', label: 'Events', count: events.length },
+];
+---
+
+<Base title={t('nav.insights')} description="Research, projects and events from Ethos Lab." lang={lang} path="/insights/">
+  <PageHero
+    eyebrow={t('nav.insights')}
+    title="What we are learning"
+    intro="Research, projects and events from our work with researchers, public bodies and clients across Europe."
+  >
+    <nav aria-label="On this page" class="mt-10">
+      <ul class="flex flex-wrap gap-3">
+        {sections.map((s) => <li><a href={`#${s.id}`} class="inline-flex items-center gap-2 rounded-control border border-line px-4 py-2 text-sm font-semibold text-ink hover:border-ink">{s.label} <span class="text-muted tabular-nums">{s.count}</span></a></li>)}
+      </ul>
+    </nav>
+  </PageHero>
+
+  <section id="publications" class="band-white scroll-mt-4" aria-labelledby="publications-heading">
+    <div class="wrap grid gap-10 py-20 md:py-24 lg:grid-cols-12">
+      <div class="lg:col-span-4">
+        <p class="eyebrow text-display-accent">Publications</p>
+        <h2 id="publications-heading" class="display mt-4 text-4xl text-ink">Research</h2>
+        <p class="mt-4 leading-relaxed text-muted">Working papers and reports by our team and collaborators.</p>
+      </div>
+      <ul class="divide-y divide-line border-y border-line lg:col-span-8" role="list">
+        {
+          research.map((r) => (
+            <li class="group relative py-8">
+              <p class="eyebrow text-muted">{RESEARCH_TYPES[r.data.type]} · <time datetime={r.data.date.toISOString().slice(0, 10)}>{formatDate(r.data.date, lang)}</time></p>
+              <h3 class="display mt-3 text-2xl text-ink md:text-3xl">
+                {r.data.url ? <a href={r.data.url} rel="noopener" class="after:absolute after:inset-0 group-hover:underline group-hover:decoration-ember group-hover:decoration-2 group-hover:underline-offset-4">{r.data.title}</a> : r.data.title}
+              </h3>
+              <p class="mt-2 text-sm text-muted">{r.data.authors.join(', ')}{r.data.venue && ` · ${r.data.venue}`}</p>
+              <p class="mt-4 leading-relaxed text-ink/85">{r.data.summary}</p>
+              {r.data.highlights.length > 0 && (
+                <ul class="mt-5 space-y-2">
+                  {r.data.highlights.map((h) => <li class="flex gap-3 text-sm text-ink/85"><span class="mt-[0.6em] h-0.5 w-4 shrink-0 bg-ember" aria-hidden="true" />{h}</li>)}
+                </ul>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section id="projects" class="band-mist scroll-mt-4" aria-labelledby="projects-heading">
+    <div class="wrap py-20 md:py-24">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <p class="eyebrow text-display-accent">{t('nav.work')}</p>
+          <h2 id="projects-heading" class="display mt-4 text-4xl text-ink">Our track record</h2>
+        </div>
+        <a href={localePath(lang, '/work/')} class="link-arrow">All {work.length} projects, by policy area <span aria-hidden="true">→</span></a>
+      </div>
+      <ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3" role="list">
+        {work.slice(0, 6).map((w) => <li><WorkCard entry={w} lang={lang} /></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section id="events" class="band-white scroll-mt-4" aria-labelledby="events-heading">
+    <div class="wrap grid gap-10 py-20 md:py-24 lg:grid-cols-12">
+      <div class="lg:col-span-4">
+        <p class="eyebrow text-display-accent">Events</p>
+        <h2 id="events-heading" class="display mt-4 text-4xl text-ink">Workshops and conferences</h2>
+      </div>
+      <ul class="space-y-6 lg:col-span-8" role="list">
+        {
+          events.map((e) => (
+            <li class="band-midnight overflow-hidden rounded-card p-8 md:p-10">
+              <p class="eyebrow text-display-accent">{e.dateLabel} · {e.place}</p>
+              <h3 class="display mt-4 text-3xl text-ink">{e.title}</h3>
+              <p class="mt-4 leading-relaxed text-muted">{e.summary}</p>
+              <ul class="mt-5 space-y-1.5 text-sm text-ink">
+                {e.people.map((p) => <li>{p}</li>)}
+              </ul>
+              {e.url && <a href={e.url} rel="noopener" class="link-arrow mt-7">Event page on the current site <span aria-hidden="true">↗</span></a>}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand lang={lang} />
+</Base>

@@ -12,10 +12,16 @@ export function localeParams() {
   }));
 }
 
-/** '/work/' -> '/work/' for English, '/el/work/' for Greek. */
+/** Prefix a root-relative path with the deploy base ('/' locally, '/ethoslab/' on GitHub Pages). */
+export function withBase(path = '/') {
+  const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
+  return `${base}/${path.replace(/^\/+/, '')}`;
+}
+
+/** '/work/' -> '/work/' for English, '/el/work/' for Greek, both under the deploy base. */
 export function localePath(lang: Locale, path = '/') {
   const clean = `/${path.replace(/^\/+/, '')}`;
-  return lang === DEFAULT_LOCALE ? clean : `/${lang}${clean === '/' ? '/' : clean}`;
+  return withBase(lang === DEFAULT_LOCALE ? clean : `/${lang}${clean === '/' ? '/' : clean}`);
 }
 
 /** Content ids look like 'en/edu-well'. */

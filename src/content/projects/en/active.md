@@ -13,10 +13,11 @@ programmes:
   - EU-funded
   - Public policy
   - REC / CERV
+date: '2020-12-29'
 cover: ../../../assets/wp/2019/03/active-1.png
 summary: ACTIVE aims at establishing safer environments for children by developing an online self-assessment tool, allowing sports and leisure clubs to identify and address gaps in terms of implementation of Child Protection…
 sectors:
-  - health
+  - equality
   - digital
 ---
 

@@ -5,12 +5,16 @@ wpId: 4760
 wpType: portfolio-item
 wpSlug: the-employment-effects-of-disability-benefits-without-work-restrictions
 wpUrl: https://ethoslab.gr/project/the-employment-effects-of-disability-benefits-without-work-restrictions/
+wpCategories:
+  - Reports
+date: '2025-11-18'
 cover: ../../../assets/wp/2025/11/screenshot-2025-11-18-at-15-46-56.png
 summary: Disability benefits typically reduce labor force participation through raising non-labor income (income effects) and phasing out benefits with earnings (substitution effects). Distinguishing these mechanisms matters for…
 sectors:
   - labour
   - health
 listed: false
+years: '2025'
 ---
 
 ### Written by:

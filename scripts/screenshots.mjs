@@ -1,13 +1,12 @@
 #!/usr/bin/env node
 /**
- * Screenshot every homepage direction (and the key inner pages) at desktop and
- * mobile widths, and run a few automated layout checks.
+ * Screenshot the key pages at desktop and mobile widths, and run a few automated
+ * layout checks.
  *
- *   npm run build && npm run shots                 all pages, theme a for inner pages
- *   npm run shots -- --themes=a,b,c                inner pages in every direction
- *   npm run shots -- --only=a,b,c                  just the three homepages
+ *   npm run build && npm run shots                 all key pages
+ *   npm run shots -- --only=home,services          some of them, by name
  *   BASE_URL=http://localhost:4321 npm run shots   use an already running server
- *   npm run shots -- --paths=/b/question,/c/question --out=screenshots/narratives/question
+ *   npm run shots -- --paths=/work/heal/ --out=screenshots/extra
  *                                                  arbitrary routes into their own folder
  *
  * Output: screenshots/<page>-<device>.png (full page) and
@@ -30,24 +29,23 @@ const DEVICES = {
   mobile: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true },
 };
 
-const DIRECTIONS = [
-  { name: 'a', path: '/a' },
-  ...['b', 'c'].flatMap((d) => ['', '/question', '/gap', '/beliefs'].map((s) => ({ name: `${d}${s.replace('/', '-')}`, path: `/${d}${s}` }))),
-];
-const INNER = [
-  { name: 'work', path: '/work/' },
-  { name: 'case-study', path: '/work/benefit-letters-trial/' },
-  { name: 'case-study-legacy', path: '/work/multipod/' },
-  { name: 'what-we-do', path: '/what-we-do/' },
-  { name: 'research', path: '/research/' },
+const PAGES = [
+  { name: 'home', path: '/' },
+  { name: 'services', path: '/services/' },
+  { name: 'ethos-test', path: '/services/ethos-test/' },
+  { name: 'ethos-evaluation', path: '/services/ethos-evaluation/' },
   { name: 'products', path: '/products/' },
+  { name: 'rwi', path: '/products/reframing-welfare-index/' },
+  { name: 'room-wisdom', path: '/products/room-wisdom/' },
+  { name: 'insights', path: '/insights/' },
+  { name: 'work', path: '/work/' },
+  { name: 'project', path: '/work/multipod/' },
   { name: 'about', path: '/about/' },
   { name: 'contact', path: '/contact/' },
 ];
 
-const themes = (arg('themes') ?? 'a').split(',');
 const only = arg('only')?.split(',');
-let pages = [...DIRECTIONS, ...INNER.flatMap((p) => themes.map((t) => ({ ...p, name: themes.length > 1 ? `${p.name}-${t}` : p.name, path: `${p.path}?theme=${t}` })))];
+let pages = PAGES;
 if (only) pages = pages.filter((p) => only.includes(p.name));
 const customPaths = arg('paths')?.split(',');
 if (customPaths) pages = customPaths.map((p) => ({ name: p.replace(/^\/+|\/+$/g, '').replace(/[/?=&]+/g, '-') || 'home', path: p }));

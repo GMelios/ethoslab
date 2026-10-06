@@ -1,0 +1,279 @@
+---
+/**
+ * Room Wisdom. Copy and figures from "Room Wisdom pitch deck" (4 October 2026).
+ * The pilot figures keep the deck's caveats word for word in substance: one session,
+ * not general accuracy rates. The stance example and the dashboard are from a
+ * synthetic demo session and are labelled as such.
+ */
+import { Image } from 'astro:assets';
+import Base from '../../../layouts/Base.astro';
+import { localeParams, localePath, withBase } from '../../../i18n/utils';
+import { useTranslations } from '../../../i18n/ui';
+import type { Locale } from '../../../i18n/config';
+import { site } from '../../../data/site';
+
+import network from '../../../assets/products/room-wisdom-network.png';
+import stream from '../../../assets/products/room-wisdom-stream.png';
+import dashboard from '../../../assets/products/room-wisdom-dashboard.png';
+
+export const getStaticPaths = localeParams;
+const { lang } = Astro.props as { lang: Locale };
+const t = useTranslations(lang);
+const demoHref = withBase('/products/room-wisdom/demo/');
+
+const problems = [
+  { title: 'Time', body: 'Coding one 90-minute group by hand takes days. A multi-group study takes weeks.' },
+  { title: 'Inconsistency', body: 'Two analysts code the same talk differently, and nobody measures by how much.' },
+  { title: 'The loudest voice wins', body: 'Summaries over-weight whoever spoke most. Quiet participants and silence disappear.' },
+  { title: 'Counting the wrong thing', body: '“Mentioned 40 times” can mean one person repeating themselves.' },
+  { title: 'Untrustworthy AI', body: 'Generic AI summarisers paraphrase quotes, invent consensus and leak personal data.' },
+  { title: 'Language', body: 'Non-English material is often translated before analysis, and nuance is lost.' },
+];
+
+type Stance = 'for' | 'against' | 'mixed' | 'silent';
+const propositions: { label: string; text: string; counts: Record<Stance, number> }[] = [
+  { label: 'Consensus', text: 'The divide over a car-free centre is about who has an alternative, not about age.', counts: { for: 5, against: 0, mixed: 0, silent: 1 } },
+  { label: 'Contested', text: 'A pilot closure is the best first step before any permanent pedestrianisation.', counts: { for: 3, against: 2, mixed: 1, silent: 0 } },
+  { label: 'Insufficient coverage', text: 'A car-free centre would allow people to give up owning a car.', counts: { for: 1, against: 0, mixed: 1, silent: 4 } },
+];
+const stanceStyle: Record<Stance, { label: string; cls: string }> = {
+  for: { label: 'For', cls: 'bg-[#1f55c8]' },
+  against: { label: 'Against', cls: 'bg-[#f1592a]' },
+  mixed: { label: 'Mixed', cls: 'bg-[#8a94a8]' },
+  silent: { label: 'Silent, not agreement', cls: 'bg-[repeating-linear-gradient(45deg,#d9e0ec_0_4px,#eef2f8_4px_8px)] ring-1 ring-inset ring-[#c5cedd]' },
+};
+
+const steps = [
+  { title: 'You provide the transcript', body: 'From a focus group or an interview, in any of the 24 official EU languages. Names are removed before analysis.' },
+  { title: 'Room Wisdom analyses it', body: 'It maps who said what and who took which position. A researcher approves the key judgement calls.', tag: 'Researcher sign-off' },
+  { title: 'You receive the evidence', body: 'An interactive dashboard and a written report, with every quote checked against the transcript.' },
+];
+
+const trust = [
+  { title: 'Verbatim guarantee', body: 'Every quote is checked word for word against the transcript. Nothing unverified is published.' },
+  { title: 'Silence is not agreement', body: 'Each person is recorded as for, against, mixed or silent. Silence is never counted as consent.' },
+  { title: 'People, not mentions', body: 'Every finding counts participants as well as mentions, so one talkative person cannot fake a trend.' },
+  { title: 'Human in the loop', body: 'A researcher approves the key judgement calls before the analysis continues.' },
+  { title: 'Measured reliability', body: 'Consistency is measured on every analysis and reported alongside the results.' },
+  { title: 'Private by design', body: 'Names are removed before analysis, and the client keeps control of the raw data.' },
+];
+
+const pilot = [
+  { value: '188 / 188', label: 'quotes verified word for word against the transcript' },
+  { value: 'κ 0.95', label: 'coding consistency, and κ 0.93 on stance judgements' },
+  { value: '~120 min', label: 'of processing for the session' },
+  { value: '0 errors', label: 'in numbers or quotes, found by an independent audit of the report' },
+];
+
+const audiences = [
+  { title: 'Academic and policy researchers', body: 'Audit trail, reliability scores, verbatim quotes' },
+  { title: 'Public bodies and consultation teams', body: 'Who supported what, minority views kept, fair airtime' },
+  { title: 'Deliberation and dialogue organisers', body: 'Stance maps, consensus and contested points' },
+  { title: 'Market and UX research agencies', body: 'Same-day reports, cross-group comparison, dashboards' },
+  { title: 'NGOs and think tanks', body: 'Reports in the session’s language, quotes that hold up' },
+];
+
+const horizons = [
+  { label: 'Horizon 1 · Product', title: 'What groups say', body: 'Focus groups and interviews in all 24 official EU languages, with a report and a dashboard.', status: 'Working pilot today' },
+  { label: 'Horizon 2 · Vision', title: 'How a conversation moves', body: 'Following positions as they shift, across sessions and in negotiations.' },
+  { label: 'Horizon 3 · Vision', title: 'Any conversation where people take positions', body: 'Larger and more varied settings, added as each stage is validated.' },
+];
+
+const starts = [
+  { title: 'Pilot it on a live study', body: 'Bring one project of 4 to 20 groups or interviews. You get a report and a dashboard for every session.' },
+  { title: 'Write us into your next bid', body: 'Room Wisdom as the qualitative evidence partner in your EU, national or client proposals.' },
+  { title: 'Become a launch partner', body: 'Early access, and a say in which settings and features we build next.' },
+];
+---
+
+<Base title="Room Wisdom" description="Recorded group conversations, turned into verified qualitative evidence and quantitative data. In all 24 official EU languages." lang={lang} path="/products/room-wisdom/">
+  <!-- Hero: light, so the product's own imagery sits on its native white. -->
+  <section class="band-white relative overflow-hidden border-b border-line">
+    <div class="wrap grid items-center gap-10 py-14 md:py-20 lg:grid-cols-12">
+      <div class="lg:col-span-7">
+        <nav aria-label="Breadcrumb" class="mb-6 text-sm text-muted"><a href={localePath(lang, '/products/')} class="hover:text-ink hover:underline">{t('nav.products')}</a></nav>
+        <p class="eyebrow flex items-center gap-3 text-display-accent">
+          <span class="h-0.5 w-8 bg-ember" aria-hidden="true"></span>Room Wisdom by Ethos Lab
+          <span class="rounded-full border border-line px-2 py-0.5 text-[0.62rem] tracking-[0.1em] text-muted">Pilot</span>
+        </p>
+        <h1 class="display mt-5 text-[3rem] text-ink md:text-7xl">Hear the whole room.</h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-muted md:text-xl">Recorded group conversations, turned into verified qualitative evidence and quantitative data. In all 24 official EU languages.</p>
+        <div class="mt-9 flex flex-wrap gap-4">
+          <a href={demoHref} class="btn btn-primary" target="_blank" rel="noopener">Open the interactive demo <span aria-hidden="true">↗</span></a>
+          <a href={localePath(lang, '/contact/')} class="btn btn-ghost">Pilot it on your study</a>
+        </div>
+        <p class="mt-4 text-sm text-muted">The demo is a synthetic session in English.</p>
+      </div>
+      <Image src={network} alt="" widths={[500, 1000]} sizes="(min-width: 1024px) 460px, 80vw" class="mx-auto w-full max-w-md lg:col-span-5" loading="eager" />
+    </div>
+  </section>
+
+  <!-- Problem -->
+  <section class="band-mist" aria-labelledby="problem-heading">
+    <div class="wrap py-20 md:py-24">
+      <p class="eyebrow text-display-accent">The problem</p>
+      <h2 id="problem-heading" class="display mt-4 max-w-3xl text-4xl text-ink md:text-[3rem]">Qualitative evidence is rich, but slow, hard to compare and easy to distort.</h2>
+      <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list">
+        {problems.map((p) => <li class="rounded-card bg-paper p-7"><h3 class="text-lg font-semibold text-ink">{p.title}</h3><p class="mt-2 leading-relaxed text-muted">{p.body}</p></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Product -->
+  <section class="band-white" aria-labelledby="product-heading">
+    <div class="wrap py-20 md:py-24">
+      <p class="eyebrow text-display-accent">The product</p>
+      <h2 id="product-heading" class="display mt-4 max-w-3xl text-4xl text-ink md:text-[3rem]">What a group thinks, person by person.</h2>
+      <div class="mt-12 grid gap-10 lg:grid-cols-2">
+        <figure>
+          <div class="overflow-hidden rounded-card bg-[#f6f5f1] ring-1 ring-line">
+            <Image src={stream} alt="Streamgraph of themes across a group discussion" widths={[600, 1200]} sizes="(min-width: 1024px) 580px, 92vw" class="w-full" />
+          </div>
+          <figcaption class="mt-4 text-sm leading-relaxed text-muted"><strong class="text-ink">Story of the discussion.</strong> Each ribbon is a theme through the session, wider where more was said. Synthetic demo session.</figcaption>
+        </figure>
+        <figure>
+          <p class="eyebrow text-ink">Who took which position</p>
+          <ul class="mt-5 space-y-6" role="list">
+            {
+              propositions.map((p) => {
+                const total = Object.values(p.counts).reduce((a, b) => a + b, 0);
+                const summary = (Object.keys(p.counts) as Stance[]).filter((k) => p.counts[k] > 0).map((k) => `${p.counts[k]} ${k}`).join(', ');
+                return (
+                  <li>
+                    <p class="text-sm font-semibold text-display-accent">{p.label} · {summary}</p>
+                    <p class="mt-1 leading-snug text-ink">{p.text}</p>
+                    <div class="mt-3 flex h-3 gap-0.5 overflow-hidden rounded-full" role="img" aria-label={`${summary}, out of ${total} participants`}>
+                      {(Object.keys(p.counts) as Stance[]).map((k) => p.counts[k] > 0 && <span class={stanceStyle[k].cls} style={`flex:${p.counts[k]}`} />)}
+                    </div>
+                  </li>
+                );
+              })
+            }
+          </ul>
+          <ul class="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted" aria-label="Legend">
+            {(Object.keys(stanceStyle) as Stance[]).map((k) => <li class="flex items-center gap-2"><span class:list={['h-2.5 w-2.5 rounded-full', stanceStyle[k].cls]} />{stanceStyle[k].label}</li>)}
+          </ul>
+          <figcaption class="mt-5 text-sm leading-relaxed text-muted">
+            Six participants, P1 to P6. Synthetic demo session.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="band-midnight relative overflow-hidden" aria-labelledby="how-heading">
+    <div class="grid-dots pointer-events-none absolute inset-0 [mask-image:linear-gradient(90deg,transparent,black_70%)]" aria-hidden="true"></div>
+    <div class="wrap relative py-20 md:py-24">
+      <p class="eyebrow text-display-accent">How it works</p>
+      <h2 id="how-heading" class="display mt-4 max-w-3xl text-4xl text-ink md:text-[3rem]">A transcript in. Evidence out, with a researcher in charge.</h2>
+      <ol class="mt-12 grid gap-6 md:grid-cols-3">
+        {
+          steps.map((s, i) => (
+            <li class="rounded-card bg-white/[0.06] p-7 ring-1 ring-white/10">
+              <p class="display text-4xl text-display-accent">{String(i + 1).padStart(2, '0')}</p>
+              <h3 class="mt-4 text-xl font-semibold text-ink">{s.title}</h3>
+              <p class="mt-2 leading-relaxed text-muted">{s.body}</p>
+              {s.tag && <p class="mt-5 inline-block rounded-full bg-ember px-3 py-1 text-xs font-bold tracking-wide text-midnight uppercase">{s.tag}</p>}
+            </li>
+          ))
+        }
+      </ol>
+      <p class="display mt-12 text-2xl text-ink md:text-3xl">Processing in a matter of hours, not months.</p>
+    </div>
+  </section>
+
+  <!-- Dashboard -->
+  <section class="band-white" aria-labelledby="dashboard-heading">
+    <div class="wrap py-20 md:py-24">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <p class="eyebrow text-display-accent">The dashboard</p>
+          <h2 id="dashboard-heading" class="display mt-4 max-w-2xl text-4xl text-ink md:text-[3rem]">Every theme, every voice, every quote</h2>
+        </div>
+        <a href={demoHref} class="btn btn-primary" target="_blank" rel="noopener">Try it with a synthetic session <span aria-hidden="true">↗</span></a>
+      </div>
+      <a href={demoHref} target="_blank" rel="noopener" class="mt-10 block overflow-hidden rounded-card bg-[#f6f5f1] shadow-[0_30px_60px_-30px_rgb(11_22_49/0.45)] ring-1 ring-line transition hover:ring-ink" aria-label="Open the interactive demo dashboard">
+        <Image src={dashboard} alt="The Room Wisdom dashboard: themes over time, with quotes and participant counts" widths={[800, 1600, 2036]} sizes="(min-width: 1280px) 1180px, 94vw" class="w-full" />
+      </a>
+    </div>
+  </section>
+
+  <!-- Trust -->
+  <section class="band-mist" aria-labelledby="trust-heading">
+    <div class="wrap py-20 md:py-24">
+      <p class="eyebrow text-display-accent">Trust</p>
+      <h2 id="trust-heading" class="display mt-4 text-4xl text-ink md:text-[3rem]">Trust is the product.</h2>
+      <p class="mt-4 max-w-2xl text-lg text-muted">Six design choices set it apart from AI summarisers.</p>
+      <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list">
+        {trust.map((p) => <li class="rounded-card border-t-2 border-ember bg-paper p-7"><h3 class="text-lg font-semibold text-ink">{p.title}</h3><p class="mt-2 leading-relaxed text-muted">{p.body}</p></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Pilot results -->
+  <section class="band-deep relative overflow-hidden" aria-labelledby="pilot-heading">
+    <div class="grid-dots pointer-events-none absolute inset-0 opacity-60" aria-hidden="true"></div>
+    <div class="wrap relative py-20 md:py-24">
+      <p class="eyebrow text-display-accent">Pilot results · one session</p>
+      <h2 id="pilot-heading" class="display mt-4 max-w-3xl text-4xl text-ink md:text-[3rem]">One 30-minute focus group, six participants, 188 contributions.</h2>
+      <dl class="mt-12 grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4">
+        {pilot.map((f) => <div class="border-l-2 border-ember pl-5"><dt class="sr-only">{f.label}</dt><dd><span class="display block text-4xl text-ink md:text-5xl">{f.value}</span><span class="mt-3 block text-sm leading-snug text-muted">{f.label}</span></dd></div>)}
+      </dl>
+      <p class="mt-12 max-w-3xl rounded-card bg-white/[0.06] p-6 text-sm leading-relaxed text-muted ring-1 ring-white/10">
+        <strong class="text-ink">Synthetic demo session, in English:</strong> 122 of 122 quotes verified word for word, κ 0.96 coding consistency and κ 0.94 on stances, about 14 minutes of processing.
+      </p>
+      <p class="mt-6 max-w-3xl text-sm leading-relaxed text-muted">
+        The pilot session was held in Greek. These are results from one pilot session, not general accuracy rates. Consistency scores show the analysis is repeatable, not that it is correct. A human-coding benchmark is still running. Results describe the people in the room.
+      </p>
+    </div>
+  </section>
+
+  <!-- Use cases -->
+  <section class="band-white" aria-labelledby="uses-heading">
+    <div class="wrap py-20 md:py-24">
+      <p class="eyebrow text-display-accent">Use cases</p>
+      <h2 id="uses-heading" class="display mt-4 max-w-3xl text-4xl text-ink md:text-[3rem]">For people who run structured conversations and must defend their conclusions.</h2>
+      <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5" role="list">
+        {audiences.map((a) => <li class="flex flex-col rounded-card bg-mist p-6"><h3 class="font-semibold leading-snug text-ink">{a.title}</h3><p class="mt-auto pt-5 text-sm leading-relaxed text-muted">{a.body}</p></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Roadmap -->
+  <section class="band-mist" aria-labelledby="roadmap-heading">
+    <div class="wrap py-20 md:py-24">
+      <p class="eyebrow text-display-accent">Roadmap</p>
+      <h2 id="roadmap-heading" class="display mt-4 max-w-3xl text-4xl text-ink md:text-[3rem]">From what one group said to how any conversation moves.</h2>
+      <ol class="mt-12 grid gap-4 md:grid-cols-3">
+        {
+          horizons.map((h, i) => (
+            <li class:list={['relative rounded-card p-7', i === 0 ? 'bg-midnight text-white' : 'bg-paper']}>
+              <p class:list={['eyebrow', i === 0 ? 'text-[#ff8a5c]' : 'text-muted']}>{h.label}</p>
+              <h3 class="display mt-3 text-2xl">{h.title}</h3>
+              <p class:list={['mt-3 leading-relaxed', i === 0 ? 'text-white/75' : 'text-muted']}>{h.body}</p>
+              {h.status && <p class="mt-5 inline-block rounded-full bg-ember px-3 py-1 text-xs font-bold tracking-wide text-midnight uppercase">{h.status}</p>}
+              {i < horizons.length - 1 && <p class="mt-5 text-xs font-semibold tracking-wide text-muted uppercase" aria-hidden={i === 0 ? undefined : 'true'}><span class:list={[i === 0 && 'text-white/60']}>Gate {i + 1}</span></p>}
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Three ways to start -->
+  <section class="band-ember relative overflow-hidden" aria-labelledby="start-heading">
+    <div class="wrap relative py-20 md:py-24">
+      <h2 id="start-heading" class="display max-w-3xl text-4xl text-ink md:text-[3.4rem]">From conversation to evidence.</h2>
+      <p class="eyebrow mt-6 text-ink">Three ways to start</p>
+      <ul class="mt-6 grid gap-4 md:grid-cols-3" role="list">
+        {starts.map((s) => <li class="rounded-card bg-white/90 p-7"><h3 class="text-lg font-semibold text-midnight">{s.title}</h3><p class="mt-2 leading-relaxed text-[#2c3650]">{s.body}</p></li>)}
+      </ul>
+      <div class="mt-10 flex flex-wrap items-center gap-6">
+        <a href={localePath(lang, '/contact/')} class="btn btn-primary !px-7">Start a conversation <span aria-hidden="true">→</span></a>
+        <a href={`mailto:${site.email}?subject=Room%20Wisdom`} class="font-semibold text-ink underline underline-offset-4">{site.email}</a>
+      </div>
+      <p class="mt-10 text-sm text-ink/80">Use only with participants’ informed consent. Names are removed before analysis.</p>
+    </div>
+  </section>
+</Base>

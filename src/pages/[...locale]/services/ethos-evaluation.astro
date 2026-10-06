@@ -1,0 +1,79 @@
+---
+/** Ethos Evaluation: from the v2 copy brief. Placeholders mark its [TODO]s. */
+import Base from '../../../layouts/Base.astro';
+import PageHero from '../../../components/PageHero.astro';
+import CtaBand from '../../../components/CtaBand.astro';
+import SpecRow from '../../../components/SpecRow.astro';
+import CheckList from '../../../components/CheckList.astro';
+import Placeholder from '../../../components/Placeholder.astro';
+import { localeParams, localePath } from '../../../i18n/utils';
+import { stages } from '../../../data/ethos';
+import { useTranslations } from '../../../i18n/ui';
+import type { Locale } from '../../../i18n/config';
+import { productById } from '../../../data/offer';
+
+export const getStaticPaths = localeParams;
+const { lang } = Astro.props as { lang: Locale };
+const product = productById('evaluation');
+const t = useTranslations(lang);
+const covered = stages.filter((s) => s.engagement === 'evaluation');
+
+const moments = [
+  { when: 'Before launch', why: 'Build evaluation in.' },
+  { when: 'During', why: 'Course correct.' },
+  { when: 'After', why: 'Prove impact.' },
+];
+const methods = ['Randomised trials', 'Natural experiments and staggered rollouts', 'Comparison groups built from existing data', 'Qualitative work to explain why'];
+const receive = ['The impact estimate', 'For whom it worked', 'Why', 'Recommendations', 'A report ready for funders and the Commission'];
+const card = 'rounded-card border-t-2 border-ember bg-mist p-6';
+---
+
+<Base title={product.name} description={`${product.tagline} ${product.weDo}`} lang={lang} path={product.path}>
+  <PageHero eyebrow={product.name} title={product.tagline} intro={product.weDo} crumbs={[{ label: t('nav.services'), href: localePath(lang, '/services/') }]}>
+    <ul class="mt-10 flex flex-wrap gap-3" aria-label="ETHOS stages covered">
+      {
+        covered.map((s) => (
+          <li>
+            <a href={`${localePath(lang, '/services/')}#${s.id}`} class="flex items-center gap-3 rounded-control border border-line py-2 pr-4 pl-2 text-sm font-semibold text-ink hover:border-ink">
+              <span class="display flex h-8 w-8 items-center justify-center rounded-control bg-ember text-lg text-midnight">{s.letter}</span>
+              {s.name}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </PageHero>
+
+  <SpecRow heading="When to call us" id="when" first>
+    <ol class="grid gap-4 sm:grid-cols-3">
+      {
+        moments.map((m) => (
+          <li class={card}>
+            <p class="eyebrow text-display-accent">{m.when}</p>
+            <p class="mt-2 text-xl leading-snug font-semibold text-ink">{m.why}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </SpecRow>
+
+  <SpecRow heading="Our methods, in plain words" id="methods">
+    <ul class="grid gap-4 sm:grid-cols-2">
+      {methods.map((m) => <li class:list={[card, 'text-lg leading-snug font-semibold text-ink']}>{m}</li>)}
+    </ul>
+  </SpecRow>
+
+  <SpecRow heading="What you receive" id="receive">
+    <CheckList items={receive} />
+  </SpecRow>
+
+  <SpecRow heading="For EU programmes and consortia" id="eu">
+    <p class="text-xl leading-snug font-semibold text-ink md:text-2xl">The evaluation work package, from proposal to final report.</p>
+  </SpecRow>
+
+  <SpecRow heading="Example" id="example">
+    <Placeholder block note="A real Ethos Evaluation engagement" />
+  </SpecRow>
+
+  <CtaBand lang={lang} />
+</Base>

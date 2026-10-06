@@ -4,10 +4,12 @@
 
 - Render every `[TODO]` in a copy brief with the visible "Placeholder" tag (`src/components/Placeholder.astro`), with a short note on what goes there.
 - Do not invent client names, figures, prices, timelines or quotes. If the brief does not supply one, it is a placeholder.
-- No em dashes anywhere. Imported WordPress content in `src/content/` still contains some; they come back on re-import.
-- Keep the existing visual design when changing copy. Direction B is the active one (`/b`, `src/components/home/HomeB.astro`).
+- No em dashes anywhere. The importer turns them into commas; older imported pages in `src/content/pages/` may still contain some.
+- Keep the existing visual design when changing copy. Tokens and section bands (`.band-white`, `.band-mist`, `.band-midnight`, `.band-deep`, `.band-ember`) are in `src/styles/global.css`; the homepage is `src/components/home/Home.astro`.
+- Services follow the ETHOS method (`src/data/ethos.ts`); the two engagements are in `src/data/offer.ts`.
 
 ## Checks
 
-- Node 22 is required: run `nvm use` first (the default shell Node is too old for Astro 7).
-- `npx astro check` for types, then `BASE_URL=http://localhost:4321 node scripts/screenshots.mjs --only=b` (or `--paths=/test/,/evaluation/`) for screenshots and layout checks at 1440px and 390px.
+- Node 22 is required: run `nvm use`, or put `/opt/homebrew/opt/node@22/bin` first on PATH (the default shell Node is too old for Astro 7).
+- `npx astro check` for types, then `BASE_URL=http://localhost:4321 node scripts/screenshots.mjs --only=home` (or `--paths=/services/,/insights/`) for screenshots and layout checks at 1440px and 390px.
+- The demo deploys to GitHub Pages at https://gmelios.github.io/ethoslab/ on every push to main (`.github/workflows/deploy.yml`). Internal links must go through `localePath()` or `withBase()` so they carry the `/ethoslab` base.

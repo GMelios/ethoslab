@@ -1,62 +1,10 @@
 ---
-/** Ethos Evaluation: stub page from the v2 copy brief. Placeholders mark its [TODO]s. */
-import Base from '../../layouts/Base.astro';
-import PageHero from '../../components/PageHero.astro';
-import CtaBand from '../../components/CtaBand.astro';
-import SpecRow from '../../components/SpecRow.astro';
-import CheckList from '../../components/CheckList.astro';
-import Placeholder from '../../components/Placeholder.astro';
+import Redirect from '../../components/Redirect.astro';
 import { localeParams } from '../../i18n/utils';
 import type { Locale } from '../../i18n/config';
-import { productById, closingCta } from '../../data/offer';
 
 export const getStaticPaths = localeParams;
 const { lang } = Astro.props as { lang: Locale };
-const product = productById('evaluation');
-
-const moments = [
-  { when: 'Before launch', why: 'Build evaluation in.' },
-  { when: 'During', why: 'Course correct.' },
-  { when: 'After', why: 'Prove impact.' },
-];
-const methods = ['Randomised trials', 'Natural experiments and staggered rollouts', 'Comparison groups built from existing data', 'Qualitative work to explain why'];
-const receive = ['The impact estimate', 'For whom it worked', 'Why', 'Recommendations', 'A report ready for funders and the Commission'];
-const card = 'rounded-card border border-line p-6 theme-b:border-0 theme-b:bg-surface';
 ---
 
-<Base title={product.name} description={`${product.tagline} ${product.weDo}`} lang={lang} path={product.path}>
-  <PageHero eyebrow={product.name} title={product.tagline} intro={product.weDo} />
-
-  <SpecRow heading="When to call us" id="when" first>
-    <ol class="grid gap-4 sm:grid-cols-3">
-      {
-        moments.map((m) => (
-          <li class={card}>
-            <p class="eyebrow text-accent">{m.when}</p>
-            <p class="mt-2 text-xl leading-snug font-semibold text-ink">{m.why}</p>
-          </li>
-        ))
-      }
-    </ol>
-  </SpecRow>
-
-  <SpecRow heading="Our methods, in plain words" id="methods">
-    <ul class="grid gap-4 sm:grid-cols-2">
-      {methods.map((m) => <li class:list={[card, 'text-lg leading-snug font-semibold text-ink']}>{m}</li>)}
-    </ul>
-  </SpecRow>
-
-  <SpecRow heading="What you receive" id="receive">
-    <CheckList items={receive} />
-  </SpecRow>
-
-  <SpecRow heading="For EU programmes and consortia" id="eu">
-    <p class="text-xl leading-snug font-semibold text-ink md:text-2xl">The evaluation work package, from proposal to final report.</p>
-  </SpecRow>
-
-  <SpecRow heading="Example" id="example">
-    <Placeholder block note="A real Ethos Evaluation engagement" />
-  </SpecRow>
-
-  <CtaBand lang={lang} {...closingCta} />
-</Base>
+<Redirect lang={lang} to="/services/ethos-evaluation/" />

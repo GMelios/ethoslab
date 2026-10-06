@@ -1,15 +1,10 @@
 import type { ImageMetadata } from 'astro';
 import type { UIKey } from '../i18n/ui';
 
-export type Direction = 'a' | 'b' | 'c';
-
 export const site = {
   name: 'Ethos Lab',
   url: 'https://ethoslab.gr',
-  /** Which direction renders at "/" until one is chosen. */
-  homeDirection: 'a' as Direction,
-  /** Colour palette for direction B (see [data-palette] in src/styles/global.css). */
-  bPalette: 'brand' as 'plum' | 'brand' | 'aegean' | 'figure' | 'olive' | 'midnight',
+  founded: 2019,
   email: 'info@ethoslab.gr',
   phone: '+30 212 107 4164',
   phoneHref: 'tel:+302121074164',
@@ -24,10 +19,10 @@ export const site = {
 
 /** Primary navigation. Paths are locale-neutral; wrap with localePath(). */
 export const nav: { key: UIKey; path: string }[] = [
-  { key: 'nav.whatWeDo', path: '/what-we-do/' },
-  { key: 'nav.work', path: '/work/' },
-  { key: 'nav.research', path: '/research/' },
+  { key: 'nav.home', path: '/' },
+  { key: 'nav.services', path: '/services/' },
   { key: 'nav.products', path: '/products/' },
+  { key: 'nav.insights', path: '/insights/' },
   { key: 'nav.about', path: '/about/' },
 ];
 
@@ -80,30 +75,3 @@ export const featuredPartners = [
   'European Commission', 'OECD', 'The World Bank', 'International Labour Organization', 'London School of Economics',
   'University College London', 'Universitat Autònoma de Barcelona', 'Oxfam', 'City of Zaragoza', 'Allianz',
 ].map((n) => partners.find((p) => p.name === n)!);
-
-// ---------------------------------------------------------------------------
-// Proof numbers. `placeholder: true` renders a visible "Sample" badge.
-// Replace with audited figures before launch.
-// ---------------------------------------------------------------------------
-export type Proof = { value: string; label: string; placeholder: boolean; source?: string };
-
-export const proof: Proof[] = [
-  { value: String(partners.length), label: 'partner institutions across government, academia and civil society', placeholder: false, source: 'current partner list' },
-  { value: '8,195', label: 'adults surveyed for one experiment on language and political understanding', placeholder: false, source: 'MultiPoD D1.1' },
-  { value: '7', label: 'countries in that experiment, from Portugal to Austria', placeholder: false, source: 'MultiPoD D1.1' },
-  { value: '36,000', label: 'households randomised in our largest trial', placeholder: true },
-];
-
-/** Methods vocabulary, used on What we do and in direction A. */
-export const methods = [
-  'Randomised controlled trials',
-  'Cluster and stepped-wedge designs',
-  'Survey and conjoint experiments',
-  'Difference-in-differences and event studies',
-  'Regression discontinuity',
-  'Synthetic control',
-  'Instrumental variables',
-  'Administrative data linkage',
-  'Pre-analysis plans',
-  'Cost-effectiveness analysis',
-];
