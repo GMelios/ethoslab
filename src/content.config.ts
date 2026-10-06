@@ -72,12 +72,16 @@ const pages = defineCollection({
     }),
 });
 
+/** News and blog posts, listed under Insights > News. */
 const posts = defineCollection({
   loader: glob({ base: './src/content/posts', pattern: '**/*.md' }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
       lang,
+      kind: z.enum(['news', 'blog']).default('news'),
+      /** Optional link to the source (event page, paper). */
+      link: z.object({ label: z.string(), href: z.url() }).optional(),
       summary: z.string().optional(),
       date: z.string().optional(),
       modified: z.string().optional(),

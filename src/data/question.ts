@@ -1,6 +1,6 @@
 /**
- * The Services page story: "Follow one question". Ported from the Question narrative
- * prototype (/b/question). One REAL study, the MultiPoD language experiment
+ * The MultiPoD story under Insights (src/data/stories/multipod.ts arranges it into the story
+ * template). Ported from the Question narrative prototype (/b/question). One REAL study, the MultiPoD language experiment
  * (src/content/projects/en/multipod-language-experiment.md), told in five chapters.
  *
  * Every statistic is read from the case-study entry, never retyped here, and the

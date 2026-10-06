@@ -1,14 +1,13 @@
 ---
 /**
- * About us. The story is condensed from "Our History" and the principles from
- * "How we work" on ethoslab.gr. Team profiles and partners come from the importer.
+ * About us > Who we are. The story is condensed from "Our History" and the principles
+ * from "How we work" on ethoslab.gr. The team has its own page (about/team.astro).
  */
-import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import PageHero from '../../components/PageHero.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import PartnerGrid from '../../components/PartnerGrid.astro';
-import { getLocalized, localeParams, localePath } from '../../i18n/utils';
+import { localeParams, localePath } from '../../i18n/utils';
 import { useTranslations } from '../../i18n/ui';
 import type { Locale } from '../../i18n/config';
 import { principles } from '../../data/ethos';
@@ -17,18 +16,6 @@ import { site } from '../../data/site';
 export const getStaticPaths = localeParams;
 const { lang } = Astro.props as { lang: Locale };
 const t = useTranslations(lang);
-
-// Team profiles come from the WordPress importer (portfolio items tagged Team,
-// Executive Team or Consultants). Group order follows seniority.
-const people = await getLocalized('people', lang);
-const groups = ['Executive Team', 'Team', 'Consultants']
-  .map((g) => ({
-    name: g === 'Team' ? 'Researchers and analysts' : g === 'Executive Team' ? 'Leadership' : g,
-    members: people
-      .filter((p) => p.data.wpCategories?.includes(g))
-      .sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title)),
-  }))
-  .filter((g) => g.members.length);
 
 const story = [
   {
@@ -54,9 +41,9 @@ const story = [
 ];
 ---
 
-<Base title={t('nav.about')} description="Ethos Lab is a research and innovation firm in Athens, founded in 2019, working on behavioural science and causal evaluation across Europe." lang={lang} path="/about/">
+<Base title={t('nav.whoWeAre')} description="Ethos Lab is a research and innovation firm in Athens, founded in 2019, working on behavioural science and causal evaluation across Europe." lang={lang} path="/about/">
   <PageHero
-    eyebrow={t('nav.about')}
+    eyebrow={t('nav.whoWeAre')}
     title="A specialised team, not a large consultancy"
     intro="We combine research excellence with implementation experience, so we can hold to academic standards while delivering practical answers to real-world challenges. Based in Athens, working across Europe and the MENA region."
   />
@@ -93,30 +80,16 @@ const story = [
     </div>
   </section>
 
-  <section class="band-white" aria-labelledby="team-heading">
-    <div class="wrap py-20 md:py-24">
-      <p class="eyebrow text-display-accent">Our people</p>
-      <h2 id="team-heading" class="display h-section mt-4 text-ink">The team</h2>
-      {
-        groups.map((g) => (
-          <div class="mt-14">
-            <h3 class="eyebrow border-b border-line pb-3 text-muted">{g.name}</h3>
-            <ul class="mt-8 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-5" role="list">
-              {g.members.map((p) => (
-                <li id={p.slug}>
-                  <div class="aspect-[4/5] overflow-hidden rounded-card bg-mist">
-                    {p.data.cover ? (
-                      <Image src={p.data.cover} alt="" widths={[240, 480]} sizes="(min-width: 1024px) 220px, 45vw" class="h-full w-full object-cover grayscale transition duration-500 hover:grayscale-0" />
-                    ) : null}
-                  </div>
-                  <p class="mt-4 font-semibold text-ink">{p.data.title}</p>
-                  {p.data.role && <p class="mt-1 text-sm leading-snug text-muted">{p.data.role}</p>}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))
-      }
+  <section class="band-white" aria-labelledby="team-link-heading">
+    <div class="wrap py-16 md:py-20">
+      <a href={localePath(lang, '/about/team/')} class="group flex flex-col gap-6 rounded-card bg-mist p-8 ring-1 ring-transparent transition hover:ring-ink md:flex-row md:items-center md:justify-between md:p-12">
+        <div>
+          <p class="eyebrow text-display-accent">{t('nav.team')}</p>
+          <h2 id="team-link-heading" class="display h-section mt-3 text-ink">Economists, behavioural scientists and data specialists</h2>
+          <p class="mt-3 max-w-2xl text-lg text-muted">Meet the people who design and run our studies, from the first question to the final report.</p>
+        </div>
+        <span class="link-arrow shrink-0">Meet the team <span aria-hidden="true">→</span></span>
+      </a>
     </div>
   </section>
 

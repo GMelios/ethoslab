@@ -1,6 +1,6 @@
 ---
 import Logo from './Logo.astro';
-import { nav, site } from '../data/site';
+import { site } from '../data/site';
 import { useTranslations } from '../i18n/ui';
 import { localePath } from '../i18n/utils';
 import type { Locale } from '../i18n/config';
@@ -31,7 +31,14 @@ const columns = [
   },
   {
     title: 'Ethos Lab',
-    links: [...nav.filter((n) => n.path !== '/' && n.path !== '/services/' && n.path !== '/products/').map((n) => ({ label: t(n.key), path: n.path })), { label: t('nav.work'), path: '/work/' }, { label: t('nav.contact'), path: '/contact/' }],
+    links: [
+      { label: t('nav.work'), path: '/work/' },
+      { label: t('nav.insights'), path: '/insights/' },
+      { label: t('nav.news'), path: '/insights/news/' },
+      { label: t('nav.whoWeAre'), path: '/about/' },
+      { label: t('nav.team'), path: '/about/team/' },
+      { label: t('nav.contact'), path: '/contact/' },
+    ],
   },
 ];
 ---

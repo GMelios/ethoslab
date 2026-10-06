@@ -1,0 +1,20 @@
+---
+/** One research story under Insights. Stories: src/data/stories/. */
+import StoryPage from '../../../components/story/StoryPage.astro';
+import { DEFAULT_LOCALE, PUBLISHED_LOCALES, type Locale } from '../../../i18n/config';
+import { getStories } from '../../../data/stories';
+import type { Story } from '../../../lib/story';
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const lang of PUBLISHED_LOCALES) {
+    for (const story of await getStories(lang)) {
+      paths.push({ params: { locale: lang === DEFAULT_LOCALE ? undefined : lang, story: story.slug }, props: { lang, story } });
+    }
+  }
+  return paths;
+}
+const { lang, story } = Astro.props as { lang: Locale; story: Story };
+---
+
+<StoryPage story={story} lang={lang} />

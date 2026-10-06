@@ -17,13 +17,44 @@ export const site = {
   ],
 };
 
-/** Primary navigation. Paths are locale-neutral; wrap with localePath(). */
-export const nav: { key: UIKey; path: string }[] = [
+/** Primary navigation. Paths are locale-neutral; wrap with localePath(). Children open as a dropdown. */
+export type NavItem = { key: UIKey; path: string; children?: { key?: UIKey; label?: string; path: string }[] };
+export const nav: NavItem[] = [
   { key: 'nav.home', path: '/' },
-  { key: 'nav.services', path: '/services/' },
-  { key: 'nav.products', path: '/products/' },
-  { key: 'nav.insights', path: '/insights/' },
-  { key: 'nav.about', path: '/about/' },
+  {
+    key: 'nav.services',
+    path: '/services/',
+    children: [
+      { label: 'Research & Design', path: '/services/research-design/' },
+      { label: 'Evaluation & Impact', path: '/services/evaluation-impact/' },
+      { label: 'Scale up', path: '/services/scale-up/' },
+    ],
+  },
+  {
+    key: 'nav.products',
+    path: '/products/',
+    children: [
+      { label: 'Reframing Welfare Index', path: '/products/reframing-welfare-index/' },
+      { label: 'Room Wisdom', path: '/products/room-wisdom/' },
+    ],
+  },
+  { key: 'nav.work', path: '/work/' },
+  {
+    key: 'nav.insights',
+    path: '/insights/',
+    children: [
+      { key: 'nav.research', path: '/insights/#research' },
+      { key: 'nav.news', path: '/insights/news/' },
+    ],
+  },
+  {
+    key: 'nav.about',
+    path: '/about/',
+    children: [
+      { key: 'nav.whoWeAre', path: '/about/' },
+      { key: 'nav.team', path: '/about/team/' },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------

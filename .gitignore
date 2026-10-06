@@ -10,3 +10,6 @@ crowdwisdom/
 # Claude Design exports; the brand kit used by the site lives in src/assets/brand/.
 export/
 *.zip
+
+# Source PDFs dropped in the repo root; published copies live in public/papers/.
+/*.pdf

@@ -6,7 +6,7 @@
 import Logo from './Logo.astro';
 import { nav } from '../data/site';
 import { useTranslations } from '../i18n/ui';
-import { localePath, withBase } from '../i18n/utils';
+import { localePath } from '../i18n/utils';
 import { LOCALES, PUBLISHED_LOCALES, type Locale } from '../i18n/config';
 
 interface Props {
@@ -20,8 +20,8 @@ const isActive = (p: string) => {
   const target = localePath(lang, p);
   return target === home ? path === home : path.startsWith(target);
 };
-// The Work pages sit under Insights in the navigation.
-const section = (p: string) => isActive(p) || (p === '/insights/' && path.startsWith(withBase('/work/')));
+const section = (p: string) => isActive(p);
+const childLabel = (c: { key?: Parameters<typeof t>[0]; label?: string }) => c.label ?? (c.key ? t(c.key) : '');
 
 const languages = Object.entries(LOCALES).map(([code, meta]) => ({
   code: code as Locale,
@@ -34,7 +34,7 @@ const utilityLink = 'eyebrow !text-[0.7rem] !tracking-[0.12em] text-ink/75 trans
 
 <header class="relative z-30 border-b border-line bg-white">
   <div class="wrap">
-    <div class="hidden h-10 items-center justify-end gap-7 lg:flex">
+    <div class="hidden h-10 items-center justify-end gap-7 xl:flex">
       <a href={localePath(lang, '/contact/')} class={utilityLink} aria-current={isActive('/contact/') ? 'page' : undefined}>{t('nav.contact')}</a>
       <ul class="flex items-center gap-5" aria-label="Language">
         {
@@ -53,24 +53,39 @@ const utilityLink = 'eyebrow !text-[0.7rem] !tracking-[0.12em] text-ink/75 trans
       </ul>
     </div>
 
-    <div class="flex h-16 items-center justify-between gap-6 lg:h-[4.25rem] lg:pb-3">
+    <div class="flex h-16 items-center justify-between gap-6 xl:h-[4.25rem] xl:pb-3">
       <a href={home} class="block shrink-0" aria-label="Ethos Lab, home">
-        <Logo class="h-7 sm:h-8 lg:h-9" />
+        <Logo class="h-7 sm:h-8 xl:h-9" />
       </a>
 
       <div class="flex items-center gap-1 lg:gap-2">
-        <nav aria-label="Primary" class="hidden lg:block">
+        <nav aria-label="Primary" class="hidden xl:block">
           <ul class="flex items-center gap-1">
             {
               nav.map((item) => (
-                <li>
+                <li class="group/nav relative">
                   <a
                     href={localePath(lang, item.path)}
                     aria-current={section(item.path) ? 'page' : undefined}
-                    class="relative block px-3.5 py-2 font-display text-[0.9375rem] font-medium text-ink transition-colors after:absolute after:inset-x-3.5 after:-bottom-0.5 after:h-0.5 after:origin-left after:scale-x-0 after:bg-ember after:transition-transform hover:after:scale-x-100 aria-[current=page]:after:scale-x-100"
+                    aria-haspopup={item.children ? 'true' : undefined}
+                    class="relative flex items-center gap-1 px-3 py-2 font-display whitespace-nowrap text-[0.9375rem] font-medium text-ink transition-colors after:absolute after:inset-x-3 after:-bottom-0.5 after:h-0.5 after:origin-left after:scale-x-0 after:bg-ember after:transition-transform hover:after:scale-x-100 aria-[current=page]:after:scale-x-100"
                   >
                     {t(item.key)}
+                    {item.children && (
+                      <svg viewBox="0 0 12 12" class="h-3 w-3 text-muted transition-transform group-hover/nav:rotate-180" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 4.5l3 3 3-3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    )}
                   </a>
+                  {item.children && (
+                    <div class="invisible absolute top-full left-0 z-40 pt-3 opacity-0 transition group-focus-within/nav:visible group-focus-within/nav:opacity-100 group-hover/nav:visible group-hover/nav:opacity-100">
+                      <ul class="min-w-56 rounded-card bg-white p-2 shadow-[0_18px_40px_-12px_rgb(11_22_49/0.3)] ring-1 ring-line">
+                        {item.children.map((c) => (
+                          <li>
+                            <a href={localePath(lang, c.path)} class="block rounded-control px-3 py-2.5 text-[0.95rem] text-ink hover:bg-mist hover:text-display-accent">{childLabel(c)}</a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </li>
               ))
             }
@@ -87,7 +102,7 @@ const utilityLink = 'eyebrow !text-[0.7rem] !tracking-[0.12em] text-ink/75 trans
 
         <button
           type="button"
-          class="inline-flex h-11 w-11 items-center justify-center rounded-control text-ink lg:hidden"
+          class="inline-flex h-11 w-11 items-center justify-center rounded-control text-ink xl:hidden"
           aria-expanded="false"
           aria-controls="mobile-nav"
           data-menu-toggle
@@ -102,14 +117,19 @@ const utilityLink = 'eyebrow !text-[0.7rem] !tracking-[0.12em] text-ink/75 trans
     </div>
   </div>
 
-  <nav id="mobile-nav" aria-label="Primary" hidden class="absolute inset-x-0 top-full border-b border-line bg-white shadow-xl lg:hidden">
+  <nav id="mobile-nav" aria-label="Primary" hidden class="absolute inset-x-0 top-full border-b border-line bg-white shadow-xl xl:hidden">
     <ul class="wrap flex flex-col py-3">
       {
         nav.map((item) => (
-          <li>
-            <a href={localePath(lang, item.path)} aria-current={section(item.path) ? 'page' : undefined} class="block border-b border-line/70 py-3.5 text-lg font-medium text-ink aria-[current=page]:text-display-accent">
+          <li class="border-b border-line/70">
+            <a href={localePath(lang, item.path)} aria-current={section(item.path) ? 'page' : undefined} class="block py-3.5 text-lg font-medium text-ink aria-[current=page]:text-display-accent">
               {t(item.key)}
             </a>
+            {item.children && (
+              <ul class="-mt-1 mb-3 space-y-1 border-l-2 border-ember pl-4">
+                {item.children.map((c) => <li><a href={localePath(lang, c.path)} class="block py-1.5 text-muted hover:text-ink">{childLabel(c)}</a></li>)}
+              </ul>
+            )}
           </li>
         ))
       }

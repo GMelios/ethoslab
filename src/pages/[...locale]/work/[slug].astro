@@ -56,8 +56,6 @@ const facts = [
       <div class="grid-dots pointer-events-none absolute inset-0 [mask-image:linear-gradient(90deg,transparent,black_60%)]" aria-hidden="true"></div>
       <div class="wrap relative pt-8 pb-12 md:pt-10 md:pb-16">
         <nav aria-label="Breadcrumb" class="text-sm text-muted">
-          <a href={localePath(lang, '/insights/')} class="hover:text-ink hover:underline">{t('nav.insights')}</a>
-          <span aria-hidden="true" class="px-1.5">/</span>
           <a href={localePath(lang, '/work/')} class="hover:text-ink hover:underline">{t('nav.work')}</a>
           <span aria-hidden="true" class="px-1.5">/</span>
           <a href={localePath(lang, `/work/?sector=${d.sectors[0]}`)} class="hover:text-ink hover:underline">{sectorLabel(d.sectors[0], lang)}</a>

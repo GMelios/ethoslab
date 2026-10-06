@@ -27,13 +27,17 @@ Astro 7 runs `astro dev` as a background daemon when it is not attached to a ter
 | Page | Route | Source |
 |---|---|---|
 | Home | `/` | `src/components/home/Home.astro` |
-| Our services (one real study, three services, domains, how we work) | `/services/` | `src/data/question.ts`, `src/data/offer.ts`, `src/data/ethos.ts` |
+| Our services | `/services/` | `src/data/offer.ts`, `src/data/ethos.ts` |
 | Research & Design, Evaluation & Impact, Scale up | `/services/research-design/`, `/services/evaluation-impact/`, `/services/scale-up/` | `src/data/offer.ts`, `src/components/ServicePage.astro` |
 | Our products | `/products/`, `/products/reframing-welfare-index/`, `/products/room-wisdom/` | `src/content/products/`, page files |
 | Room Wisdom demo dashboard (synthetic session) | `/products/room-wisdom/demo/` | `public/products/room-wisdom/demo/index.html` |
-| Insights (publications, projects, events) | `/insights/` | `src/content/research/`, `src/data/events.ts` |
 | Projects | `/work/`, `/work/<slug>/` | `src/content/projects/` |
-| About us, Contact us | `/about/`, `/contact/` | page files |
+| Insights: research stories | `/insights/`, `/insights/<story>/` | `src/data/stories/` (template: `src/lib/story.ts`, `src/components/story/`) |
+| Insights: news and blog | `/insights/news/`, `/insights/news/<post>/` | `src/content/posts/` |
+| About us: who we are, our team | `/about/`, `/about/team/` | page files |
+| Contact us | `/contact/` | page file |
+
+To add a research story, write a `Story` object in `src/data/stories/` (chapters made of typed blocks: text, pull quote, list, cards, facts, callout, steps, answers, charts) and list it in `src/data/stories/index.ts`. Put the PDF in `public/papers/`. To add news, add a Markdown file to `src/content/posts/en/` with `kind: news` or `kind: blog`.
 
 `/test/`, `/evaluation/`, `/services/ethos-test/`, `/services/ethos-evaluation/`, `/what-we-do/` and `/research/` redirect to their new homes. Search is built by Pagefind after `astro build` (`dist/pagefind/`), so it works in `npm run preview`, not in `npm run dev`.
 
@@ -56,7 +60,7 @@ src/data/sectors.json        Sector taxonomy: schema enum, Work filter, importer
 src/data/site.ts             Contact details, nav, partner logos, proof numbers
 src/data/offer.ts            The three services, shared closing CTA
 src/data/ethos.ts            Domains and principles
-src/data/question.ts         Services page story (MultiPoD), checked against the case-study data
+src/data/question.ts         MultiPoD story copy, checked against the case-study data
 src/i18n/                    Locales, UI strings (EN + draft EL), helpers
 src/pages/[...locale]/       Every localised route (EN at /, EL at /el/)
 src/components/home/Home.astro  Homepage

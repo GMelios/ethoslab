@@ -1,0 +1,111 @@
+---
+/**
+ * The "whole story" page for a piece of research: a hero with the research question,
+ * a contents list, chapters on alternating bands, then the paper itself (PDF and links)
+ * and an invitation to talk. Content: src/data/stories/*.
+ */
+import Base from '../../layouts/Base.astro';
+import CtaBand from '../CtaBand.astro';
+import Placeholder from '../Placeholder.astro';
+import StoryBlock from './StoryBlock.astro';
+import type { Story } from '../../lib/story';
+import { localePath } from '../../i18n/utils';
+import { useTranslations } from '../../i18n/ui';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  story: Story;
+  lang: Locale;
+}
+const { story: s, lang } = Astro.props;
+const t = useTranslations(lang);
+const pdfHref = 'href' in s.pdf ? s.pdf.href : undefined;
+---
+
+<Base title={s.title} description={s.summary} lang={lang} path={`/insights/${s.slug}/`}>
+  <section class="band-midnight relative overflow-hidden">
+    <div class="grid-dots pointer-events-none absolute inset-0 [mask-image:linear-gradient(90deg,transparent,black_60%)]" aria-hidden="true"></div>
+    <div class="wrap relative grid gap-12 py-16 md:py-24 lg:grid-cols-12">
+      <div class="lg:col-span-8">
+        <nav aria-label="Breadcrumb" class="mb-6 text-sm text-muted"><a href={localePath(lang, '/insights/')} class="hover:text-ink hover:underline">{t('nav.insights')}</a></nav>
+        <p class="eyebrow flex items-center gap-3 text-display-accent"><span class="h-0.5 w-8 bg-ember" aria-hidden="true"></span>{s.kind}</p>
+        <h1 class="display h-hero mt-5 text-ink">{s.title}</h1>
+        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted md:text-xl">{s.lede}</p>
+        <p class="mt-6 max-w-2xl text-sm leading-relaxed text-muted">
+          <span class="text-ink">{s.paperTitle}</span> · {s.authors.join(', ')} · {s.dateLabel}{s.venue && ` · ${s.venue}`}
+        </p>
+        <div class="mt-8 flex flex-wrap items-center gap-4">
+          <a href={`#${s.chapters[0].id}`} class="btn btn-primary">Read the story <span aria-hidden="true">↓</span></a>
+          {pdfHref && <a href={pdfHref} class="btn btn-ghost" target="_blank" rel="noopener">Download the paper (PDF)</a>}
+        </div>
+        {
+          s.status && (
+            <p class="mt-8 flex max-w-2xl items-start gap-3 text-sm leading-relaxed text-muted">
+              <span class="sample-badge mt-0.5 shrink-0">{s.status.badge}</span>
+              {s.status.note}
+            </p>
+          )
+        }
+      </div>
+      <nav aria-label="In this story" class="lg:col-span-4 lg:pt-12">
+        <p class="eyebrow text-muted">In this story</p>
+        <ol class="mt-5 space-y-2">
+          {
+            s.chapters.map((c, i) => (
+              <li>
+                <a href={`#${c.id}`} class="group flex items-center gap-4 rounded-card p-2 pr-4 transition hover:bg-white/[0.06]">
+                  <span class="display flex h-10 w-10 shrink-0 items-center justify-center rounded-control bg-ember text-xl text-midnight">{i + 1}</span>
+                  <span>
+                    <span class="block text-xs text-muted">{c.kicker}</span>
+                    <span class="block font-semibold text-ink group-hover:underline">{c.short}</span>
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ol>
+        <dl class="mt-8 grid grid-cols-2 gap-6 border-t border-line pt-6">
+          {s.stats.map((f) => <div><dt class="sr-only">{f.label}</dt><dd><span class="display block text-3xl text-ink md:text-4xl">{f.value}</span><span class="mt-1 block text-sm text-muted">{f.label}</span></dd></div>)}
+        </dl>
+      </nav>
+    </div>
+  </section>
+
+  {
+    s.chapters.map((c, i) => (
+      <section id={c.id} class:list={[i % 2 === 0 ? 'band-white' : 'band-mist', 'scroll-mt-4']} aria-labelledby={`${c.id}-h`}>
+        <div class="wrap py-20 md:py-24">
+          <p class="eyebrow text-display-accent">{c.kicker}</p>
+          <h2 id={`${c.id}-h`} class="display h-section mt-4 max-w-4xl text-ink">{c.title}</h2>
+          <div class:list={['mt-8 grid gap-12', c.aside && 'lg:grid-cols-12']}>
+            <div class:list={['space-y-8', c.aside && 'lg:col-span-7']}>
+              {c.main.map((b) => <StoryBlock block={b} lang={lang} />)}
+            </div>
+            {c.aside && <aside class="space-y-8 lg:col-span-5">{c.aside.map((b) => <StoryBlock block={b} lang={lang} />)}</aside>}
+          </div>
+          {c.full && <div class="mt-12 space-y-10">{c.full.map((b) => <StoryBlock block={b} lang={lang} />)}</div>}
+          {c.bridge && <p class="mt-12 text-lg leading-relaxed text-muted italic">{c.bridge}</p>}
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="band-midnight" aria-labelledby="paper-heading">
+    <div class="wrap grid gap-10 py-16 md:py-20 lg:grid-cols-12">
+      <div class="lg:col-span-7">
+        <p class="eyebrow text-display-accent">The paper</p>
+        <h2 id="paper-heading" class="display h-section mt-4 text-ink">{s.paperTitle}</h2>
+        <p class="mt-4 text-muted">{s.authors.join(', ')} · {s.dateLabel}{s.venue && ` · ${s.venue}`}</p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          {pdfHref ? <a href={pdfHref} class="btn btn-primary" target="_blank" rel="noopener">Download the PDF <span aria-hidden="true">↓</span></a> : <Placeholder note={'placeholder' in s.pdf ? s.pdf.placeholder : ''} onAccent />}
+          {s.links.map((l) => <a href={l.href} class="btn btn-ghost" rel="noopener">{l.label}</a>)}
+        </div>
+      </div>
+      <div class="space-y-3 text-sm leading-relaxed text-muted lg:col-span-5 lg:pt-10">
+        {s.footnotes.map((f) => <p>{f}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand lang={lang} title="Working on a similar question?" body="Tell us what you need to know and by when. We will reply within two working days with an honest view of what we could find out." button="Talk to us" />
+</Base>

@@ -1,0 +1,43 @@
+---
+/** One news or blog post. */
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../../../layouts/Base.astro';
+import PageHero from '../../../../components/PageHero.astro';
+import CtaBand from '../../../../components/CtaBand.astro';
+import { DEFAULT_LOCALE, PUBLISHED_LOCALES, type Locale } from '../../../../i18n/config';
+import { localePath } from '../../../../i18n/utils';
+import { useTranslations } from '../../../../i18n/ui';
+import { getNews, newsDate } from '../../../../lib/news';
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const lang of PUBLISHED_LOCALES) {
+    for (const post of await getNews(lang)) paths.push({ params: { locale: lang === DEFAULT_LOCALE ? undefined : lang, post: post.url }, props: { lang, post } });
+  }
+  return paths;
+}
+const { lang, post } = Astro.props as { lang: Locale; post: Awaited<ReturnType<typeof getNews>>[number] };
+const t = useTranslations(lang);
+const { Content } = await render(post);
+---
+
+<Base title={post.data.title} description={post.data.summary} lang={lang} path={`/insights/news/${post.url}/`}>
+  <PageHero
+    eyebrow={`${post.data.kind === 'blog' ? 'Blog' : 'News'} · ${newsDate(post.when, lang)}`}
+    title={post.data.title}
+    intro={post.data.summary}
+    crumbs={[{ label: t('nav.insights'), href: localePath(lang, '/insights/') }, { label: t('nav.news'), href: localePath(lang, '/insights/news/') }]}
+  />
+  <article class="band-white">
+    <div class="wrap grid gap-12 py-16 md:py-20 lg:grid-cols-12">
+      <div class="prose prose-lg prose-site lg:col-span-8"><Content /></div>
+      <aside class="space-y-6 lg:col-span-4">
+        {post.data.cover && <Image src={post.data.cover} alt="" widths={[400, 800]} sizes="(min-width: 1024px) 380px, 92vw" class="w-full rounded-card ring-1 ring-line" />}
+        {post.data.link && <a href={post.data.link.href} class="link-arrow" rel="noopener">{post.data.link.label} <span aria-hidden="true">↗</span></a>}
+        <p><a href={localePath(lang, '/insights/news/')} class="text-sm text-muted underline underline-offset-4 hover:text-ink">All news</a></p>
+      </aside>
+    </div>
+  </article>
+  <CtaBand lang={lang} />
+</Base>
