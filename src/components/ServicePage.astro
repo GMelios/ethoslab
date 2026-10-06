@@ -1,0 +1,97 @@
+---
+/**
+ * Shared layout for the three service pages: hero, typical question, who it is for,
+ * what we do, methods and what you receive, then any page-specific rows (slot), the
+ * brief's placeholders, and links to the other two services.
+ */
+import Base from '../layouts/Base.astro';
+import PageHero from './PageHero.astro';
+import CtaBand from './CtaBand.astro';
+import SpecRow from './SpecRow.astro';
+import CheckList from './CheckList.astro';
+import Placeholder from './Placeholder.astro';
+import { services, type Service } from '../data/offer';
+import { localePath } from '../i18n/utils';
+import { useTranslations } from '../i18n/ui';
+import type { Locale } from '../i18n/config';
+
+interface Props {
+  service: Service;
+  lang: Locale;
+  /** Note for the "Example" placeholder (a [TODO] in the brief), if the page has one. */
+  exampleNote?: string;
+}
+const { service: s, lang, exampleNote } = Astro.props;
+const t = useTranslations(lang);
+const others = services.filter((o) => o.id !== s.id);
+const chip = 'rounded-control bg-mist px-3.5 py-2 text-ink';
+---
+
+<Base title={s.name} description={`${s.short} ${s.intro}`} lang={lang} path={s.path}>
+  <PageHero title={s.name} intro={s.intro} crumbs={[{ label: t('nav.services'), href: localePath(lang, '/services/') }]} />
+
+  <SpecRow heading="Typical questions" id="question" first>
+    <p class="display text-2xl leading-snug text-ink md:text-3xl">“{s.question}”</p>
+    <p class="mt-6 text-lg leading-relaxed text-muted"><span class="font-semibold text-ink">For:</span> {s.for}</p>
+  </SpecRow>
+
+  <SpecRow heading="What we do" id="what">
+    <ul class="space-y-3">
+      {s.weDo.map((w) => <li class="flex gap-4 text-lg leading-relaxed text-ink/85"><span class="mt-[0.75em] h-0.5 w-4 shrink-0 bg-ember" aria-hidden="true" />{w}</li>)}
+    </ul>
+  </SpecRow>
+
+  <SpecRow heading="Methods we draw on" id="methods">
+    <ul class="flex flex-wrap gap-2.5">{s.methods.map((m) => <li class={chip}>{m}</li>)}</ul>
+  </SpecRow>
+
+  <SpecRow heading="What you receive" id="receive">
+    <CheckList items={s.youReceive} />
+  </SpecRow>
+
+  <slot />
+
+  {
+    s.todos.length > 0 && (
+      <SpecRow heading={s.todos.length > 1 ? 'Timeline and price' : 'Timeline'} id="timeline">
+        <dl class="flex flex-wrap gap-x-12 gap-y-4">
+          {s.todos.map((todo) => (
+            <div>
+              <dt class="eyebrow text-display-accent">{todo.label}</dt>
+              <dd class="mt-2"><Placeholder note={todo.note} /></dd>
+            </div>
+          ))}
+        </dl>
+      </SpecRow>
+    )
+  }
+
+  {
+    exampleNote && (
+      <SpecRow heading="Example" id="example">
+        <Placeholder block note={exampleNote} />
+      </SpecRow>
+    )
+  }
+
+  <section class="band-mist mt-10" aria-labelledby="others-heading">
+    <div class="wrap py-16 md:py-20">
+      <h2 id="others-heading" class="eyebrow text-display-accent">Also from Ethos Lab</h2>
+      <ul class="mt-6 grid gap-4 md:grid-cols-2" role="list">
+        {
+          others.map((o) => (
+            <li class="group relative rounded-card bg-paper p-7 ring-1 ring-line transition hover:ring-ink">
+              <h3 class="text-2xl font-semibold text-ink">
+                <a href={localePath(lang, o.path)} class="after:absolute after:inset-0">{o.name}</a>
+              </h3>
+              <p class="mt-2 leading-relaxed text-muted">{o.short}</p>
+              <span class="link-arrow mt-5">Explore {o.name} <span aria-hidden="true">→</span></span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand lang={lang} />
+</Base>

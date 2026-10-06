@@ -1,0 +1,42 @@
+---
+/** Research & Design. Extra rows from the v2 copy brief; placeholders mark its [TODO]s. */
+import ServicePage from '../../../components/ServicePage.astro';
+import SpecRow from '../../../components/SpecRow.astro';
+import Placeholder from '../../../components/Placeholder.astro';
+import { localeParams } from '../../../i18n/utils';
+import type { Locale } from '../../../i18n/config';
+import { serviceById } from '../../../data/offer';
+
+export const getStaticPaths = localeParams;
+const { lang } = Astro.props as { lang: Locale };
+const service = serviceById('research-design');
+
+const testable = ['Messages and letters', 'Policy options', 'Service changes', 'Campaigns', 'Products and prices'];
+const steps = ['Agree the question and options', 'Design the test', 'Run it with real people', 'Deliver the answer'];
+const formats = ['Online survey experiment', 'Field trial', 'A/B test on your own channels'];
+const chip = 'rounded-control bg-mist px-4 py-2 font-medium text-ink';
+---
+
+<ServicePage service={service} lang={lang} exampleNote="A real Research & Design engagement">
+  <SpecRow heading="What you can test" id="testable">
+    <ul class="flex flex-wrap gap-3 text-lg">{testable.map((x) => <li class={chip}>{x}</li>)}</ul>
+  </SpecRow>
+
+  <SpecRow heading="How a test works" id="how">
+    <ol class="grid gap-4 sm:grid-cols-2">
+      {
+        steps.map((s, i) => (
+          <li class="rounded-card border-t-2 border-ember bg-mist p-6">
+            <p class="text-sm font-semibold text-display-accent">{String(i + 1).padStart(2, '0')}</p>
+            <p class="mt-2 text-lg leading-snug font-semibold text-ink">{s}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </SpecRow>
+
+  <SpecRow heading="Formats" id="formats">
+    <ul class="flex flex-wrap gap-3 text-lg">{formats.map((x) => <li class={chip}>{x}</li>)}</ul>
+    <Placeholder note="Confirm formats" class="mt-4" />
+  </SpecRow>
+</ServicePage>

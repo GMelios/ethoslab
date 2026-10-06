@@ -1,0 +1,43 @@
+---
+/** Evaluation & Impact. Extra rows from the v2 copy brief; placeholders mark its [TODO]s. */
+import ServicePage from '../../../components/ServicePage.astro';
+import SpecRow from '../../../components/SpecRow.astro';
+import { localeParams } from '../../../i18n/utils';
+import type { Locale } from '../../../i18n/config';
+import { serviceById } from '../../../data/offer';
+
+export const getStaticPaths = localeParams;
+const { lang } = Astro.props as { lang: Locale };
+const service = serviceById('evaluation-impact');
+
+const moments = [
+  { when: 'Before launch', why: 'Build evaluation in.' },
+  { when: 'During', why: 'Course correct.' },
+  { when: 'After', why: 'Prove impact.' },
+];
+const plain = ['Randomised trials', 'Natural experiments and staggered rollouts', 'Comparison groups built from existing data', 'Qualitative work to explain why'];
+const card = 'rounded-card border-t-2 border-ember bg-mist p-6';
+---
+
+<ServicePage service={service} lang={lang} exampleNote="A real Evaluation & Impact engagement">
+  <SpecRow heading="When to call us" id="when">
+    <ol class="grid gap-4 sm:grid-cols-3">
+      {
+        moments.map((m) => (
+          <li class={card}>
+            <p class="eyebrow text-display-accent">{m.when}</p>
+            <p class="mt-2 text-xl leading-snug font-semibold text-ink">{m.why}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </SpecRow>
+
+  <SpecRow heading="Our methods, in plain words" id="plain">
+    <ul class="grid gap-4 sm:grid-cols-2">{plain.map((m) => <li class:list={[card, 'text-lg leading-snug font-semibold text-ink']}>{m}</li>)}</ul>
+  </SpecRow>
+
+  <SpecRow heading="For EU programmes and consortia" id="eu">
+    <p class="text-xl leading-snug font-semibold text-ink md:text-2xl">The evaluation work package, from proposal to final report.</p>
+  </SpecRow>
+</ServicePage>

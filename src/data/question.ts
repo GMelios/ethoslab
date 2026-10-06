@@ -1,8 +1,7 @@
 /**
  * The Services page story: "Follow one question". Ported from the Question narrative
  * prototype (/b/question). One REAL study, the MultiPoD language experiment
- * (src/content/projects/en/multipod-language-experiment.md), told in five chapters,
- * each tagged with the ETHOS stage it illustrates.
+ * (src/content/projects/en/multipod-language-experiment.md), told in five chapters.
  *
  * Every statistic is read from the case-study entry, never retyped here, and the
  * claims the copy makes about them are asserted below, so an edit that would make the
@@ -15,7 +14,6 @@
 import { getLocalized, localePath } from '../i18n/utils';
 import type { Locale } from '../i18n/config';
 import { site } from './site';
-import type { Stage } from './ethos';
 
 // ---- formatting ---------------------------------------------------------------------
 const MINUS = '−';
@@ -52,8 +50,6 @@ export type ChapterBase = {
   body: string[];
   facts: Fact[];
   bridge?: string;
-  /** The ETHOS stage this chapter illustrates. */
-  stage: Stage['letter'];
 };
 
 export async function getQuestionStory(lang: Locale) {
@@ -131,7 +127,6 @@ export async function getQuestionStory(lang: Locale) {
   const question = {
     id: 'chapter-1',
     n: 1,
-    stage: 'E',
     kicker: 'Chapter 1',
     short: 'The question',
     title: 'A question for a multilingual Europe',
@@ -152,7 +147,6 @@ export async function getQuestionStory(lang: Locale) {
   const design = {
     id: 'chapter-2',
     n: 2,
-    stage: 'T',
     kicker: 'Chapter 2',
     short: 'A fair test',
     title: 'We design a fair test',
@@ -193,7 +187,6 @@ export async function getQuestionStory(lang: Locale) {
   const field = {
     id: 'chapter-3',
     n: 3,
-    stage: 'T',
     kicker: 'Chapter 3',
     short: 'Into the field',
     title: `We run it in ${word(nCountries)} countries`,
@@ -242,7 +235,6 @@ export async function getQuestionStory(lang: Locale) {
   const findings = {
     id: 'chapter-4',
     n: 4,
-    stage: 'O',
     kicker: 'Chapter 4',
     short: 'What we found',
     title: `${cap(word(worries.length))} worries, ${word(answers.length)} answers`,
@@ -266,7 +258,6 @@ export async function getQuestionStory(lang: Locale) {
   const decision = {
     id: 'chapter-5',
     n: 5,
-    stage: 'H',
     kicker: 'Chapter 5',
     short: 'What it means',
     title: 'From findings to recommendations',
@@ -298,8 +289,8 @@ export async function getQuestionStory(lang: Locale) {
   const turn = {
     eyebrow: 'What the story shows',
     title: 'Opinions were easy to find. Evidence had to be built.',
-    lede: 'What made the answer usable was a fair comparison, every specification on the page, and an honest account of what the study cannot tell us. We bring that to every question, whatever the method, at whichever stage you need us.',
-    servicesTitle: 'Different questions, different stages',
+    lede: 'What made the answer usable was a fair comparison, every specification on the page, and an honest account of what the study cannot tell us. We bring that to every question, whatever the method, through three services.',
+    servicesTitle: 'Three ways we help',
   };
 
   // ---- the invitation --------------------------------------------------------------------
@@ -321,7 +312,7 @@ export async function getQuestionStory(lang: Locale) {
     hero: {
       eyebrow: `Our services · one real study, in ${word(chapters.length)} chapters`,
       title: 'What gets lost when politics speaks a second language?',
-      lede: `Political information about the EU increasingly arrives in English. For MultiPoD, a Horizon Europe project, we tested what that costs citizens in ${word(nCountries)} countries. Follow the study chapter by chapter to see exactly how we work, then find the stage your own question is at.`,
+      lede: `Political information about the EU increasingly arrives in English. For MultiPoD, a Horizon Europe project, we tested what that costs citizens in ${word(nCountries)} countries. Follow the study chapter by chapter to see exactly how we work, then see how we could help with yours.`,
       note: d.provisional!,
       stats: [
         { value: int(surveyed), label: 'adults surveyed' },

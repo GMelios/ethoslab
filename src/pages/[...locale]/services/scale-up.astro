@@ -1,0 +1,12 @@
+---
+/** Scale up. From the Design, Evaluate and Our History pages on ethoslab.gr. */
+import ServicePage from '../../../components/ServicePage.astro';
+import { localeParams } from '../../../i18n/utils';
+import type { Locale } from '../../../i18n/config';
+import { serviceById } from '../../../data/offer';
+
+export const getStaticPaths = localeParams;
+const { lang } = Astro.props as { lang: Locale };
+---
+
+<ServicePage service={serviceById('scale-up')} lang={lang} />

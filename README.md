@@ -27,15 +27,15 @@ Astro 7 runs `astro dev` as a background daemon when it is not attached to a ter
 | Page | Route | Source |
 |---|---|---|
 | Home | `/` | `src/components/home/Home.astro` |
-| Our services (the ETHOS method, domains, how we work) | `/services/` | `src/data/ethos.ts` |
-| Ethos Test, Ethos Evaluation | `/services/ethos-test/`, `/services/ethos-evaluation/` | `src/data/offer.ts` |
+| Our services (one real study, three services, domains, how we work) | `/services/` | `src/data/question.ts`, `src/data/offer.ts`, `src/data/ethos.ts` |
+| Research & Design, Evaluation & Impact, Scale up | `/services/research-design/`, `/services/evaluation-impact/`, `/services/scale-up/` | `src/data/offer.ts`, `src/components/ServicePage.astro` |
 | Our products | `/products/`, `/products/reframing-welfare-index/`, `/products/room-wisdom/` | `src/content/products/`, page files |
 | Room Wisdom demo dashboard (synthetic session) | `/products/room-wisdom/demo/` | `public/products/room-wisdom/demo/index.html` |
 | Insights (publications, projects, events) | `/insights/` | `src/content/research/`, `src/data/events.ts` |
 | Projects | `/work/`, `/work/<slug>/` | `src/content/projects/` |
 | About us, Contact us | `/about/`, `/contact/` | page files |
 
-`/test/`, `/evaluation/`, `/what-we-do/` and `/research/` redirect to their new homes. Search is built by Pagefind after `astro build` (`dist/pagefind/`), so it works in `npm run preview`, not in `npm run dev`.
+`/test/`, `/evaluation/`, `/services/ethos-test/`, `/services/ethos-evaluation/`, `/what-we-do/` and `/research/` redirect to their new homes. Search is built by Pagefind after `astro build` (`dist/pagefind/`), so it works in `npm run preview`, not in `npm run dev`.
 
 To build exactly as GitHub Pages does: `SITE=https://gmelios.github.io BASE_PATH=/ethoslab npm run build`.
 
@@ -54,8 +54,9 @@ src/assets/wp/               Downloaded WordPress images (optimised at build)
 src/assets/brand/            Brand kit: logo SVGs, palette and usage rules (README.md inside)
 src/data/sectors.json        Sector taxonomy: schema enum, Work filter, importer tagging
 src/data/site.ts             Contact details, nav, partner logos, proof numbers
-src/data/offer.ts            Ethos Test and Ethos Evaluation copy, shared closing CTA
-src/data/ethos.ts            Services: ETHOS stages, domains, principles
+src/data/offer.ts            The three services, shared closing CTA
+src/data/ethos.ts            Domains and principles
+src/data/question.ts         Services page story (MultiPoD), checked against the case-study data
 src/i18n/                    Locales, UI strings (EN + draft EL), helpers
 src/pages/[...locale]/       Every localised route (EN at /, EL at /el/)
 src/components/home/Home.astro  Homepage
@@ -97,6 +98,6 @@ All fonts include Greek glyphs.
 
 | What | Where | Marked on site |
 |---|---|---|
-| Ethos Test and Ethos Evaluation: timelines, price, formats, examples | `src/data/offer.ts`, `src/pages/[...locale]/services/ethos-{test,evaluation}.astro` | "Placeholder" |
+| Research & Design and Evaluation & Impact: timelines, price, formats, examples | `src/data/offer.ts`, `src/pages/[...locale]/services/{research-design,evaluation-impact}.astro` | "Placeholder" |
 | MultiPoD language experiment: provisional results from deliverable D1.1, under review | `src/content/projects/en/multipod-language-experiment.md` | "Provisional" |
 | Greek version | `src/i18n/`, `src/content/*/el/` | "Ελληνικά" shown as coming soon |

@@ -16,9 +16,9 @@ const columns = [
   {
     title: t('nav.services'),
     links: [
-      { label: 'The ETHOS method', path: '/services/#method' },
-      { label: 'Ethos Test', path: '/services/ethos-test/' },
-      { label: 'Ethos Evaluation', path: '/services/ethos-evaluation/' },
+      { label: 'Research & Design', path: '/services/research-design/' },
+      { label: 'Evaluation & Impact', path: '/services/evaluation-impact/' },
+      { label: 'Scale up', path: '/services/scale-up/' },
       { label: 'Where we work', path: '/services/#domains' },
     ],
   },
@@ -41,7 +41,7 @@ const columns = [
     <div class="md:col-span-4">
       <Logo inverse class="h-9" />
       <p class="mt-6 max-w-sm text-[0.95rem] leading-relaxed text-muted">
-        Ethos Lab tests ideas with real people before launch and proves what worked after. For governments, organisations and research consortia across Europe. Based in Athens.
+        Research, data and tools for the decisions that matter. An independent research firm in Athens, working with governments, international organisations and businesses across Europe.
       </p>
       <ul class="mt-6 flex gap-5 text-sm">
         {site.social.map((s) => <li><a class="font-semibold underline decoration-ember decoration-2 underline-offset-4 hover:decoration-white" href={s.href} rel="noopener">{s.label}</a></li>)}
